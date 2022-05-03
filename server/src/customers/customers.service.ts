@@ -12,40 +12,47 @@ export class CustomersService {
   }
 
   async findAll(orderBy?: OrderByParams) {
-    const { displayName, telephoneNumber } = orderBy || {};
+    const { input } = orderBy || {};
     return this.prisma.customer.findMany({
-      where: {
-        OR: [
-          {
-            firstName: {
-              contains: displayName,
-              mode: 'insensitive',
-            },
-          },
-          {
-            lastName: {
-              contains: displayName,
-              mode: 'insensitive',
-            },
-          },
-          {
-            phone: {
-              contains: telephoneNumber,
-              mode: 'insensitive',
-            },
-          },
-          {
-            mobile: {
-              contains: telephoneNumber,
-              mode: 'insensitive',
-            },
-          },
-        ],
+      orderBy: {
+        _relevance: {
+          sort: 'desc',
+          fields: ['firstName', 'lastName', 'mobile', 'phone'],
+          search: input.replace(/\s+/g, ''),
+        },
       },
 
       include: {
         location: true,
       },
+      // where: {
+      //   OR: [
+      //     {
+      //       firstName: {
+      //         contains: displayName.trim(),
+      //         mode: 'insensitive',
+      //       },
+      //     },
+      //     {
+      //       lastName: {
+      //         contains: displayName.trim(),
+      //         mode: 'insensitive',
+      //       },
+      //     },
+      //     {
+      //       phone: {
+      //         contains: telephoneNumber.trim(),
+      //         mode: 'insensitive',
+      //       },
+      //     },
+      //     {
+      //       mobile: {
+      //         contains: telephoneNumber.trim(),
+      //         mode: 'insensitive',
+      //       },
+      //     },
+      //   ],
+      // },
     });
   }
 

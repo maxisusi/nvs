@@ -27,8 +27,7 @@ export class UpdateCustomerInput {
 }
 
 export class OrderByParams {
-    displayName?: Nullable<string>;
-    telephoneNumber?: Nullable<string>;
+    input?: Nullable<string>;
 }
 
 export class Customer {

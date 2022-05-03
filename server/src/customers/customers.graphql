@@ -39,8 +39,7 @@ input UpdateCustomerInput {
 }
 
 input OrderByParams {
-  displayName: String
-  telephoneNumber: String
+  input: String
 }
 
 type Query {
