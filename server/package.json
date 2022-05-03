@@ -6,6 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "dev": "concurrently \"npm:start:dev\" \"npm:gen-typings\" \"npm:prisma:generate\" ",
+    "prisma:generate": "prisma generate --watch",
     "gen-typings": "ts-node ./src/generate-typings",
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -35,7 +37,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "ts-morph": "^14.0.0"
+    "ts-morph": "^14.0.0",
+    "webpack": "^5.72.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
@@ -47,6 +50,7 @@
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "concurrently": "^7.1.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
