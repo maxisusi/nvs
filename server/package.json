@@ -2,9 +2,9 @@
   "name": "server",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Max Bale",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "dev": "concurrently \"npm:start:dev\" \"npm:gen-typings\" \"npm:prisma:generate\" ",
     "prisma:generate": "prisma generate --watch",
