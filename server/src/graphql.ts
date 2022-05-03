@@ -12,6 +12,7 @@ export class CreateCustomerInput {
     lastName: string;
     address: string;
     postalCode: string;
+    locationCountry: string;
     city: string;
     region: string;
     country: string;
@@ -29,15 +30,19 @@ export class Customer {
     id: string;
     firstName: string;
     lastName: string;
-    address: string;
-    postalCode: string;
-    city: string;
-    region: string;
-    country: string;
+    location: Location;
     email?: Nullable<string>;
     mobile?: Nullable<string>;
     phone?: Nullable<string>;
     createdAt?: Nullable<DateTime>;
+}
+
+export class Location {
+    id: number;
+    address: string;
+    region: string;
+    postalCode: string;
+    locationCountry: string;
 }
 
 export abstract class IQuery {

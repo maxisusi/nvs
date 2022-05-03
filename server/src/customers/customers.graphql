@@ -4,15 +4,19 @@ type Customer {
   id: String!
   firstName: String!
   lastName: String!
-  address: String!
-  postalCode: String!
-  city: String!
-  region: String!
-  country: String!
+  location: Location!
   email: String
   mobile: String
   phone: String
   createdAt: DateTime
+}
+
+type Location {
+  id: Int!
+  address: String!
+  region: String!
+  postalCode: String!
+  locationCountry: String!
 }
 
 input CreateCustomerInput {
@@ -20,6 +24,7 @@ input CreateCustomerInput {
   lastName: String!
   address: String!
   postalCode: String!
+  locationCountry: String!
   city: String!
   region: String!
   country: String!

@@ -34,13 +34,13 @@ model Location {
   customer Customer[]
 
   // * Location must contain a country
-  country Country @relation(fields: [countryId], references: [countryCode])
-  countryId String
+  country Country @relation(fields: [locationCountry], references: [countryName])
+  locationCountry String
 }
 
 model Country {
-  countryCode String @id
-  country String
+  countryCode String 
+  countryName String @id
 
   // * Country can or cannot contain a specific location
   location Location[]

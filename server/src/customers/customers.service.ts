@@ -10,8 +10,12 @@ export class CustomersService {
     return 'This action adds a new customer';
   }
 
-  findAll() {
-    return this.prisma.customer.findMany();
+  async findAll() {
+    return this.prisma.customer.findMany({
+      include: {
+        location: true,
+      },
+    });
   }
 
   findOne(id: number) {
