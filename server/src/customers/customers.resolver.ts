@@ -8,7 +8,9 @@ export class CustomersResolver {
   constructor(private readonly customersService: CustomersService) {}
 
   @Mutation('createCustomer')
-  create(@Args('createCustomerInput') createCustomerInput: CreateCustomerInput) {
+  create(
+    @Args('createCustomerInput') createCustomerInput: CreateCustomerInput,
+  ) {
     return this.customersService.create(createCustomerInput);
   }
 
@@ -23,8 +25,13 @@ export class CustomersResolver {
   }
 
   @Mutation('updateCustomer')
-  update(@Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput) {
-    return this.customersService.update(updateCustomerInput.id, updateCustomerInput);
+  update(
+    @Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput,
+  ) {
+    return this.customersService.update(
+      updateCustomerInput.id,
+      updateCustomerInput,
+    );
   }
 
   @Mutation('removeCustomer')

@@ -26,7 +26,7 @@ export class UpdateCustomerInput {
 }
 
 export class Customer {
-    id: number;
+    id: string;
     firstName: string;
     lastName: string;
     address: string;

@@ -1,19 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
 
 @Injectable()
 export class CustomersService {
+  constructor(private readonly prisma: PrismaService) {}
   create(createCustomerInput: CreateCustomerInput) {
     return 'This action adds a new customer';
   }
 
   findAll() {
-    return [
-      {
-        exampleField: 1,
-      },
-    ];
+    return this.prisma.customer.findMany();
   }
 
   findOne(id: number) {

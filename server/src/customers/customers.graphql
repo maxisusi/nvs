@@ -1,7 +1,7 @@
 scalar DateTime
 
 type Customer {
-  id: Int!
+  id: String!
   firstName: String!
   lastName: String!
   address: String!
