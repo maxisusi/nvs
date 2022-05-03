@@ -12,15 +12,8 @@ export class CustomersService {
   }
 
   async findAll(orderBy?: OrderByParams) {
-    const { displayName } = orderBy || {};
+    const { displayName, telephoneNumber } = orderBy || {};
     return this.prisma.customer.findMany({
-      // orderBy: {
-      //   _relevance: {
-      //     sort: 'desc',
-      //     fields: ['firstName', 'lastName'],
-      //     search: displayName,
-      //   },
-      // },
       where: {
         OR: [
           {
@@ -32,6 +25,18 @@ export class CustomersService {
           {
             lastName: {
               contains: displayName,
+              mode: 'insensitive',
+            },
+          },
+          {
+            phone: {
+              contains: telephoneNumber,
+              mode: 'insensitive',
+            },
+          },
+          {
+            mobile: {
+              contains: telephoneNumber,
               mode: 'insensitive',
             },
           },
