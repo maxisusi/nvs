@@ -30,7 +30,7 @@ model Location {
   postalCode String
 
   // * Location can or cannot contain a customer
-  customer Customer?
+  customer Customer[]
 
   // * Location must contain a country
   country Country @relation(fields: [countryId], references: [countryCode])
@@ -42,5 +42,5 @@ model Country {
   country String
 
   // * Country can or cannot contain a specific location
-  location Location?
+  location Location[]
 }
