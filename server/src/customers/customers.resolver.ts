@@ -20,7 +20,7 @@ export class CustomersResolver {
   }
 
   @Query('customer')
-  findOne(@Args('id') id: number) {
+  findOne(@Args('id') id: string) {
     return this.customersService.findOne(id);
   }
 

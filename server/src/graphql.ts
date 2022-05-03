@@ -48,7 +48,7 @@ export class Location {
 export abstract class IQuery {
     abstract customers(): Nullable<Customer>[] | Promise<Nullable<Customer>[]>;
 
-    abstract customer(id: number): Nullable<Customer> | Promise<Nullable<Customer>>;
+    abstract customer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
 }
 
 export abstract class IMutation {

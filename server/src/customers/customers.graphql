@@ -40,7 +40,7 @@ input UpdateCustomerInput {
 
 type Query {
   customers: [Customer]!
-  customer(id: Int!): Customer
+  customer(id: String!): Customer
 }
 
 type Mutation {

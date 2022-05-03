@@ -18,8 +18,8 @@ export class CustomersService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
+  findOne(id: string) {
+    return this.prisma.customer.findUnique({ where: { id } });
   }
 
   update(id: number, updateCustomerInput: UpdateCustomerInput) {
