@@ -9,3 +9,38 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Customer {
+  id String @id @default(uuid())
+  firstName String
+  lastName String
+  email String?
+  mobile String?
+  phone String?
+  createdAt DateTime @default(now())
+
+  // Customer must contain a location
+  location Location @relation(fields: [locationId], references: [address])
+  locationId String
+}
+
+model Location {
+  address String @id 
+  region String
+  postalCode String
+
+  // * Location can or cannot contain a customer
+  customer Customer?
+
+  // * Location must contain a country
+  country Country @relation(fields: [countryId], references: [countryCode])
+  countryId String
+}
+
+model Country {
+  countryCode String @id
+  country String
+
+  // * Country can or cannot contain a specific location
+  location Location?
+}

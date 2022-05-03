@@ -11,6 +11,10 @@ export class CreateCustomerInput {
     firstName: string;
     lastName: string;
     address: string;
+    postalCode: string;
+    city: string;
+    region: string;
+    country: string;
     email?: Nullable<string>;
     mobile?: Nullable<string>;
     phone?: Nullable<string>;
@@ -26,6 +30,10 @@ export class Customer {
     firstName: string;
     lastName: string;
     address: string;
+    postalCode: string;
+    city: string;
+    region: string;
+    country: string;
     email?: Nullable<string>;
     mobile?: Nullable<string>;
     phone?: Nullable<string>;

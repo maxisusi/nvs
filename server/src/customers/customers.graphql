@@ -5,6 +5,10 @@ type Customer {
   firstName: String!
   lastName: String!
   address: String!
+  postalCode: String!
+  city: String!
+  region: String!
+  country: String!
   email: String
   mobile: String
   phone: String
@@ -15,6 +19,10 @@ input CreateCustomerInput {
   firstName: String!
   lastName: String!
   address: String!
+  postalCode: String!
+  city: String!
+  region: String!
+  country: String!
   email: String
   mobile: String
   phone: String
