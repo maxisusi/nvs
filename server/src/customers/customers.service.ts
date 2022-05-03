@@ -9,7 +9,11 @@ export class CustomersService {
   }
 
   findAll() {
-    return `This action returns all customers`;
+    return [
+      {
+        exampleField: 1,
+      },
+    ];
   }
 
   findOne(id: number) {

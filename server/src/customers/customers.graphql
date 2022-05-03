@@ -1,11 +1,24 @@
+scalar DateTime
+
 type Customer {
-  # Example field (placeholder)
-  exampleField: Int
+  id: Int!
+  firstName: String!
+  lastName: String!
+  address: String!
+  email: String
+  mobile: String
+  phone: String
+  createdAt: DateTime
 }
 
 input CreateCustomerInput {
-  # Example field (placeholder)
-  exampleField: Int
+  firstName: String!
+  lastName: String!
+  address: String!
+  email: String
+  mobile: String
+  phone: String
+  createdAt: DateTime
 }
 
 input UpdateCustomerInput {

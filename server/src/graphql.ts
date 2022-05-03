@@ -8,7 +8,13 @@
 /* tslint:disable */
 /* eslint-disable */
 export class CreateCustomerInput {
-    exampleField?: Nullable<number>;
+    firstName: string;
+    lastName: string;
+    address: string;
+    email?: Nullable<string>;
+    mobile?: Nullable<string>;
+    phone?: Nullable<string>;
+    createdAt?: Nullable<DateTime>;
 }
 
 export class UpdateCustomerInput {
@@ -16,7 +22,14 @@ export class UpdateCustomerInput {
 }
 
 export class Customer {
-    exampleField?: Nullable<number>;
+    id: number;
+    firstName: string;
+    lastName: string;
+    address: string;
+    email?: Nullable<string>;
+    mobile?: Nullable<string>;
+    phone?: Nullable<string>;
+    createdAt?: Nullable<DateTime>;
 }
 
 export abstract class IQuery {
@@ -33,4 +46,5 @@ export abstract class IMutation {
     abstract removeCustomer(id: number): Nullable<Customer> | Promise<Nullable<Customer>>;
 }
 
+export type DateTime = any;
 type Nullable<T> = T | null;
