@@ -19,13 +19,14 @@ model Customer {
   phone String?
   createdAt DateTime @default(now())
 
-  // Customer must contain a location
-  location Location @relation(fields: [locationId], references: [address])
-  locationId String
+  // * Customer must contain a location
+  location Location @relation(fields: [locationId], references: [id])
+  locationId Int
 }
 
 model Location {
-  address String @id 
+  id Int @id @default(autoincrement())
+  address String 
   region String
   postalCode String
 
