@@ -1,4 +1,6 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
+import { OrderByParams } from 'src/graphql';
 import { CustomersService } from './customers.service';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
@@ -9,14 +11,15 @@ export class CustomersResolver {
 
   @Mutation('createCustomer')
   create(
-    @Args('createCustomerInput') createCustomerInput: CreateCustomerInput,
+    @Args('createCustomerInput')
+    createCustomerInput: Prisma.CustomerCreateInput,
   ) {
     return this.customersService.create(createCustomerInput);
   }
 
   @Query('customers')
-  findAll() {
-    return this.customersService.findAll();
+  findAll(@Args('orderBy') orderBy?: OrderByParams) {
+    return this.customersService.findAll(orderBy);
   }
 
   @Query('customer')

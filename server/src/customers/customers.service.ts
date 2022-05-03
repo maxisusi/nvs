@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { OrderByParams } from 'src/graphql';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
@@ -10,8 +11,33 @@ export class CustomersService {
     return 'This action adds a new customer';
   }
 
-  async findAll() {
+  async findAll(orderBy?: OrderByParams) {
+    const { displayName } = orderBy || {};
     return this.prisma.customer.findMany({
+      // orderBy: {
+      //   _relevance: {
+      //     sort: 'desc',
+      //     fields: ['firstName', 'lastName'],
+      //     search: displayName,
+      //   },
+      // },
+      where: {
+        OR: [
+          {
+            firstName: {
+              contains: displayName,
+              mode: 'insensitive',
+            },
+          },
+          {
+            lastName: {
+              contains: displayName,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+
       include: {
         location: true,
       },

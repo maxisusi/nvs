@@ -38,8 +38,12 @@ input UpdateCustomerInput {
   id: Int!
 }
 
+input OrderByParams {
+  displayName: String
+}
+
 type Query {
-  customers: [Customer]!
+  customers(orderBy: OrderByParams): [Customer]!
   customer(id: String!): Customer
 }
 

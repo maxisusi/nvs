@@ -26,6 +26,10 @@ export class UpdateCustomerInput {
     id: number;
 }
 
+export class OrderByParams {
+    displayName?: Nullable<string>;
+}
+
 export class Customer {
     id: string;
     firstName: string;
@@ -46,7 +50,7 @@ export class Location {
 }
 
 export abstract class IQuery {
-    abstract customers(): Nullable<Customer>[] | Promise<Nullable<Customer>[]>;
+    abstract customers(orderBy?: Nullable<OrderByParams>): Nullable<Customer>[] | Promise<Nullable<Customer>[]>;
 
     abstract customer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
 }
