@@ -18,7 +18,11 @@ NVS Invoice is a small accounting app that creates invoices for small businesses
 
 - NextJS
 - Typescript
+- NestJS
+- Redux
+- GraphQL
 - Firebase
+- Postgres
 
 [Back To The Top](#read-me-template)
 
