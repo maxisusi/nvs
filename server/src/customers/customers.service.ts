@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { OrderByParams } from 'src/graphql';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateCustomerInput } from './dto/create-customer.input';
+
 import { UpdateCustomerInput } from './dto/update-customer.input';
 
 @Injectable()
 export class CustomersService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createCustomerInput: CreateCustomerInput) {
-    return 'This action adds a new customer';
+  create(createCustomerInput: Prisma.CustomerCreateInput) {
+    return this.prisma.customer.create({
+      data: createCustomerInput,
+    });
   }
 
   async findAll(orderBy?: OrderByParams) {
@@ -21,38 +24,9 @@ export class CustomersService {
           search: input.replace(/\s+/g, ''),
         },
       },
-
       include: {
         location: true,
       },
-      // where: {
-      //   OR: [
-      //     {
-      //       firstName: {
-      //         contains: displayName.trim(),
-      //         mode: 'insensitive',
-      //       },
-      //     },
-      //     {
-      //       lastName: {
-      //         contains: displayName.trim(),
-      //         mode: 'insensitive',
-      //       },
-      //     },
-      //     {
-      //       phone: {
-      //         contains: telephoneNumber.trim(),
-      //         mode: 'insensitive',
-      //       },
-      //     },
-      //     {
-      //       mobile: {
-      //         contains: telephoneNumber.trim(),
-      //         mode: 'insensitive',
-      //       },
-      //     },
-      //   ],
-      // },
     });
   }
 

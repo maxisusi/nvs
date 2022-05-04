@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -12,37 +12,133 @@ datasource db {
 }
 
 model Customer {
-  id String @id @default(uuid())
+  id        String   @id @default(uuid())
   firstName String
-  lastName String
-  email String?
-  mobile String?
-  phone String?
+  lastName  String
+  email     String?
+  mobile    String?
+  phone     String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
-  // * Customer must contain a location
-  location Location @relation(fields: [locationId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id])
   locationId Int
+
+  invoice      Invoice[]
+  contactPoint ContactPoint[]
+}
+
+model ContactPoint {
+  id        String @id @default(uuid())
+  name      String
+  telephone String
+
+  location   Location @relation(fields: [locationId], references: [id])
+  locationId Int
+
+  custom     Customer @relation(fields: [customerId], references: [id])
+  customerId String
+}
+
+model Company {
+  id        String @id @default(uuid())
+  name      String
+  telephone String
+  image     String
+
+  location   Location @relation(fields: [locationId], references: [id])
+  locationId Int      @unique
+
+  invoice Invoice[]
 }
 
 model Location {
-  id Int @id @default(autoincrement())
-  address String 
-  region String
+  id         Int    @id @default(autoincrement())
+  address    String
   postalCode String
+  region     String
+  city       String
 
-  // * Location can or cannot contain a customer
-  customer Customer[]
 
-  // * Location must contain a country
-  country Country @relation(fields: [locationCountry], references: [countryName])
-  locationCountry String
+  country   Country @relation(fields: [countryId], references: [countryName])
+  countryId String
+
+  customer     Customer[]
+  contactPoint ContactPoint[]
+  company      Company?
 }
 
 model Country {
-  countryCode String 
-  countryName String @id
+  countryName String @id @unique
+  countryCode String
 
-  // * Country can or cannot contain a specific location
   location Location[]
 }
+
+model Invoice {
+  id            String   @id @default(uuid())
+  date          DateTime
+  dueDate       DateTime
+  invoiceNumber String   @default(uuid())
+  status        Status
+  terms         Terms
+  taxes         Float
+  total         Float
+  remarks       String
+  createdAt     DateTime
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String
+
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String
+
+  entry Entry[]
+}
+
+model Entry {
+  id          String   @id @default(uuid())
+  date        DateTime
+  description String
+  quantity    Float
+  rate        Float
+  total       Float
+
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  invoiceId String
+}
+
+enum Status {
+  pending
+  draft
+  paid
+}
+
+enum Terms {
+  NET_7
+  NET_21
+  NET_30
+}
+
+// model Location {
+//   id Int @id @default(autoincrement())
+//   address String
+//   region String
+//   postalCode String
+
+//   // * Location can or cannot contain a customer
+//   customer Customer[]
+
+//   // * Location must contain a country
+//   country Country @relation(fields: [locationCountry], references: [countryName])
+//   locationCountry String
+// }
+
+// model Country {
+//   countryCode String
+//   countryName String @id
+
+//   // * Country can or cannot contain a specific location
+//   location Location[]
+// }

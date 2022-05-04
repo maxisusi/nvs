@@ -27,7 +27,6 @@ input CreateCustomerInput {
   locationCountry: String!
   city: String!
   region: String!
-  country: String!
   email: String
   mobile: String
   phone: String

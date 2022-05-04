@@ -15,7 +15,6 @@ export class CreateCustomerInput {
     locationCountry: string;
     city: string;
     region: string;
-    country: string;
     email?: Nullable<string>;
     mobile?: Nullable<string>;
     phone?: Nullable<string>;
