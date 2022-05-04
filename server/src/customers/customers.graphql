@@ -9,6 +9,7 @@ type Customer {
   mobile: String
   phone: String
   createdAt: DateTime
+  updatedAt: DateTime
 }
 
 type Location {
@@ -16,7 +17,8 @@ type Location {
   address: String!
   region: String!
   postalCode: String!
-  locationCountry: String!
+  city: String!
+  country: Country!
 }
 
 input CreateCustomerInput {
@@ -24,13 +26,18 @@ input CreateCustomerInput {
   lastName: String!
   address: String!
   postalCode: String!
-  locationCountry: String!
+  country: String!
   city: String!
   region: String!
   email: String
   mobile: String
   phone: String
   createdAt: DateTime
+}
+
+type Country {
+  countryName: String!
+  CountryCode: String!
 }
 
 input UpdateCustomerInput {
