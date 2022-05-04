@@ -37,7 +37,7 @@ input CreateCustomerInput {
 
 type Country {
   countryName: String!
-  CountryCode: String!
+  countryCode: String!
 }
 
 input UpdateCustomerInput {

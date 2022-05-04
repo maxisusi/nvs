@@ -52,7 +52,7 @@ export class Location {
 
 export class Country {
     countryName: string;
-    CountryCode: string;
+    countryCode: string;
 }
 
 export abstract class IQuery {

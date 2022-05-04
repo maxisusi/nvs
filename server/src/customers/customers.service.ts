@@ -25,7 +25,11 @@ export class CustomersService {
         },
       },
       include: {
-        location: true,
+        location: {
+          include: {
+            country: true,
+          },
+        },
       },
     });
   }
