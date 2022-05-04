@@ -36,7 +36,7 @@ model ContactPoint {
   location   Location @relation(fields: [locationId], references: [id])
   locationId Int
 
-  custom     Customer @relation(fields: [customerId], references: [id])
+  customer   Customer[]
   customerId String
 }
 
