@@ -89,7 +89,9 @@ export class CustomersService {
     return `This action updates a #${id} customer`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  remove(id: string) {
+    return this.prisma.customer.delete({
+      where: { id },
+    });
   }
 }

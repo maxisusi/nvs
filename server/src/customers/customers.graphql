@@ -56,5 +56,5 @@ type Query {
 type Mutation {
   createCustomer(createCustomerInput: CreateCustomerInput!): Customer!
   updateCustomer(updateCustomerInput: UpdateCustomerInput!): Customer!
-  removeCustomer(id: Int!): Customer
+  removeCustomer(id: String!): Customer
 }

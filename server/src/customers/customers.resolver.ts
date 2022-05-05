@@ -38,7 +38,7 @@ export class CustomersResolver {
   }
 
   @Mutation('removeCustomer')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.customersService.remove(id);
   }
 }

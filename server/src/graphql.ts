@@ -66,7 +66,7 @@ export abstract class IMutation {
 
     abstract updateCustomer(updateCustomerInput: UpdateCustomerInput): Customer | Promise<Customer>;
 
-    abstract removeCustomer(id: number): Nullable<Customer> | Promise<Nullable<Customer>>;
+    abstract removeCustomer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
 }
 
 export type DateTime = any;
