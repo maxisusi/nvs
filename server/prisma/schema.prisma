@@ -21,8 +21,9 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  location   Location @relation(fields: [locationId], references: [id])
-  locationId Int
+  location           Location @relation(fields: [customerAddress, customerPostalCode], references: [address, postalCode])
+  customerAddress    String
+  customerPostalCode String
 
   invoice      Invoice[]
   contactPoint ContactPoint[]
@@ -33,10 +34,10 @@ model ContactPoint {
   name      String
   telephone String
 
-  location   Location @relation(fields: [locationId], references: [id])
-  locationId Int
-
-  customer Customer[]
+  location          Location   @relation(fields: [contactAddress, contactPostalCode], references: [address, postalCode])
+  contactAddress    String
+  contactPostalCode String
+  customer          Customer[]
 }
 
 model Company {
@@ -45,19 +46,17 @@ model Company {
   telephone String
   image     String
 
-  location   Location @relation(fields: [locationId], references: [id])
-  locationId Int      @unique
-
-  invoice Invoice[]
+  location          Location  @relation(fields: [companyAddress, companyPostalCode], references: [address, postalCode])
+  companyAddress    String
+  companyPostalCode String
+  invoice           Invoice[]
 }
 
 model Location {
-  id         Int    @id @default(autoincrement())
   address    String
   postalCode String
   region     String
   city       String
-
 
   country   Country @relation(fields: [countryId], references: [countryName])
   countryId String
@@ -65,6 +64,7 @@ model Location {
   customer     Customer[]
   contactPoint ContactPoint[]
   company      Company?
+  @@id([address, postalCode], name: "location_id")
 }
 
 model Country {

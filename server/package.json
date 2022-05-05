@@ -5,6 +5,9 @@
   "author": "Max Balej",
   "private": true,
   "license": "MIT",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
     "dev": "concurrently \"npm:start:dev\" \"npm:gen-typings\" \"npm:prisma:generate\" ",
     "prisma:generate": "prisma generate --watch",
