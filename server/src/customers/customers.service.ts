@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { CustomerCreateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-create.input';
 import { CreateCustomerInput, OrderByParams } from 'src/graphql';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -8,7 +9,7 @@ import { UpdateCustomerInput } from './dto/update-customer.input';
 @Injectable()
 export class CustomersService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(createCustomerInput: Prisma.CustomerCreateInput) {
+  async create(createCustomerInput: CustomerCreateInput) {
     return this.prisma.customer.create({
       data: createCustomerInput,
     });
