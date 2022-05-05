@@ -11,20 +11,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator nestgraphql {
+  provider               = "node node_modules/prisma-nestjs-graphql"
+  output                 = "../src/@generated/prisma-nestjs-graphql"
+  fields_Validator_from  = "class-validator"
+  fields_Validator_input = true
+}
+
 model Customer {
   id        String   @id @default(uuid())
+  /// @Validator.MinLength(3)
   firstName String
+  /// @Validator.MinLength(3)
   lastName  String
+  /// @Validator.IsOptional()
+  /// @Validator.IsEmail()
   email     String?
   mobile    String?
   phone     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
+  /// @Validator.IsNotEmpty()
   address     String
+  /// @Validator.IsNotEmpty()
   postalCode  String
+  /// @Validator.IsNotEmpty()
   region      String
+  /// @Validator.IsNotEmpty()
   city        String
+  /// @Validator.IsNotEmpty()
   countryName String
 
   invoice      Invoice[]
