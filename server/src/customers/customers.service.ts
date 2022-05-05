@@ -50,7 +50,10 @@ export class CustomersService {
               },
             },
             where: {
-              id: 1,
+              location_id: {
+                address,
+                postalCode,
+              },
             },
           },
         },
