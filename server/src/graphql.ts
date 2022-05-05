@@ -1,4 +1,3 @@
-
 /*
  * -------------------------------------------------------
  * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
@@ -8,65 +7,75 @@
 /* tslint:disable */
 /* eslint-disable */
 export class CreateCustomerInput {
-    firstName: string;
-    lastName: string;
-    address: string;
-    postalCode: string;
-    country: string;
-    city: string;
-    region: string;
-    email?: Nullable<string>;
-    mobile?: Nullable<string>;
-    phone?: Nullable<string>;
-    createdAt?: Nullable<DateTime>;
+  firstName: string;
+  lastName: string;
+  address: string;
+  postalCode: string;
+  country: string;
+  city: string;
+  region: string;
+  email?: Nullable<string>;
+  mobile?: Nullable<string>;
+  phone?: Nullable<string>;
+  createdAt?: Nullable<DateTime>;
 }
 
 export class UpdateCustomerInput {
-    id: number;
+  id: number;
 }
 
 export class OrderByParams {
-    input?: Nullable<string>;
+  input?: Nullable<string>;
 }
 
 export class Customer {
-    id: string;
-    firstName: string;
-    lastName: string;
-    location: Location;
-    email?: Nullable<string>;
-    mobile?: Nullable<string>;
-    phone?: Nullable<string>;
-    createdAt?: Nullable<DateTime>;
-    updatedAt?: Nullable<DateTime>;
+  id: string;
+  firstName: string;
+  lastName: string;
+  location: Location;
+  email?: Nullable<string>;
+  mobile?: Nullable<string>;
+  phone?: Nullable<string>;
+  createdAt?: Nullable<DateTime>;
+  updatedAt?: Nullable<DateTime>;
 }
 
 export class Location {
-    id: number;
-    address: string;
-    region: string;
-    postalCode: string;
-    city: string;
-    country: Country;
+  id: number;
+  address: string;
+  region: string;
+  postalCode: string;
+  city: string;
+  country: Country;
 }
 
 export class Country {
-    countryName: string;
-    countryCode: string;
+  countryName: string;
+  countryCode: string;
 }
 
 export abstract class IQuery {
-    abstract customers(orderBy?: Nullable<OrderByParams>): Nullable<Customer>[] | Promise<Nullable<Customer>[]>;
+  abstract customers(
+    orderBy?: Nullable<OrderByParams>,
+  ): Nullable<Customer>[] | Promise<Nullable<Customer>[]>;
 
-    abstract customer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
+  abstract customer(
+    id: string,
+  ): Nullable<Customer> | Promise<Nullable<Customer>>;
 }
 
 export abstract class IMutation {
-    abstract createCustomer(createCustomerInput: CreateCustomerInput): Customer | Promise<Customer>;
+  abstract createCustomer(
+    createCustomerInput: CreateCustomerInput,
+  ): Customer | Promise<Customer>;
 
-    abstract updateCustomer(updateCustomerInput: UpdateCustomerInput): Customer | Promise<Customer>;
+  abstract updateCustomer(
+    updateCustomerInput: UpdateCustomerInput,
+  ): Customer | Promise<Customer>;
 
-    abstract removeCustomer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
+  abstract removeCustomer(
+    id: number,
+  ): Nullable<Customer> | Promise<Nullable<Customer>>;
 }
 
 export type DateTime = any;
