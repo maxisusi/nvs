@@ -31,8 +31,37 @@ export class CustomersService {
     return this.prisma.customer.findUnique({ where: { id } });
   }
 
-  update(updateCustomerInput: Prisma.CustomerUpdateInput) {
-    // return this.prisma.customer.update();
+  update(updateCustomerInput: any) {
+    const {
+      id,
+      firstName,
+      lastName,
+      address,
+      postalCode,
+      region,
+      city,
+      countryName,
+      phone,
+      mobile,
+      email,
+      updatedAt,
+    } = updateCustomerInput;
+    return this.prisma.customer.update({
+      where: { id },
+      data: {
+        firstName,
+        lastName,
+        address,
+        postalCode,
+        region,
+        city,
+        countryName,
+        phone,
+        mobile,
+        email,
+        updatedAt,
+      },
+    });
   }
 
   remove(id: string) {
