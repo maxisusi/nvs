@@ -4,12 +4,10 @@ const prisma = new PrismaClient();
 
 async function main() {
   prisma.customer.deleteMany({});
-  prisma.location.deleteMany({});
   prisma.invoice.deleteMany({});
   prisma.company.deleteMany({});
   prisma.contactPoint.deleteMany({});
   prisma.entry.deleteMany({});
-  prisma.country.deleteMany({});
 }
 
 main()

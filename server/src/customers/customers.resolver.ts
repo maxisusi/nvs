@@ -29,16 +29,14 @@ export class CustomersResolver {
 
   @Mutation('updateCustomer')
   update(
-    @Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput,
+    @Args('updateCustomerInput')
+    updateCustomerInput: Prisma.CustomerUpdateInput,
   ) {
-    return this.customersService.update(
-      updateCustomerInput.id,
-      updateCustomerInput,
-    );
+    return this.customersService.update(updateCustomerInput);
   }
 
   @Mutation('removeCustomer')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.customersService.remove(id);
   }
 }

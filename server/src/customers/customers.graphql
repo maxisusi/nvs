@@ -4,44 +4,51 @@ type Customer {
   id: String!
   firstName: String!
   lastName: String!
-  location: Location!
   email: String
   mobile: String
   phone: String
+
+  address: String!
+  postalCode: String!
+  countryName: String!
+  city: String!
+  region: String!
+
   createdAt: DateTime
   updatedAt: DateTime
-}
-
-type Location {
-  id: Int!
-  address: String!
-  region: String!
-  postalCode: String!
-  city: String!
-  country: Country!
 }
 
 input CreateCustomerInput {
   firstName: String!
   lastName: String!
-  address: String!
-  postalCode: String!
-  country: String!
-  city: String!
-  region: String!
   email: String
   mobile: String
   phone: String
+
+  address: String!
+  postalCode: String!
+  countryName: String!
+  city: String!
+  region: String!
+
   createdAt: DateTime
 }
 
-type Country {
-  countryName: String!
-  countryCode: String!
-}
-
 input UpdateCustomerInput {
-  id: Int!
+  id: String!
+  firstName: String
+  lastName: String
+  email: String
+  mobile: String
+  phone: String
+
+  address: String
+  postalCode: String
+  countryName: String
+  city: String
+  region: String
+
+  updatedAt: DateTime
 }
 
 input OrderByParams {
@@ -56,5 +63,5 @@ type Query {
 type Mutation {
   createCustomer(createCustomerInput: CreateCustomerInput!): Customer!
   updateCustomer(updateCustomerInput: UpdateCustomerInput!): Customer!
-  removeCustomer(id: Int!): Customer
+  removeCustomer(id: String!): Customer
 }

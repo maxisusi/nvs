@@ -21,23 +21,28 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  location           Location @relation(fields: [customerAddress, customerPostalCode], references: [address, postalCode])
-  customerAddress    String
-  customerPostalCode String
+  address     String
+  postalCode  String
+  region      String
+  city        String
+  countryName String
 
   invoice      Invoice[]
   contactPoint ContactPoint[]
 }
 
 model ContactPoint {
-  id        String @id @default(uuid())
-  name      String
-  telephone String
+  id          String @id @default(uuid())
+  name        String
+  telephone   String
+  address     String
+  postalCode  String
+  region      String
+  city        String
+  countryName String
 
-  location          Location   @relation(fields: [contactAddress, contactPostalCode], references: [address, postalCode])
-  contactAddress    String
-  contactPostalCode String
-  customer          Customer[]
+
+  customer Customer[]
 }
 
 model Company {
@@ -46,33 +51,36 @@ model Company {
   telephone String
   image     String
 
-  location          Location  @relation(fields: [companyAddress, companyPostalCode], references: [address, postalCode])
-  companyAddress    String
-  companyPostalCode String
-  invoice           Invoice[]
+  address     String
+  postalCode  String
+  region      String
+  city        String
+  countryName String
+
+
+  invoice Invoice[]
 }
 
-model Location {
-  address    String
-  postalCode String
-  region     String
-  city       String
+// model Location {
+//   address    String
+//   postalCode String
+//   region     String
+//   city       String
 
-  country   Country @relation(fields: [countryId], references: [countryName])
-  countryId String
+//   country   Country @relation(fields: [countryId], references: [countryName])
+//   countryId String
 
-  customer     Customer[]
-  contactPoint ContactPoint[]
-  company      Company?
-  @@id([address, postalCode], name: "location_id")
-}
+//   customer     Customer[]
+//   contactPoint ContactPoint[]
+//   company      Company?
+//   @@id([address, postalCode], name: "location_id")
+// }
 
-model Country {
-  countryName String @id @unique
+// model Country {
+//   countryName String @id @unique
 
-
-  location Location[]
-}
+//   location Location[]
+// }
 
 model Invoice {
   id            String   @id @default(uuid())

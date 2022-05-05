@@ -8,56 +8,9 @@ import { UpdateCustomerInput } from './dto/update-customer.input';
 @Injectable()
 export class CustomersService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(createCustomerInput: any) {
-    const {
-      firstName,
-      lastName,
-      email,
-      mobile,
-      phone,
-      address,
-      city,
-      country,
-      postalCode,
-      region,
-    } = createCustomerInput;
-
+  async create(createCustomerInput: Prisma.CustomerCreateInput) {
     return this.prisma.customer.create({
-      data: {
-        firstName,
-        lastName,
-        email,
-        mobile,
-        phone,
-
-        location: {
-          connectOrCreate: {
-            create: {
-              address,
-              city,
-              postalCode,
-              region,
-
-              country: {
-                connectOrCreate: {
-                  create: {
-                    countryName: country,
-                  },
-                  where: {
-                    countryName: country,
-                  },
-                },
-              },
-            },
-            where: {
-              location_id: {
-                address,
-                postalCode,
-              },
-            },
-          },
-        },
-      },
+      data: createCustomerInput,
     });
   }
 
@@ -71,13 +24,6 @@ export class CustomersService {
           search: input.replace(/\s+/g, ''),
         },
       },
-      include: {
-        location: {
-          include: {
-            country: true,
-          },
-        },
-      },
     });
   }
 
@@ -85,11 +31,13 @@ export class CustomersService {
     return this.prisma.customer.findUnique({ where: { id } });
   }
 
-  update(id: number, updateCustomerInput: UpdateCustomerInput) {
-    return `This action updates a #${id} customer`;
+  update(updateCustomerInput: Prisma.CustomerUpdateInput) {
+    // return this.prisma.customer.update();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  remove(id: string) {
+    return this.prisma.customer.delete({
+      where: { id },
+    });
   }
 }

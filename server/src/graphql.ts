@@ -10,19 +10,30 @@
 export class CreateCustomerInput {
     firstName: string;
     lastName: string;
-    address: string;
-    postalCode: string;
-    country: string;
-    city: string;
-    region: string;
     email?: Nullable<string>;
     mobile?: Nullable<string>;
     phone?: Nullable<string>;
+    address: string;
+    postalCode: string;
+    countryName: string;
+    city: string;
+    region: string;
     createdAt?: Nullable<DateTime>;
 }
 
 export class UpdateCustomerInput {
-    id: number;
+    id: string;
+    firstName?: Nullable<string>;
+    lastName?: Nullable<string>;
+    email?: Nullable<string>;
+    mobile?: Nullable<string>;
+    phone?: Nullable<string>;
+    address?: Nullable<string>;
+    postalCode?: Nullable<string>;
+    countryName?: Nullable<string>;
+    city?: Nullable<string>;
+    region?: Nullable<string>;
+    updatedAt?: Nullable<DateTime>;
 }
 
 export class OrderByParams {
@@ -33,26 +44,16 @@ export class Customer {
     id: string;
     firstName: string;
     lastName: string;
-    location: Location;
     email?: Nullable<string>;
     mobile?: Nullable<string>;
     phone?: Nullable<string>;
+    address: string;
+    postalCode: string;
+    countryName: string;
+    city: string;
+    region: string;
     createdAt?: Nullable<DateTime>;
     updatedAt?: Nullable<DateTime>;
-}
-
-export class Location {
-    id: number;
-    address: string;
-    region: string;
-    postalCode: string;
-    city: string;
-    country: Country;
-}
-
-export class Country {
-    countryName: string;
-    countryCode: string;
 }
 
 export abstract class IQuery {
@@ -66,7 +67,7 @@ export abstract class IMutation {
 
     abstract updateCustomer(updateCustomerInput: UpdateCustomerInput): Customer | Promise<Customer>;
 
-    abstract removeCustomer(id: number): Nullable<Customer> | Promise<Nullable<Customer>>;
+    abstract removeCustomer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
 }
 
 export type DateTime = any;
