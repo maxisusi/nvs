@@ -24,7 +24,9 @@ export class ContactPointsService {
     return `This action updates a #${id} contactPoint`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} contactPoint`;
+  remove(id: string) {
+    return this.prisma.contactPoint.delete({
+      where: { id },
+    });
   }
 }

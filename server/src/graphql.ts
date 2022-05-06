@@ -90,7 +90,7 @@ export abstract class IMutation {
 
     abstract updateContactPoint(updateContactPointInput: UpdateContactPointInput): ContactPoint | Promise<ContactPoint>;
 
-    abstract removeContactPoint(id: number): Nullable<ContactPoint> | Promise<Nullable<ContactPoint>>;
+    abstract removeContactPoint(id: string): Nullable<ContactPoint> | Promise<Nullable<ContactPoint>>;
 
     abstract createCustomer(createCustomerInput: CreateCustomerInput): Customer | Promise<Customer>;
 

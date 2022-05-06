@@ -46,5 +46,5 @@ type Mutation {
   updateContactPoint(
     updateContactPointInput: UpdateContactPointInput!
   ): ContactPoint!
-  removeContactPoint(id: Int!): ContactPoint
+  removeContactPoint(id: String!): ContactPoint
 }

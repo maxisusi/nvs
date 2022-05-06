@@ -37,7 +37,7 @@ export class ContactPointsResolver {
   }
 
   @Mutation('removeContactPoint')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.contactPointsService.remove(id);
   }
 }
