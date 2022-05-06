@@ -23,7 +23,10 @@ export class ContactPointsService {
   }
 
   update(updateContactPointInput: Prisma.ContactPointUpdateInput) {
-    return '';
+    return this.prisma.contactPoint.update({
+      where: { id: updateContactPointInput.id as string },
+      data: updateContactPointInput,
+    });
   }
 
   remove(id: string) {

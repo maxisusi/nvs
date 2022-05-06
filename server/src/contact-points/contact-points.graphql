@@ -23,7 +23,7 @@ input CreateContactPointInput {
 }
 
 input UpdateContactPointInput {
-  id: Int!
+  id: String!
   name: String!
   telephone: String
   email: String

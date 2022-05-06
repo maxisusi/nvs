@@ -19,7 +19,7 @@ export class CreateContactPointInput {
 }
 
 export class UpdateContactPointInput {
-    id: number;
+    id: string;
     name: string;
     telephone?: Nullable<string>;
     email?: Nullable<string>;
