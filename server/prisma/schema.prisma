@@ -48,14 +48,14 @@ model Customer {
 }
 
 model ContactPoint {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
-  telephone   String
-  address     String
-  postalCode  String
-  region      String
-  city        String
-  countryName String
+  telephone   String?
+  address     String?
+  postalCode  String?
+  region      String?
+  city        String?
+  countryName String?
 
 
   customer Customer[]

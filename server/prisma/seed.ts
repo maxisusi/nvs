@@ -7,6 +7,10 @@ const generator = new GenerateDatas();
 async function main() {
   await clearFields();
 
+  await generateFields();
+}
+
+const generateFields = async () => {
   // * Generate clients
   await prisma.customer
     .createMany({
@@ -19,7 +23,7 @@ async function main() {
       data: generator.createContactPoint(3),
     })
     .catch((e) => console.log('There was an error', e));
-}
+};
 
 // * Clear DB Fields
 const clearFields = async () => {

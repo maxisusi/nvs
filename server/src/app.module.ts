@@ -4,6 +4,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { CustomersModule } from './customers/customers.module';
 import { GraphQLDateTime } from 'graphql-iso-date';
+import { ContactPointsModule } from './contact-points/contact-points.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { GraphQLDateTime } from 'graphql-iso-date';
       resolvers: { DateTime: GraphQLDateTime },
     }),
     CustomersModule,
+    ContactPointsModule,
   ],
 })
 export class AppModule {}

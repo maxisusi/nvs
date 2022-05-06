@@ -1,0 +1,28 @@
+type ContactPoint {
+  id: String!
+  name: String!
+}
+
+input CreateContactPointInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateContactPointInput {
+  id: Int!
+}
+
+type Query {
+  contactPoints: [ContactPoint]!
+  contactPoint(id: Int!): ContactPoint
+}
+
+type Mutation {
+  createContactPoint(
+    createContactPointInput: CreateContactPointInput!
+  ): ContactPoint!
+  updateContactPoint(
+    updateContactPointInput: UpdateContactPointInput!
+  ): ContactPoint!
+  removeContactPoint(id: Int!): ContactPoint
+}
