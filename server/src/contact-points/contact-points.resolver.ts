@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
+import { ContactPointCreateInput } from 'src/@generated/prisma-nestjs-graphql/contact-point/contact-point-create.input';
 import { ContactPointsService } from './contact-points.service';
-import { CreateContactPointInput } from './dto/create-contact-point.input';
-import { UpdateContactPointInput } from './dto/update-contact-point.input';
 
 @Resolver('ContactPoint')
 export class ContactPointsResolver {
@@ -10,7 +10,7 @@ export class ContactPointsResolver {
   @Mutation('createContactPoint')
   create(
     @Args('createContactPointInput')
-    createContactPointInput: CreateContactPointInput,
+    createContactPointInput: ContactPointCreateInput,
   ) {
     return this.contactPointsService.create(createContactPointInput);
   }
@@ -28,12 +28,9 @@ export class ContactPointsResolver {
   @Mutation('updateContactPoint')
   update(
     @Args('updateContactPointInput')
-    updateContactPointInput: UpdateContactPointInput,
+    updateContactPointInput: Prisma.ContactPointUpdateInput,
   ) {
-    return this.contactPointsService.update(
-      updateContactPointInput.id,
-      updateContactPointInput,
-    );
+    return this.contactPointsService.update(updateContactPointInput);
   }
 
   @Mutation('removeContactPoint')

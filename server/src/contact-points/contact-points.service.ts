@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { ContactPointCreateInput } from 'src/@generated/prisma-nestjs-graphql/contact-point/contact-point-create.input';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateContactPointInput } from './dto/create-contact-point.input';
-import { UpdateContactPointInput } from './dto/update-contact-point.input';
 
 @Injectable()
 export class ContactPointsService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createContactPointInput: CreateContactPointInput) {
-    return 'This action adds a new contactPoint';
+  create(createContactPointInput: ContactPointCreateInput) {
+    return this.prisma.contactPoint.create({
+      data: createContactPointInput,
+    });
   }
 
   findAll() {
@@ -20,8 +22,8 @@ export class ContactPointsService {
     });
   }
 
-  update(id: number, updateContactPointInput: UpdateContactPointInput) {
-    return `This action updates a #${id} contactPoint`;
+  update(updateContactPointInput: Prisma.ContactPointUpdateInput) {
+    return '';
   }
 
   remove(id: string) {

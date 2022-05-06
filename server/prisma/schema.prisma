@@ -49,6 +49,7 @@ model Customer {
 
 model ContactPoint {
   id          String  @id @default(uuid())
+  /// @Validator.MinLength(3)
   name        String
   telephone   String?
   email       String? @unique
