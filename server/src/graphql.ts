@@ -8,11 +8,24 @@
 /* tslint:disable */
 /* eslint-disable */
 export class CreateContactPointInput {
-    exampleField?: Nullable<number>;
+    name: string;
+    telephone?: Nullable<string>;
+    address?: Nullable<string>;
+    postalCode?: Nullable<string>;
+    region?: Nullable<string>;
+    city?: Nullable<string>;
+    countryName?: Nullable<string>;
 }
 
 export class UpdateContactPointInput {
     id: number;
+    name: string;
+    telephone?: Nullable<string>;
+    address?: Nullable<string>;
+    postalCode?: Nullable<string>;
+    region?: Nullable<string>;
+    city?: Nullable<string>;
+    countryName?: Nullable<string>;
 }
 
 export class CreateCustomerInput {
@@ -51,6 +64,12 @@ export class OrderByParams {
 export class ContactPoint {
     id: string;
     name: string;
+    telephone?: Nullable<string>;
+    address?: Nullable<string>;
+    postalCode?: Nullable<string>;
+    region?: Nullable<string>;
+    city?: Nullable<string>;
+    countryName?: Nullable<string>;
 }
 
 export abstract class IQuery {

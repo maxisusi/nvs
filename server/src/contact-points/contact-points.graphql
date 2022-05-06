@@ -1,15 +1,34 @@
 type ContactPoint {
   id: String!
   name: String!
+  telephone: String
+  address: String
+  postalCode: String
+  region: String
+  city: String
+  countryName: String
 }
 
 input CreateContactPointInput {
   # Example field (placeholder)
-  exampleField: Int
+  name: String!
+  telephone: String
+  address: String
+  postalCode: String
+  region: String
+  city: String
+  countryName: String
 }
 
 input UpdateContactPointInput {
   id: Int!
+  name: String!
+  telephone: String
+  address: String
+  postalCode: String
+  region: String
+  city: String
+  countryName: String
 }
 
 type Query {

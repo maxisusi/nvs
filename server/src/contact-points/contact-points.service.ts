@@ -1,19 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
 import { CreateContactPointInput } from './dto/create-contact-point.input';
 import { UpdateContactPointInput } from './dto/update-contact-point.input';
 
 @Injectable()
 export class ContactPointsService {
+  constructor(private readonly prisma: PrismaService) {}
   create(createContactPointInput: CreateContactPointInput) {
     return 'This action adds a new contactPoint';
   }
 
   findAll() {
-    return [
-      {
-        exampleField: 10,
-      },
-    ];
+    return this.prisma.contactPoint.findMany();
   }
 
   findOne(id: number) {
