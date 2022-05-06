@@ -1,0 +1,50 @@
+type ContactPoint {
+  id: String!
+  name: String!
+  telephone: String
+  email: String
+  address: String
+  postalCode: String
+  region: String
+  city: String
+  countryName: String
+}
+
+input CreateContactPointInput {
+  # Example field (placeholder)
+  name: String!
+  telephone: String
+  email: String
+  address: String
+  postalCode: String
+  region: String
+  city: String
+  countryName: String
+}
+
+input UpdateContactPointInput {
+  id: String!
+  name: String!
+  telephone: String
+  email: String
+  address: String
+  postalCode: String
+  region: String
+  city: String
+  countryName: String
+}
+
+type Query {
+  contactPoints: [ContactPoint]!
+  contactPoint(id: String!): ContactPoint
+}
+
+type Mutation {
+  createContactPoint(
+    createContactPointInput: CreateContactPointInput!
+  ): ContactPoint!
+  updateContactPoint(
+    updateContactPointInput: UpdateContactPointInput!
+  ): ContactPoint!
+  removeContactPoint(id: String!): ContactPoint
+}

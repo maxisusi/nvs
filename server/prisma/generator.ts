@@ -22,6 +22,27 @@ class GenerateDatas {
     }
     return customers;
   }
+
+  createContactPoint(number: number) {
+    const contactPoints = [];
+
+    for (let i = 0; i < number; i++) {
+      const contactPoint = {
+        name: faker.name.findName(),
+        telephone: faker.phone.phoneNumber(),
+        email: faker.internet.email(),
+        address: faker.address.streetName(),
+        postalCode: faker.address.zipCode(),
+        region: faker.address.county(),
+        city: faker.address.city(),
+        countryName: faker.address.country(),
+      };
+
+      contactPoints.push(contactPoint);
+    }
+
+    return contactPoints;
+  }
 }
 
 export default GenerateDatas;
