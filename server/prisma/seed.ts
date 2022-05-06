@@ -2,13 +2,25 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+import CreateCustomers from './customerData';
+
 async function main() {
-  prisma.customer.deleteMany({});
-  prisma.invoice.deleteMany({});
-  prisma.company.deleteMany({});
-  prisma.contactPoint.deleteMany({});
-  prisma.entry.deleteMany({});
+  clearFields();
+
+  // * Generate clients
+  await prisma.customer.createMany({
+    data: CreateCustomers(10),
+  });
 }
+
+// * Clear DB Fields
+const clearFields = async () => {
+  await prisma.customer.deleteMany();
+  await prisma.invoice.deleteMany();
+  await prisma.company.deleteMany();
+  await prisma.contactPoint.deleteMany();
+  await prisma.entry.deleteMany();
+};
 
 main()
   .catch((e) => {
