@@ -51,6 +51,7 @@ model ContactPoint {
   id          String  @id @default(uuid())
   name        String
   telephone   String?
+  email       String? @unique
   address     String?
   postalCode  String?
   region      String?
