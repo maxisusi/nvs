@@ -21,7 +21,7 @@ export class ContactPointsResolver {
   }
 
   @Query('contactPoint')
-  findOne(@Args('id') id: number) {
+  findOne(@Args('id') id: string) {
     return this.contactPointsService.findOne(id);
   }
 

@@ -14,8 +14,10 @@ export class ContactPointsService {
     return this.prisma.contactPoint.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} contactPoint`;
+  findOne(id: string) {
+    return this.prisma.contactPoint.findUnique({
+      where: { id },
+    });
   }
 
   update(id: number, updateContactPointInput: UpdateContactPointInput) {

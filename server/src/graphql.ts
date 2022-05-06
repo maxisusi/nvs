@@ -78,7 +78,7 @@ export class ContactPoint {
 export abstract class IQuery {
     abstract contactPoints(): Nullable<ContactPoint>[] | Promise<Nullable<ContactPoint>[]>;
 
-    abstract contactPoint(id: number): Nullable<ContactPoint> | Promise<Nullable<ContactPoint>>;
+    abstract contactPoint(id: string): Nullable<ContactPoint> | Promise<Nullable<ContactPoint>>;
 
     abstract customers(orderBy?: Nullable<OrderByParams>): Nullable<Customer>[] | Promise<Nullable<Customer>[]>;
 
