@@ -10,6 +10,7 @@
 export class CreateContactPointInput {
     name: string;
     telephone?: Nullable<string>;
+    email?: Nullable<string>;
     address?: Nullable<string>;
     postalCode?: Nullable<string>;
     region?: Nullable<string>;
@@ -21,6 +22,7 @@ export class UpdateContactPointInput {
     id: number;
     name: string;
     telephone?: Nullable<string>;
+    email?: Nullable<string>;
     address?: Nullable<string>;
     postalCode?: Nullable<string>;
     region?: Nullable<string>;
@@ -65,6 +67,7 @@ export class ContactPoint {
     id: string;
     name: string;
     telephone?: Nullable<string>;
+    email?: Nullable<string>;
     address?: Nullable<string>;
     postalCode?: Nullable<string>;
     region?: Nullable<string>;

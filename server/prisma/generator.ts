@@ -30,6 +30,7 @@ class GenerateDatas {
       const contactPoint = {
         name: faker.name.findName(),
         telephone: faker.phone.phoneNumber(),
+        email: faker.internet.email(),
         address: faker.address.streetName(),
         postalCode: faker.address.zipCode(),
         region: faker.address.county(),
