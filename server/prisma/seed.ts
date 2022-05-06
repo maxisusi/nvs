@@ -1,15 +1,15 @@
 import { PrismaClient } from '@prisma/client';
+import GenerateDatas from './generator';
 
 const prisma = new PrismaClient();
-
-import CreateCustomers from './customerData';
+const generator = new GenerateDatas();
 
 async function main() {
   clearFields();
 
   // * Generate clients
   await prisma.customer.createMany({
-    data: CreateCustomers(10),
+    data: generator.createCustomer(10),
   });
 }
 
