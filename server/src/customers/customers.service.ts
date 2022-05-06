@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CustomerCreateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-create.input';
-import { CreateCustomerInput, OrderByParams } from 'src/graphql';
+import { CustomerUpdateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-update.input';
+import { OrderByParams, UpdateCustomerInput } from 'src/graphql';
 import { PrismaService } from '../../prisma/prisma.service';
-
-import { UpdateCustomerInput } from './dto/update-customer.input';
 
 @Injectable()
 export class CustomersService {
@@ -32,36 +31,10 @@ export class CustomersService {
     return this.prisma.customer.findUnique({ where: { id } });
   }
 
-  update(updateCustomerInput: any) {
-    const {
-      id,
-      firstName,
-      lastName,
-      address,
-      postalCode,
-      region,
-      city,
-      countryName,
-      phone,
-      mobile,
-      email,
-      updatedAt,
-    } = updateCustomerInput;
+  update(updateCustomerInput: Prisma.CustomerUpdateInput) {
     return this.prisma.customer.update({
-      where: { id },
-      data: {
-        firstName,
-        lastName,
-        address,
-        postalCode,
-        region,
-        city,
-        countryName,
-        phone,
-        mobile,
-        email,
-        updatedAt,
-      },
+      where: { id: updateCustomerInput.id as string },
+      data: updateCustomerInput,
     });
   }
 

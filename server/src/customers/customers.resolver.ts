@@ -3,8 +3,6 @@ import { Prisma } from '@prisma/client';
 import { CustomerCreateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-create.input';
 import { OrderByParams } from 'src/graphql';
 import { CustomersService } from './customers.service';
-import { CreateCustomerInput } from './dto/create-customer.input';
-import { UpdateCustomerInput } from './dto/update-customer.input';
 
 @Resolver('Customer')
 export class CustomersResolver {
