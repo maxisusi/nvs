@@ -7,6 +7,14 @@
 
 /* tslint:disable */
 /* eslint-disable */
+export class CreateCompanyInput {
+    exampleField?: Nullable<number>;
+}
+
+export class UpdateCompanyInput {
+    id: number;
+}
+
 export class CreateContactPointInput {
     name: string;
     telephone?: Nullable<string>;
@@ -65,19 +73,15 @@ export class OrderByParams {
     input?: Nullable<string>;
 }
 
-export class ContactPoint {
-    id: string;
-    name: string;
-    telephone?: Nullable<string>;
-    email?: Nullable<string>;
-    address?: Nullable<string>;
-    postalCode?: Nullable<string>;
-    region?: Nullable<string>;
-    city?: Nullable<string>;
-    countryName?: Nullable<string>;
+export class Company {
+    exampleField?: Nullable<number>;
 }
 
 export abstract class IQuery {
+    abstract companies(): Nullable<Company>[] | Promise<Nullable<Company>[]>;
+
+    abstract company(id: number): Nullable<Company> | Promise<Nullable<Company>>;
+
     abstract contactPoints(): Nullable<ContactPoint>[] | Promise<Nullable<ContactPoint>[]>;
 
     abstract contactPoint(id: string): Nullable<ContactPoint> | Promise<Nullable<ContactPoint>>;
@@ -88,6 +92,12 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
+    abstract createCompany(createCompanyInput: CreateCompanyInput): Company | Promise<Company>;
+
+    abstract updateCompany(updateCompanyInput: UpdateCompanyInput): Company | Promise<Company>;
+
+    abstract removeCompany(id: number): Nullable<Company> | Promise<Nullable<Company>>;
+
     abstract createContactPoint(createContactPointInput: CreateContactPointInput): ContactPoint | Promise<ContactPoint>;
 
     abstract updateContactPoint(updateContactPointInput: UpdateContactPointInput): ContactPoint | Promise<ContactPoint>;
@@ -99,6 +109,18 @@ export abstract class IMutation {
     abstract updateCustomer(updateCustomerInput: UpdateCustomerInput): Customer | Promise<Customer>;
 
     abstract removeCustomer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
+}
+
+export class ContactPoint {
+    id: string;
+    name: string;
+    telephone?: Nullable<string>;
+    email?: Nullable<string>;
+    address?: Nullable<string>;
+    postalCode?: Nullable<string>;
+    region?: Nullable<string>;
+    city?: Nullable<string>;
+    countryName?: Nullable<string>;
 }
 
 export class Customer {

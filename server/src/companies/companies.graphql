@@ -1,0 +1,24 @@
+type Company {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input CreateCompanyInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateCompanyInput {
+  id: Int!
+}
+
+type Query {
+  companies: [Company]!
+  company(id: Int!): Company
+}
+
+type Mutation {
+  createCompany(createCompanyInput: CreateCompanyInput!): Company!
+  updateCompany(updateCompanyInput: UpdateCompanyInput!): Company!
+  removeCompany(id: Int!): Company
+}
