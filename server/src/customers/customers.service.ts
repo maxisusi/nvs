@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CustomerCreateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-create.input';
-import { CustomerUpdateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-update.input';
-import { OrderByParams, UpdateCustomerInput } from 'src/graphql';
+import {
+  OrderByParams,
+  UpdateContactPointInput,
+  UpdateCustomerInput,
+} from 'src/graphql';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
@@ -31,10 +34,31 @@ export class CustomersService {
     return this.prisma.customer.findUnique({ where: { id } });
   }
 
-  update(updateCustomerInput: Prisma.CustomerUpdateInput) {
+  async update(updateCustomerInput: UpdateCustomerInput) {
+    const contactPointData = await this.prisma.contactPoint.findUnique({
+      where: { id: updateCustomerInput.contactPointId as string },
+    });
+
+    // // * Triggers if there are no contact points
+    // if (!contactPointData) {
+    //   return this.prisma.customer.update({
+    //     where: { id: updateCustomerInput.id as string },
+    //     data: updateCustomerInput,
+    //   });
+    // }
+
+    const contactPointID = updateCustomerInput.contactPointId;
+    delete updateCustomerInput['contactPointId'];
     return this.prisma.customer.update({
       where: { id: updateCustomerInput.id as string },
-      data: updateCustomerInput,
+      data: {
+        ...updateCustomerInput,
+        contactPoint: {
+          connect: {
+            id: contactPointID,
+          },
+        },
+      },
     });
   }
 

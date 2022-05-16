@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
 import { CustomerCreateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-create.input';
-import { OrderByParams } from 'src/graphql';
+import { OrderByParams, UpdateCustomerInput } from 'src/graphql';
 import { CustomersService } from './customers.service';
 
 @Resolver('Customer')
@@ -29,7 +29,7 @@ export class CustomersResolver {
   @Mutation('updateCustomer')
   update(
     @Args('updateCustomerInput')
-    updateCustomerInput: Prisma.CustomerUpdateInput,
+    updateCustomerInput: UpdateCustomerInput,
   ) {
     return this.customersService.update(updateCustomerInput);
   }
