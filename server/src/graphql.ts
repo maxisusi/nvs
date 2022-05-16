@@ -36,6 +36,7 @@ export class CreateCustomerInput {
     email?: Nullable<string>;
     mobile?: Nullable<string>;
     phone?: Nullable<string>;
+    contactPointId?: Nullable<string>;
     address: string;
     postalCode: string;
     countryName: string;
@@ -46,6 +47,7 @@ export class CreateCustomerInput {
 
 export class UpdateCustomerInput {
     id: string;
+    contactPointId?: Nullable<string>;
     firstName?: Nullable<string>;
     lastName?: Nullable<string>;
     email?: Nullable<string>;
@@ -111,6 +113,7 @@ export class Customer {
     countryName: string;
     city: string;
     region: string;
+    contactPoint?: Nullable<Nullable<ContactPoint>[]>;
     createdAt?: Nullable<DateTime>;
     updatedAt?: Nullable<DateTime>;
 }

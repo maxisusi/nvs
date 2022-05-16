@@ -13,6 +13,7 @@ type Customer {
   countryName: String!
   city: String!
   region: String!
+  contactPoint: [ContactPoint]
 
   createdAt: DateTime
   updatedAt: DateTime
@@ -24,6 +25,7 @@ input CreateCustomerInput {
   email: String
   mobile: String
   phone: String
+  contactPointId: String
 
   address: String!
   postalCode: String!
@@ -36,6 +38,7 @@ input CreateCustomerInput {
 
 input UpdateCustomerInput {
   id: String!
+  contactPointId: String
   firstName: String
   lastName: String
   email: String
