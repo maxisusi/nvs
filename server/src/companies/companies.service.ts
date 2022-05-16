@@ -15,7 +15,7 @@ export class CompaniesService {
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} company`;
+    return this.prisma.company.findUnique({ where: { id } });
   }
 
   update(id: string, updateCompanyInput: UpdateCompanyInput) {
