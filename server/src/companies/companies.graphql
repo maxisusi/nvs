@@ -23,6 +23,7 @@ input CreateCompanyInput {
 }
 
 input UpdateCompanyInput {
+  id: String!
   name: String
   telephone: String
   image: String

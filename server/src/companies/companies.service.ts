@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
-import { UpdateCompanyInput } from './dto/update-company.input';
+import { UpdateCompanyInput } from 'src/graphql';
 
 @Injectable()
 export class CompaniesService {
@@ -20,8 +20,11 @@ export class CompaniesService {
     return this.prisma.company.findUnique({ where: { id } });
   }
 
-  update(id: string, updateCompanyInput: UpdateCompanyInput) {
-    return `This action updates a #${id} company`;
+  update(updateCompanyInput: UpdateCompanyInput) {
+    return this.prisma.company.update({
+      where: { id: updateCompanyInput.id as string },
+      data: updateCompanyInput,
+    });
   }
 
   remove(id: string) {

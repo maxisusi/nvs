@@ -19,6 +19,7 @@ export class CreateCompanyInput {
 }
 
 export class UpdateCompanyInput {
+    id: string;
     name?: Nullable<string>;
     telephone?: Nullable<string>;
     image?: Nullable<string>;
