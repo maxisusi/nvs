@@ -34,18 +34,15 @@ export class CustomersService {
     return this.prisma.customer.findUnique({ where: { id } });
   }
 
-  async update(updateCustomerInput: UpdateCustomerInput) {
-    const contactPointData = await this.prisma.contactPoint.findUnique({
-      where: { id: updateCustomerInput.contactPointId as string },
-    });
-
-    // // * Triggers if there are no contact points
-    // if (!contactPointData) {
-    //   return this.prisma.customer.update({
-    //     where: { id: updateCustomerInput.id as string },
-    //     data: updateCustomerInput,
-    //   });
-    // }
+  update(updateCustomerInput: UpdateCustomerInput) {
+    // * Triggers if there are no contact points
+    if (!updateCustomerInput.contactPointId) {
+      delete updateCustomerInput['contactPointId'];
+      return this.prisma.customer.update({
+        where: { id: updateCustomerInput.id as string },
+        data: updateCustomerInput,
+      });
+    }
 
     const contactPointID = updateCustomerInput.contactPointId;
     delete updateCustomerInput['contactPointId'];
