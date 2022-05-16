@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "dev",
+      "path": "server",
+      "problemMatcher": [],
+      "label": "npm: dev - server",
+      "detail": "concurrently \"npm:start:dev\" \"npm:gen-typings\" \"npm:prisma:generate\" ",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
