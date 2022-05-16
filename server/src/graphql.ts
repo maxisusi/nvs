@@ -8,11 +8,25 @@
 /* tslint:disable */
 /* eslint-disable */
 export class CreateCompanyInput {
-    exampleField?: Nullable<number>;
+    name: string;
+    telephone: string;
+    image: string;
+    address: string;
+    postalCode: string;
+    region: string;
+    city: string;
+    countryName: string;
 }
 
 export class UpdateCompanyInput {
-    id: number;
+    name?: Nullable<string>;
+    telephone?: Nullable<string>;
+    image?: Nullable<string>;
+    address?: Nullable<string>;
+    postalCode?: Nullable<string>;
+    region?: Nullable<string>;
+    city?: Nullable<string>;
+    countryName?: Nullable<string>;
 }
 
 export class CreateContactPointInput {
@@ -74,13 +88,21 @@ export class OrderByParams {
 }
 
 export class Company {
-    exampleField?: Nullable<number>;
+    id: string;
+    name: string;
+    telephone: string;
+    image: string;
+    address: string;
+    postalCode: string;
+    region: string;
+    city: string;
+    countryName: string;
 }
 
 export abstract class IQuery {
     abstract companies(): Nullable<Company>[] | Promise<Nullable<Company>[]>;
 
-    abstract company(id: number): Nullable<Company> | Promise<Nullable<Company>>;
+    abstract company(id: string): Nullable<Company> | Promise<Nullable<Company>>;
 
     abstract contactPoints(): Nullable<ContactPoint>[] | Promise<Nullable<ContactPoint>[]>;
 
@@ -96,7 +118,7 @@ export abstract class IMutation {
 
     abstract updateCompany(updateCompanyInput: UpdateCompanyInput): Company | Promise<Company>;
 
-    abstract removeCompany(id: number): Nullable<Company> | Promise<Nullable<Company>>;
+    abstract removeCompany(id: string): Nullable<Company> | Promise<Nullable<Company>>;
 
     abstract createContactPoint(createContactPointInput: CreateContactPointInput): ContactPoint | Promise<ContactPoint>;
 

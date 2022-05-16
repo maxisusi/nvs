@@ -16,15 +16,15 @@ export class CompaniesService {
     ];
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} company`;
   }
 
-  update(id: number, updateCompanyInput: UpdateCompanyInput) {
+  update(id: string, updateCompanyInput: UpdateCompanyInput) {
     return `This action updates a #${id} company`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} company`;
   }
 }

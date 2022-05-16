@@ -1,24 +1,45 @@
 type Company {
-  # Example field (placeholder)
-  exampleField: Int
+  id: String!
+  name: String!
+  telephone: String!
+  image: String!
+  address: String!
+  postalCode: String!
+  region: String!
+  city: String!
+  countryName: String!
 }
 
 input CreateCompanyInput {
   # Example field (placeholder)
-  exampleField: Int
+  name: String!
+  telephone: String!
+  image: String!
+  address: String!
+  postalCode: String!
+  region: String!
+  city: String!
+  countryName: String!
 }
 
 input UpdateCompanyInput {
-  id: Int!
+  name: String
+  telephone: String
+  image: String
+  address: String
+  postalCode: String
+  region: String
+  city: String
+  countryName: String
 }
 
 type Query {
   companies: [Company]!
-  company(id: Int!): Company
+  company(id: String!): Company
 }
 
 type Mutation {
   createCompany(createCompanyInput: CreateCompanyInput!): Company!
   updateCompany(updateCompanyInput: UpdateCompanyInput!): Company!
-  removeCompany(id: Int!): Company
+  removeCompany(id: String!): Company
 }

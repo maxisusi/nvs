@@ -18,17 +18,20 @@ export class CompaniesResolver {
   }
 
   @Query('company')
-  findOne(@Args('id') id: number) {
+  findOne(@Args('id') id: string) {
     return this.companiesService.findOne(id);
   }
 
-  @Mutation('updateCompany')
-  update(@Args('updateCompanyInput') updateCompanyInput: UpdateCompanyInput) {
-    return this.companiesService.update(updateCompanyInput.id, updateCompanyInput);
-  }
+  // @Mutation('updateCompany')
+  // update(@Args('updateCompanyInput') updateCompanyInput: UpdateCompanyInput) {
+  //   return this.companiesService.update(
+  //     updateCompanyInput.id,
+  //     updateCompanyInput,
+  //   );
+  // }
 
   @Mutation('removeCompany')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.companiesService.remove(id);
   }
 }
