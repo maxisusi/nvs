@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
-import { CreateCompanyInput } from './dto/create-company.input';
 import { UpdateCompanyInput } from './dto/update-company.input';
 
 @Injectable()
 export class CompaniesService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createCompanyInput: CreateCompanyInput) {
-    return 'This action adds a new company';
+  create(createCompanyInput: Prisma.CompanyCreateInput) {
+    return this.prisma.company.create({
+      data: createCompanyInput,
+    });
   }
 
   findAll() {

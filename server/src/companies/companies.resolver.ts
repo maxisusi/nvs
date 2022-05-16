@@ -1,14 +1,15 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
 import { CompaniesService } from './companies.service';
-import { CreateCompanyInput } from './dto/create-company.input';
-import { UpdateCompanyInput } from './dto/update-company.input';
 
 @Resolver('Company')
 export class CompaniesResolver {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Mutation('createCompany')
-  create(@Args('createCompanyInput') createCompanyInput: CreateCompanyInput) {
+  create(
+    @Args('createCompanyInput') createCompanyInput: Prisma.CompanyCreateInput,
+  ) {
     return this.companiesService.create(createCompanyInput);
   }
 
