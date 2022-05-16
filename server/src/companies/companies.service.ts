@@ -23,6 +23,6 @@ export class CompaniesService {
   }
 
   remove(id: string) {
-    return `This action removes a #${id} company`;
+    return this.prisma.company.delete({ where: { id } });
   }
 }
