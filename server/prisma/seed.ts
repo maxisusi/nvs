@@ -23,6 +23,10 @@ const generateFields = async () => {
       data: generator.createContactPoint(3),
     })
     .catch((e) => console.log('There was an error', e));
+
+  await prisma.company
+    .createMany({ data: generator.createCompanies(3) })
+    .catch((e) => console.log('There was an error', e));
 };
 
 // * Clear DB Fields

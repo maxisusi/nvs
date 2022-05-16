@@ -7,6 +7,29 @@
 
 /* tslint:disable */
 /* eslint-disable */
+export class CreateCompanyInput {
+    name: string;
+    telephone: string;
+    image: string;
+    address: string;
+    postalCode: string;
+    region: string;
+    city: string;
+    countryName: string;
+}
+
+export class UpdateCompanyInput {
+    id: string;
+    name?: Nullable<string>;
+    telephone?: Nullable<string>;
+    image?: Nullable<string>;
+    address?: Nullable<string>;
+    postalCode?: Nullable<string>;
+    region?: Nullable<string>;
+    city?: Nullable<string>;
+    countryName?: Nullable<string>;
+}
+
 export class CreateContactPointInput {
     name: string;
     telephone?: Nullable<string>;
@@ -65,19 +88,23 @@ export class OrderByParams {
     input?: Nullable<string>;
 }
 
-export class ContactPoint {
+export class Company {
     id: string;
     name: string;
-    telephone?: Nullable<string>;
-    email?: Nullable<string>;
-    address?: Nullable<string>;
-    postalCode?: Nullable<string>;
-    region?: Nullable<string>;
-    city?: Nullable<string>;
-    countryName?: Nullable<string>;
+    telephone: string;
+    image: string;
+    address: string;
+    postalCode: string;
+    region: string;
+    city: string;
+    countryName: string;
 }
 
 export abstract class IQuery {
+    abstract companies(): Nullable<Company>[] | Promise<Nullable<Company>[]>;
+
+    abstract company(id: string): Nullable<Company> | Promise<Nullable<Company>>;
+
     abstract contactPoints(): Nullable<ContactPoint>[] | Promise<Nullable<ContactPoint>[]>;
 
     abstract contactPoint(id: string): Nullable<ContactPoint> | Promise<Nullable<ContactPoint>>;
@@ -88,6 +115,12 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
+    abstract createCompany(createCompanyInput: CreateCompanyInput): Company | Promise<Company>;
+
+    abstract updateCompany(updateCompanyInput: UpdateCompanyInput): Company | Promise<Company>;
+
+    abstract removeCompany(id: string): Nullable<Company> | Promise<Nullable<Company>>;
+
     abstract createContactPoint(createContactPointInput: CreateContactPointInput): ContactPoint | Promise<ContactPoint>;
 
     abstract updateContactPoint(updateContactPointInput: UpdateContactPointInput): ContactPoint | Promise<ContactPoint>;
@@ -99,6 +132,18 @@ export abstract class IMutation {
     abstract updateCustomer(updateCustomerInput: UpdateCustomerInput): Customer | Promise<Customer>;
 
     abstract removeCustomer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
+}
+
+export class ContactPoint {
+    id: string;
+    name: string;
+    telephone?: Nullable<string>;
+    email?: Nullable<string>;
+    address?: Nullable<string>;
+    postalCode?: Nullable<string>;
+    region?: Nullable<string>;
+    city?: Nullable<string>;
+    countryName?: Nullable<string>;
 }
 
 export class Customer {

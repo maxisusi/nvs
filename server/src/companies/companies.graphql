@@ -1,0 +1,46 @@
+type Company {
+  id: String!
+  name: String!
+  telephone: String!
+  image: String!
+  address: String!
+  postalCode: String!
+  region: String!
+  city: String!
+  countryName: String!
+}
+
+input CreateCompanyInput {
+  # Example field (placeholder)
+  name: String!
+  telephone: String!
+  image: String!
+  address: String!
+  postalCode: String!
+  region: String!
+  city: String!
+  countryName: String!
+}
+
+input UpdateCompanyInput {
+  id: String!
+  name: String
+  telephone: String
+  image: String
+  address: String
+  postalCode: String
+  region: String
+  city: String
+  countryName: String
+}
+
+type Query {
+  companies: [Company]!
+  company(id: String!): Company
+}
+
+type Mutation {
+  createCompany(createCompanyInput: CreateCompanyInput!): Company!
+  updateCompany(updateCompanyInput: UpdateCompanyInput!): Company!
+  removeCompany(id: String!): Company
+}

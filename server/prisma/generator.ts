@@ -1,11 +1,12 @@
 import { faker } from '@faker-js/faker';
+import { Prisma } from '@prisma/client';
 
 class GenerateDatas {
-  createCustomer(number: number) {
-    const customers = [];
+  createCustomer(number: number): Array<Prisma.CustomerCreateInput> {
+    const customers: Array<Prisma.CustomerCreateInput> = [];
 
     for (let i = 0; i < number; i++) {
-      const customer = {
+      const customer: Prisma.CustomerCreateInput = {
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         email: faker.internet.email(),
@@ -23,11 +24,11 @@ class GenerateDatas {
     return customers;
   }
 
-  createContactPoint(number: number) {
-    const contactPoints = [];
+  createContactPoint(number: number): Array<Prisma.ContactPointCreateInput> {
+    const contactPoints: Array<Prisma.ContactPointCreateInput> = [];
 
     for (let i = 0; i < number; i++) {
-      const contactPoint = {
+      const contactPoint: Prisma.ContactPointCreateInput = {
         name: faker.name.findName(),
         telephone: faker.phone.phoneNumber(),
         email: faker.internet.email(),
@@ -42,6 +43,27 @@ class GenerateDatas {
     }
 
     return contactPoints;
+  }
+
+  createCompanies(number: number): Array<Prisma.CompanyCreateInput> {
+    const companyList: Array<Prisma.CompanyCreateInput> = [];
+
+    for (let i = 0; i < number; i++) {
+      const company: Prisma.CompanyCreateInput = {
+        name: faker.company.companyName(),
+        address: faker.address.streetName(),
+        city: faker.address.city(),
+        countryName: faker.address.country(),
+        image: faker.image.business(),
+        postalCode: faker.address.zipCode(),
+        region: faker.address.county(),
+        telephone: faker.phone.phoneNumber(),
+      };
+
+      companyList.push(company);
+    }
+
+    return companyList;
   }
 }
 
