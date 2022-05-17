@@ -78,30 +78,43 @@ model ContactPoint {
 }
 
 model Company {
-  id        String @id @default(uuid())
-  name      String
-  telephone String
-  image     String
-
+  id          String @id @default(uuid())
+  /// @Validator.IsNotEmpty()
+  name        String
+  /// @Validator.MinLength(3)
+  telephone   String
+  /// @Validator.IsNotEmpty()
+  image       String
+  /// @Validator.IsNotEmpty()
   address     String
+  /// @Validator.IsNotEmpty()
   postalCode  String
+  /// @Validator.IsNotEmpty()
   region      String
+  /// @Validator.IsNotEmpty()
   city        String
+  /// @Validator.IsNotEmpty()
   countryName String
-
 
   invoice Invoice[]
 }
 
 model Invoice {
   id            String   @id @default(uuid())
+  /// @Validator.IsNotEmpty()
   date          DateTime
+  /// @Validator.IsNotEmpty()
   dueDate       DateTime
   invoiceNumber String   @default(uuid())
   status        Status   @default(draft)
+  /// @Validator.IsNotEmpty()
   terms         Terms    @default(NET_30)
+  /// @Validator.IsNotEmpty()
   taxes         Float
+  /// @Validator.IsNotEmpty()
   total         Float
+  /// @Validator.IsOptional()
+  /// @Validator.IsNotEmpty()
   remarks       String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now()) @updatedAt
