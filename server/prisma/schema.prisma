@@ -51,12 +51,26 @@ model ContactPoint {
   id          String  @id @default(uuid())
   /// @Validator.MinLength(3)
   name        String
+  /// @Validator.IsOptional()
+  /// @Validator.IsNotEmpty()
   telephone   String?
+  /// @Validator.IsOptional()
+  /// @Validator.IsEmail()
   email       String? @unique
+  /// @Validator.IsOptional()
+  /// @Validator.IsNotEmpty()
   address     String?
+  /// @Validator.IsOptional()
+  /// @Validator.IsNotEmpty()
   postalCode  String?
+  /// @Validator.IsOptional()
+  /// @Validator.IsNotEmpty()
   region      String?
+  /// @Validator.IsOptional()
+  /// @Validator.IsNotEmpty()
   city        String?
+  /// @Validator.IsOptional()
+  /// @Validator.IsNotEmpty()
   countryName String?
 
 
