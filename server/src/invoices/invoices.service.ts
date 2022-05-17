@@ -1,13 +1,45 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
-import { CreateInvoiceInput } from './dto/create-invoice.input';
+import { CreateInvoiceInput } from 'src/graphql';
 import { UpdateInvoiceInput } from './dto/update-invoice.input';
 
 @Injectable()
 export class InvoicesService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createInvoiceInput: CreateInvoiceInput) {
-    return 'This action adds a new invoice';
+  create(createInvoiceInput: Prisma.InvoiceUncheckedCreateInput) {
+    const {
+      date,
+      dueDate,
+      status,
+      taxes,
+      terms,
+      total,
+      remarks,
+      customerId,
+      companyId,
+    } = createInvoiceInput;
+    return this.prisma.invoice.create({
+      data: {
+        date,
+        dueDate,
+        status,
+        taxes,
+        terms,
+        total,
+        remarks,
+        company: {
+          connect: {
+            id: companyId,
+          },
+        },
+        customer: {
+          connect: {
+            id: customerId,
+          },
+        },
+      },
+    });
   }
 
   findAll() {

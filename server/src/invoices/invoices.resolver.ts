@@ -1,14 +1,19 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { InvoicesService } from './invoices.service';
-import { CreateInvoiceInput } from './dto/create-invoice.input';
+
 import { UpdateInvoiceInput } from './dto/update-invoice.input';
+import { Prisma } from '@prisma/client';
+import { CreateInvoiceInput } from 'src/graphql';
 
 @Resolver('Invoice')
 export class InvoicesResolver {
   constructor(private readonly invoicesService: InvoicesService) {}
 
   @Mutation('createInvoice')
-  create(@Args('createInvoiceInput') createInvoiceInput: CreateInvoiceInput) {
+  create(
+    @Args('createInvoiceInput')
+    createInvoiceInput: Prisma.InvoiceUncheckedCreateInput,
+  ) {
     return this.invoicesService.create(createInvoiceInput);
   }
 

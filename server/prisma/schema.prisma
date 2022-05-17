@@ -84,8 +84,8 @@ model Invoice {
   date          DateTime
   dueDate       DateTime
   invoiceNumber String   @default(uuid())
-  status        Status
-  terms         Terms
+  status        Status   @default(draft)
+  terms         Terms    @default(NET_30)
   taxes         Float
   total         Float
   remarks       String

@@ -89,7 +89,15 @@ export class OrderByParams {
 }
 
 export class CreateInvoiceInput {
-    exampleField?: Nullable<number>;
+    date: DateTime;
+    dueDate: DateTime;
+    status: string;
+    terms: string;
+    taxes: number;
+    total: number;
+    remarks?: Nullable<string>;
+    customerId: string;
+    companyId: string;
 }
 
 export class UpdateInvoiceInput {

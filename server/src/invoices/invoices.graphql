@@ -16,8 +16,15 @@ type Invoice {
 }
 
 input CreateInvoiceInput {
-  # Example field (placeholder)
-  exampleField: Int
+  date: DateTime!
+  dueDate: DateTime!
+  status: String!
+  terms: String!
+  taxes: Float!
+  total: Float!
+  remarks: String
+  customerId: String!
+  companyId: String!
 }
 
 input UpdateInvoiceInput {
