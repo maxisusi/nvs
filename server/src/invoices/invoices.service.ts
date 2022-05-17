@@ -9,7 +9,11 @@ export class InvoicesService {
   }
 
   findAll() {
-    return `This action returns all invoices`;
+    return [
+      {
+        exampleField: 1,
+      },
+    ];
   }
 
   findOne(id: number) {

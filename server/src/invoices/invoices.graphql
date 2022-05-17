@@ -1,6 +1,18 @@
+scalar DateTime
 type Invoice {
-  # Example field (placeholder)
-  exampleField: Int
+  id: String!
+  date: DateTime!
+  dueDate: DateTime!
+  invoiceNumber: String!
+  status: String!
+  terms: String!
+  taxes: Float!
+  total: Float!
+  remarks: String
+  customer: Customer!
+  company: Company!
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 input CreateInvoiceInput {

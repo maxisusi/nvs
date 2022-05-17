@@ -182,7 +182,19 @@ export class Customer {
 }
 
 export class Invoice {
-    exampleField?: Nullable<number>;
+    id: string;
+    date: DateTime;
+    dueDate: DateTime;
+    invoiceNumber: string;
+    status: string;
+    terms: string;
+    taxes: number;
+    total: number;
+    remarks?: Nullable<string>;
+    customer: Customer;
+    company: Company;
+    createdAt?: Nullable<DateTime>;
+    updatedAt?: Nullable<DateTime>;
 }
 
 export type DateTime = any;
