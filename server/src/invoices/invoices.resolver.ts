@@ -31,7 +31,7 @@ export class InvoicesResolver {
   }
 
   @Mutation('removeInvoice')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.invoicesService.remove(id);
   }
 }

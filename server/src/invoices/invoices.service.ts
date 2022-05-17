@@ -27,7 +27,7 @@ export class InvoicesService {
     return `This action updates a #${id} invoice`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} invoice`;
+  remove(id: string) {
+    return this.prisma.invoice.delete({ where: { id } });
   }
 }
