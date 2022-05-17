@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import GenerateDatas from './generator';
 import { faker } from '@faker-js/faker';
+import { ContactPoint } from 'src/graphql';
 
 const prisma = new PrismaClient();
 const generator = new GenerateDatas();
@@ -29,6 +30,7 @@ const generateFields = async () => {
     .createMany({ data: generator.createCompanies(3) })
     .catch((e) => console.log('There was an error', e));
 
+  // Generate Invoices
   for (let i = 0; i < 5; i++) {
     await prisma.invoice.create({
       data: {
@@ -72,12 +74,19 @@ const generateFields = async () => {
 
 // * Clear DB Fields
 const clearFields = async () => {
-  await prisma.contactPoint.deleteMany();
-  await prisma.customer.deleteMany();
-  await prisma.invoice.deleteMany();
-  await prisma.company.deleteMany();
+  const deleteContactPoint = prisma.contactPoint.deleteMany();
+  const deleteCustomers = prisma.customer.deleteMany();
+  const deleteInvoices = prisma.invoice.deleteMany();
+  const deleteCompanies = prisma.company.deleteMany();
+  const deleteEntries = prisma.entry.deleteMany();
 
-  await prisma.entry.deleteMany();
+  await prisma.$transaction([
+    deleteInvoices,
+    deleteContactPoint,
+    deleteCustomers,
+    deleteCompanies,
+    deleteEntries,
+  ]);
 };
 
 main()
