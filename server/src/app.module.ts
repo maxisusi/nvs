@@ -6,6 +6,7 @@ import { CustomersModule } from './customers/customers.module';
 import { GraphQLDateTime } from 'graphql-iso-date';
 import { ContactPointsModule } from './contact-points/contact-points.module';
 import { CompaniesModule } from './companies/companies.module';
+import { InvoicesModule } from './invoices/invoices.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CompaniesModule } from './companies/companies.module';
     CustomersModule,
     ContactPointsModule,
     CompaniesModule,
+    InvoicesModule,
   ],
 })
 export class AppModule {}

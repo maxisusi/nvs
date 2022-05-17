@@ -1,0 +1,53 @@
+scalar DateTime
+type Invoice {
+  id: String
+  date: DateTime
+  dueDate: DateTime
+  invoiceNumber: String
+  status: String
+  terms: String
+  taxes: Float
+  total: Float
+  remarks: String
+  customer: Customer
+  company: Company
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input CreateInvoiceInput {
+  date: DateTime!
+  dueDate: DateTime!
+  status: String!
+  terms: String!
+  taxes: Float!
+  total: Float!
+  remarks: String
+  customerId: String!
+  companyId: String!
+}
+
+input UpdateInvoiceInput {
+  id: String!
+  date: DateTime
+  dueDate: DateTime
+  status: String
+  terms: String
+  taxes: Float
+  total: Float
+  remarks: String
+  customerId: String
+  companyId: String
+  updatedAt: DateTime
+}
+
+type Query {
+  invoices: [Invoice]!
+  invoice(id: String!): Invoice
+}
+
+type Mutation {
+  createInvoice(createInvoiceInput: CreateInvoiceInput!): Invoice!
+  updateInvoice(updateInvoiceInput: UpdateInvoiceInput!): Invoice!
+  removeInvoice(id: String!): Invoice
+}

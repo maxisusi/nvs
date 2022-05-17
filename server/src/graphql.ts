@@ -88,6 +88,32 @@ export class OrderByParams {
     input?: Nullable<string>;
 }
 
+export class CreateInvoiceInput {
+    date: DateTime;
+    dueDate: DateTime;
+    status: string;
+    terms: string;
+    taxes: number;
+    total: number;
+    remarks?: Nullable<string>;
+    customerId: string;
+    companyId: string;
+}
+
+export class UpdateInvoiceInput {
+    id: string;
+    date?: Nullable<DateTime>;
+    dueDate?: Nullable<DateTime>;
+    status?: Nullable<string>;
+    terms?: Nullable<string>;
+    taxes?: Nullable<number>;
+    total?: Nullable<number>;
+    remarks?: Nullable<string>;
+    customerId?: Nullable<string>;
+    companyId?: Nullable<string>;
+    updatedAt?: Nullable<DateTime>;
+}
+
 export class Company {
     id: string;
     name: string;
@@ -112,6 +138,10 @@ export abstract class IQuery {
     abstract customers(orderBy?: Nullable<OrderByParams>): Nullable<Customer>[] | Promise<Nullable<Customer>[]>;
 
     abstract customer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
+
+    abstract invoices(): Nullable<Invoice>[] | Promise<Nullable<Invoice>[]>;
+
+    abstract invoice(id: string): Nullable<Invoice> | Promise<Nullable<Invoice>>;
 }
 
 export abstract class IMutation {
@@ -132,6 +162,12 @@ export abstract class IMutation {
     abstract updateCustomer(updateCustomerInput: UpdateCustomerInput): Customer | Promise<Customer>;
 
     abstract removeCustomer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
+
+    abstract createInvoice(createInvoiceInput: CreateInvoiceInput): Invoice | Promise<Invoice>;
+
+    abstract updateInvoice(updateInvoiceInput: UpdateInvoiceInput): Invoice | Promise<Invoice>;
+
+    abstract removeInvoice(id: string): Nullable<Invoice> | Promise<Nullable<Invoice>>;
 }
 
 export class ContactPoint {
@@ -159,6 +195,22 @@ export class Customer {
     city: string;
     region: string;
     contactPoint?: Nullable<Nullable<ContactPoint>[]>;
+    createdAt?: Nullable<DateTime>;
+    updatedAt?: Nullable<DateTime>;
+}
+
+export class Invoice {
+    id?: Nullable<string>;
+    date?: Nullable<DateTime>;
+    dueDate?: Nullable<DateTime>;
+    invoiceNumber?: Nullable<string>;
+    status?: Nullable<string>;
+    terms?: Nullable<string>;
+    taxes?: Nullable<number>;
+    total?: Nullable<number>;
+    remarks?: Nullable<string>;
+    customer?: Nullable<Customer>;
+    company?: Nullable<Company>;
     createdAt?: Nullable<DateTime>;
     updatedAt?: Nullable<DateTime>;
 }
