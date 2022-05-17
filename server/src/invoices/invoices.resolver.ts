@@ -18,13 +18,16 @@ export class InvoicesResolver {
   }
 
   @Query('invoice')
-  findOne(@Args('id') id: number) {
+  findOne(@Args('id') id: string) {
     return this.invoicesService.findOne(id);
   }
 
   @Mutation('updateInvoice')
   update(@Args('updateInvoiceInput') updateInvoiceInput: UpdateInvoiceInput) {
-    return this.invoicesService.update(updateInvoiceInput.id, updateInvoiceInput);
+    return this.invoicesService.update(
+      updateInvoiceInput.id,
+      updateInvoiceInput,
+    );
   }
 
   @Mutation('removeInvoice')

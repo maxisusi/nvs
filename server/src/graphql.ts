@@ -123,7 +123,7 @@ export abstract class IQuery {
 
     abstract invoices(): Nullable<Invoice>[] | Promise<Nullable<Invoice>[]>;
 
-    abstract invoice(id: number): Nullable<Invoice> | Promise<Nullable<Invoice>>;
+    abstract invoice(id: string): Nullable<Invoice> | Promise<Nullable<Invoice>>;
 }
 
 export abstract class IMutation {
@@ -149,7 +149,7 @@ export abstract class IMutation {
 
     abstract updateInvoice(updateInvoiceInput: UpdateInvoiceInput): Invoice | Promise<Invoice>;
 
-    abstract removeInvoice(id: number): Nullable<Invoice> | Promise<Nullable<Invoice>>;
+    abstract removeInvoice(id: string): Nullable<Invoice> | Promise<Nullable<Invoice>>;
 }
 
 export class ContactPoint {
@@ -182,17 +182,17 @@ export class Customer {
 }
 
 export class Invoice {
-    id: string;
-    date: DateTime;
-    dueDate: DateTime;
-    invoiceNumber: string;
-    status: string;
-    terms: string;
-    taxes: number;
-    total: number;
+    id?: Nullable<string>;
+    date?: Nullable<DateTime>;
+    dueDate?: Nullable<DateTime>;
+    invoiceNumber?: Nullable<string>;
+    status?: Nullable<string>;
+    terms?: Nullable<string>;
+    taxes?: Nullable<number>;
+    total?: Nullable<number>;
     remarks?: Nullable<string>;
-    customer: Customer;
-    company: Company;
+    customer?: Nullable<Customer>;
+    company?: Nullable<Company>;
     createdAt?: Nullable<DateTime>;
     updatedAt?: Nullable<DateTime>;
 }
