@@ -1,9 +1,6 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { InvoicesService } from './invoices.service';
-
-import { UpdateInvoiceInput } from './dto/update-invoice.input';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
-import { CreateInvoiceInput } from 'src/graphql';
+import { InvoicesService } from './invoices.service';
 
 @Resolver('Invoice')
 export class InvoicesResolver {
@@ -28,11 +25,11 @@ export class InvoicesResolver {
   }
 
   @Mutation('updateInvoice')
-  update(@Args('updateInvoiceInput') updateInvoiceInput: UpdateInvoiceInput) {
-    return this.invoicesService.update(
-      updateInvoiceInput.id,
-      updateInvoiceInput,
-    );
+  update(
+    @Args('updateInvoiceInput')
+    updateInvoiceInput: Prisma.InvoiceUncheckedUpdateInput,
+  ) {
+    return this.invoicesService.update(updateInvoiceInput);
   }
 
   @Mutation('removeInvoice')

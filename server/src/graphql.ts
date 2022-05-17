@@ -101,7 +101,17 @@ export class CreateInvoiceInput {
 }
 
 export class UpdateInvoiceInput {
-    id: number;
+    id: string;
+    date?: Nullable<DateTime>;
+    dueDate?: Nullable<DateTime>;
+    status?: Nullable<string>;
+    terms?: Nullable<string>;
+    taxes?: Nullable<number>;
+    total?: Nullable<number>;
+    remarks?: Nullable<string>;
+    customerId?: Nullable<string>;
+    companyId?: Nullable<string>;
+    updatedAt?: Nullable<DateTime>;
 }
 
 export class Company {

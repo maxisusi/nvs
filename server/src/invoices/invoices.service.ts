@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
-import { CreateInvoiceInput } from 'src/graphql';
-import { UpdateInvoiceInput } from './dto/update-invoice.input';
 
 @Injectable()
 export class InvoicesService {
@@ -55,8 +53,11 @@ export class InvoicesService {
     });
   }
 
-  update(id: number, updateInvoiceInput: UpdateInvoiceInput) {
-    return `This action updates a #${id} invoice`;
+  update(updateInvoiceInput: Prisma.InvoiceUncheckedUpdateInput) {
+    return this.prisma.invoice.update({
+      where: { id: updateInvoiceInput.id as string },
+      data: updateInvoiceInput,
+    });
   }
 
   remove(id: string) {

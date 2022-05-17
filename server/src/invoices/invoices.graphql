@@ -28,7 +28,17 @@ input CreateInvoiceInput {
 }
 
 input UpdateInvoiceInput {
-  id: Int!
+  id: String!
+  date: DateTime
+  dueDate: DateTime
+  status: String
+  terms: String
+  taxes: Float
+  total: Float
+  remarks: String
+  customerId: String
+  companyId: String
+  updatedAt: DateTime
 }
 
 type Query {
