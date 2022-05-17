@@ -1,13 +1,13 @@
 type Company {
-  id: String!
-  name: String!
-  telephone: String!
-  image: String!
-  address: String!
-  postalCode: String!
-  region: String!
-  city: String!
-  countryName: String!
+  id: String
+  name: String
+  telephone: String
+  image: String
+  address: String
+  postalCode: String
+  region: String
+  city: String
+  countryName: String
 }
 
 input CreateCompanyInput {

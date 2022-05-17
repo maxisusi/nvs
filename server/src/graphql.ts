@@ -115,15 +115,15 @@ export class UpdateInvoiceInput {
 }
 
 export class Company {
-    id: string;
-    name: string;
-    telephone: string;
-    image: string;
-    address: string;
-    postalCode: string;
-    region: string;
-    city: string;
-    countryName: string;
+    id?: Nullable<string>;
+    name?: Nullable<string>;
+    telephone?: Nullable<string>;
+    image?: Nullable<string>;
+    address?: Nullable<string>;
+    postalCode?: Nullable<string>;
+    region?: Nullable<string>;
+    city?: Nullable<string>;
+    countryName?: Nullable<string>;
 }
 
 export abstract class IQuery {
@@ -171,8 +171,8 @@ export abstract class IMutation {
 }
 
 export class ContactPoint {
-    id: string;
-    name: string;
+    id?: Nullable<string>;
+    name?: Nullable<string>;
     telephone?: Nullable<string>;
     email?: Nullable<string>;
     address?: Nullable<string>;
@@ -183,17 +183,17 @@ export class ContactPoint {
 }
 
 export class Customer {
-    id: string;
-    firstName: string;
-    lastName: string;
+    id?: Nullable<string>;
+    firstName?: Nullable<string>;
+    lastName?: Nullable<string>;
     email?: Nullable<string>;
     mobile?: Nullable<string>;
     phone?: Nullable<string>;
-    address: string;
-    postalCode: string;
-    countryName: string;
-    city: string;
-    region: string;
+    address?: Nullable<string>;
+    postalCode?: Nullable<string>;
+    countryName?: Nullable<string>;
+    city?: Nullable<string>;
+    region?: Nullable<string>;
     contactPoint?: Nullable<Nullable<ContactPoint>[]>;
     createdAt?: Nullable<DateTime>;
     updatedAt?: Nullable<DateTime>;

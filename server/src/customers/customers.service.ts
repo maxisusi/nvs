@@ -20,6 +20,7 @@ export class CustomersService {
   async findAll(orderBy?: OrderByParams) {
     const { input } = orderBy || {};
     return this.prisma.customer.findMany({
+      include: { contactPoint: true },
       orderBy: {
         _relevance: {
           sort: 'desc',

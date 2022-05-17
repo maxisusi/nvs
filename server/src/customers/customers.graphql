@@ -1,18 +1,18 @@
 scalar DateTime
 
 type Customer {
-  id: String!
-  firstName: String!
-  lastName: String!
+  id: String
+  firstName: String
+  lastName: String
   email: String
   mobile: String
   phone: String
 
-  address: String!
-  postalCode: String!
-  countryName: String!
-  city: String!
-  region: String!
+  address: String
+  postalCode: String
+  countryName: String
+  city: String
+  region: String
   contactPoint: [ContactPoint]
 
   createdAt: DateTime
