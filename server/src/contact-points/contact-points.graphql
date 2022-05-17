@@ -1,6 +1,6 @@
 type ContactPoint {
-  id: String!
-  name: String!
+  id: String
+  name: String
   telephone: String
   email: String
   address: String
