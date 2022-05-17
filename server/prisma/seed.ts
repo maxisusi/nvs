@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import GenerateDatas from './generator';
 import { faker } from '@faker-js/faker';
-import { ContactPoint } from 'src/graphql';
 
 const prisma = new PrismaClient();
 const generator = new GenerateDatas();
@@ -70,6 +69,8 @@ const generateFields = async () => {
       },
     });
   }
+
+  // Generate Entries and invoices
 };
 
 // * Clear DB Fields

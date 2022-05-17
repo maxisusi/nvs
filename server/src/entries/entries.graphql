@@ -1,0 +1,24 @@
+type Entry {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input CreateEntryInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateEntryInput {
+  id: Int!
+}
+
+type Query {
+  entries: [Entry]!
+  entry(id: Int!): Entry
+}
+
+type Mutation {
+  createEntry(createEntryInput: CreateEntryInput!): Entry!
+  updateEntry(updateEntryInput: UpdateEntryInput!): Entry!
+  removeEntry(id: Int!): Entry
+}
