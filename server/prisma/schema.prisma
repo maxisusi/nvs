@@ -156,25 +156,3 @@ enum Terms {
   NET_21
   NET_30
 }
-
-// model Location {
-//   id Int @id @default(autoincrement())
-//   address String
-//   region String
-//   postalCode String
-
-//   // * Location can or cannot contain a customer
-//   customer Customer[]
-
-//   // * Location must contain a country
-//   country Country @relation(fields: [locationCountry], references: [countryName])
-//   locationCountry String
-// }
-
-// model Country {
-//   countryCode String
-//   countryName String @id
-
-//   // * Country can or cannot contain a specific location
-//   location Location[]
-// }
