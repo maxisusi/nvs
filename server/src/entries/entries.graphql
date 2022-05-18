@@ -1,6 +1,11 @@
+scalar DateTime
 type Entry {
-  # Example field (placeholder)
-  exampleField: Int
+  id: String
+  date: DateTime
+  description: String
+  quantity: Float
+  rate: Float
+  total: Float
 }
 
 input CreateEntryInput {

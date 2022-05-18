@@ -59,6 +59,33 @@ const generateFields = async () => {
             telephone: faker.phone.phoneNumber(),
           },
         },
+        entry: {
+          createMany: {
+            data: [
+              {
+                date: faker.date.past(),
+                description: faker.lorem.sentence(),
+                quantity: parseFloat(faker.random.numeric()),
+                rate: parseFloat(faker.random.numeric()),
+                total: parseFloat(faker.random.numeric()),
+              },
+              {
+                date: faker.date.past(),
+                description: faker.lorem.sentence(),
+                quantity: parseFloat(faker.random.numeric()),
+                rate: parseFloat(faker.random.numeric()),
+                total: parseFloat(faker.random.numeric()),
+              },
+              {
+                date: faker.date.past(),
+                description: faker.lorem.sentence(),
+                quantity: parseFloat(faker.random.numeric()),
+                rate: parseFloat(faker.random.numeric()),
+                total: parseFloat(faker.random.numeric()),
+              },
+            ],
+          },
+        },
         date: faker.date.soon(),
         dueDate: faker.date.future(),
         remarks: faker.lorem.words(10),
@@ -69,6 +96,18 @@ const generateFields = async () => {
       },
     });
   }
+
+  // for (let i = 0; i < 5; i++) {
+  //   await prisma.entry.create({
+  //     data: {
+  //       date: faker.date.past(),
+  //       description: faker.lorem.sentence(),
+  //       quantity: parseFloat(faker.random.numeric()),
+  //       rate: parseFloat(faker.random.numeric()),
+  //       total: parseFloat(faker.random.numeric()),
+  //     },
+  //   });
+  // }
 
   // Generate Entries and invoices
 };

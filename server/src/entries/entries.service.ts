@@ -9,7 +9,11 @@ export class EntriesService {
   }
 
   findAll() {
-    return `This action returns all entries`;
+    return [
+      {
+        exampleField: 1,
+      },
+    ];
   }
 
   findOne(id: number) {
