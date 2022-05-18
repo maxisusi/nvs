@@ -88,6 +88,14 @@ export class OrderByParams {
     input?: Nullable<string>;
 }
 
+export class CreateEntryInput {
+    exampleField?: Nullable<number>;
+}
+
+export class UpdateEntryInput {
+    id: number;
+}
+
 export class CreateInvoiceInput {
     date: DateTime;
     dueDate: DateTime;
@@ -139,6 +147,10 @@ export abstract class IQuery {
 
     abstract customer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
 
+    abstract entries(): Nullable<Entry>[] | Promise<Nullable<Entry>[]>;
+
+    abstract entry(id: string): Nullable<Entry> | Promise<Nullable<Entry>>;
+
     abstract invoices(): Nullable<Invoice>[] | Promise<Nullable<Invoice>[]>;
 
     abstract invoice(id: string): Nullable<Invoice> | Promise<Nullable<Invoice>>;
@@ -162,6 +174,12 @@ export abstract class IMutation {
     abstract updateCustomer(updateCustomerInput: UpdateCustomerInput): Customer | Promise<Customer>;
 
     abstract removeCustomer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
+
+    abstract createEntry(createEntryInput: CreateEntryInput): Entry | Promise<Entry>;
+
+    abstract updateEntry(updateEntryInput: UpdateEntryInput): Entry | Promise<Entry>;
+
+    abstract removeEntry(id: number): Nullable<Entry> | Promise<Nullable<Entry>>;
 
     abstract createInvoice(createInvoiceInput: CreateInvoiceInput): Invoice | Promise<Invoice>;
 
@@ -197,6 +215,15 @@ export class Customer {
     contactPoint?: Nullable<Nullable<ContactPoint>[]>;
     createdAt?: Nullable<DateTime>;
     updatedAt?: Nullable<DateTime>;
+}
+
+export class Entry {
+    id?: Nullable<string>;
+    date?: Nullable<DateTime>;
+    description?: Nullable<string>;
+    quantity?: Nullable<number>;
+    rate?: Nullable<number>;
+    total?: Nullable<number>;
 }
 
 export class Invoice {

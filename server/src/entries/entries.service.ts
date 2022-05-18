@@ -1,23 +1,21 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'prisma/prisma.service';
 import { CreateEntryInput } from './dto/create-entry.input';
 import { UpdateEntryInput } from './dto/update-entry.input';
 
 @Injectable()
 export class EntriesService {
+  constructor(private readonly prisma: PrismaService) {}
   create(createEntryInput: CreateEntryInput) {
     return 'This action adds a new entry';
   }
 
   findAll() {
-    return [
-      {
-        exampleField: 1,
-      },
-    ];
+    return this.prisma.entry.findMany({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} entry`;
+  findOne(id: string) {
+    return this.prisma.entry.findUnique({ where: { id } });
   }
 
   update(id: number, updateEntryInput: UpdateEntryInput) {

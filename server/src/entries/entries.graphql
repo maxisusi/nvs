@@ -19,7 +19,7 @@ input UpdateEntryInput {
 
 type Query {
   entries: [Entry]!
-  entry(id: Int!): Entry
+  entry(id: String!): Entry
 }
 
 type Mutation {

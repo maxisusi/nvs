@@ -18,7 +18,7 @@ export class EntriesResolver {
   }
 
   @Query('entry')
-  findOne(@Args('id') id: number) {
+  findOne(@Args('id') id: string) {
     return this.entriesService.findOne(id);
   }
 
