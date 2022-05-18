@@ -1,0 +1,38 @@
+scalar DateTime
+type Entry {
+  id: String
+  date: DateTime
+  description: String
+  quantity: Float
+  rate: Float
+  total: Float
+}
+
+input CreateEntryInput {
+  date: DateTime!
+  description: String!
+  quantity: Float!
+  rate: Float!
+  total: Float!
+  invoiceId: String!
+}
+
+input UpdateEntryInput {
+  id: String!
+  date: DateTime
+  description: String
+  quantity: Float
+  rate: Float
+  total: Float
+}
+
+type Query {
+  entries: [Entry]!
+  entry(id: String!): Entry
+}
+
+type Mutation {
+  createEntry(createEntryInput: CreateEntryInput!): Entry!
+  updateEntry(updateEntryInput: UpdateEntryInput!): Entry!
+  removeEntry(id: String!): Entry
+}

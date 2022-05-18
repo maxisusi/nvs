@@ -29,6 +29,7 @@ const generateFields = async () => {
     .createMany({ data: generator.createCompanies(3) })
     .catch((e) => console.log('There was an error', e));
 
+  // Generate Invoices
   for (let i = 0; i < 5; i++) {
     await prisma.invoice.create({
       data: {
@@ -58,6 +59,33 @@ const generateFields = async () => {
             telephone: faker.phone.phoneNumber(),
           },
         },
+        entry: {
+          createMany: {
+            data: [
+              {
+                date: faker.date.past(),
+                description: faker.lorem.sentence(),
+                quantity: parseFloat(faker.random.numeric()),
+                rate: parseFloat(faker.random.numeric()),
+                total: parseFloat(faker.random.numeric()),
+              },
+              {
+                date: faker.date.past(),
+                description: faker.lorem.sentence(),
+                quantity: parseFloat(faker.random.numeric()),
+                rate: parseFloat(faker.random.numeric()),
+                total: parseFloat(faker.random.numeric()),
+              },
+              {
+                date: faker.date.past(),
+                description: faker.lorem.sentence(),
+                quantity: parseFloat(faker.random.numeric()),
+                rate: parseFloat(faker.random.numeric()),
+                total: parseFloat(faker.random.numeric()),
+              },
+            ],
+          },
+        },
         date: faker.date.soon(),
         dueDate: faker.date.future(),
         remarks: faker.lorem.words(10),
@@ -68,16 +96,37 @@ const generateFields = async () => {
       },
     });
   }
+
+  // for (let i = 0; i < 5; i++) {
+  //   await prisma.entry.create({
+  //     data: {
+  //       date: faker.date.past(),
+  //       description: faker.lorem.sentence(),
+  //       quantity: parseFloat(faker.random.numeric()),
+  //       rate: parseFloat(faker.random.numeric()),
+  //       total: parseFloat(faker.random.numeric()),
+  //     },
+  //   });
+  // }
+
+  // Generate Entries and invoices
 };
 
 // * Clear DB Fields
 const clearFields = async () => {
-  await prisma.contactPoint.deleteMany();
-  await prisma.customer.deleteMany();
-  await prisma.invoice.deleteMany();
-  await prisma.company.deleteMany();
+  const deleteContactPoint = prisma.contactPoint.deleteMany();
+  const deleteCustomers = prisma.customer.deleteMany();
+  const deleteInvoices = prisma.invoice.deleteMany();
+  const deleteCompanies = prisma.company.deleteMany();
+  const deleteEntries = prisma.entry.deleteMany();
 
-  await prisma.entry.deleteMany();
+  await prisma.$transaction([
+    deleteInvoices,
+    deleteContactPoint,
+    deleteCustomers,
+    deleteCompanies,
+    deleteEntries,
+  ]);
 };
 
 main()

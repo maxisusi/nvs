@@ -7,6 +7,7 @@ import { GraphQLDateTime } from 'graphql-iso-date';
 import { ContactPointsModule } from './contact-points/contact-points.module';
 import { CompaniesModule } from './companies/companies.module';
 import { InvoicesModule } from './invoices/invoices.module';
+import { EntriesModule } from './entries/entries.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { InvoicesModule } from './invoices/invoices.module';
     ContactPointsModule,
     CompaniesModule,
     InvoicesModule,
+    EntriesModule,
   ],
 })
 export class AppModule {}
