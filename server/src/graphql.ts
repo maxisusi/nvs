@@ -179,7 +179,7 @@ export abstract class IMutation {
 
     abstract updateEntry(updateEntryInput: UpdateEntryInput): Entry | Promise<Entry>;
 
-    abstract removeEntry(id: number): Nullable<Entry> | Promise<Nullable<Entry>>;
+    abstract removeEntry(id: string): Nullable<Entry> | Promise<Nullable<Entry>>;
 
     abstract createInvoice(createInvoiceInput: CreateInvoiceInput): Invoice | Promise<Invoice>;
 

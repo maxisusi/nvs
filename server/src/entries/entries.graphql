@@ -25,5 +25,5 @@ type Query {
 type Mutation {
   createEntry(createEntryInput: CreateEntryInput!): Entry!
   updateEntry(updateEntryInput: UpdateEntryInput!): Entry!
-  removeEntry(id: Int!): Entry
+  removeEntry(id: String!): Entry
 }

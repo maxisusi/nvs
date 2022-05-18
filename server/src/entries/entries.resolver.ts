@@ -28,7 +28,7 @@ export class EntriesResolver {
   }
 
   @Mutation('removeEntry')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.entriesService.remove(id);
   }
 }

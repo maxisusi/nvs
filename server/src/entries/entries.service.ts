@@ -22,7 +22,7 @@ export class EntriesService {
     return `This action updates a #${id} entry`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} entry`;
+  remove(id: string) {
+    return this.prisma.entry.delete({ where: { id } });
   }
 }
