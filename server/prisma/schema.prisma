@@ -130,10 +130,15 @@ model Invoice {
 
 model Entry {
   id          String   @id @default(uuid())
+  /// @Validator.IsNotEmpty()
   date        DateTime
+  /// @Validator.IsNotEmpty()
   description String
+  /// @Validator.IsNotEmpty()
   quantity    Float
+  /// @Validator.IsNotEmpty()
   rate        Float
+  /// @Validator.IsNotEmpty()
   total       Float
 
   invoice   Invoice @relation(fields: [invoiceId], references: [id])
