@@ -9,12 +9,16 @@ type Entry {
 }
 
 input CreateEntryInput {
-  # Example field (placeholder)
-  exampleField: Int
+  date: DateTime!
+  description: String!
+  quantity: Float!
+  rate: Float!
+  total: Float!
+  invoiceId: String!
 }
 
 input UpdateEntryInput {
-  id: Int!
+  id: String!
 }
 
 type Query {

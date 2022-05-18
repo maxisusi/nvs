@@ -89,11 +89,16 @@ export class OrderByParams {
 }
 
 export class CreateEntryInput {
-    exampleField?: Nullable<number>;
+    date: DateTime;
+    description: string;
+    quantity: number;
+    rate: number;
+    total: number;
+    invoiceId: string;
 }
 
 export class UpdateEntryInput {
-    id: number;
+    id: string;
 }
 
 export class CreateInvoiceInput {
