@@ -1,7 +1,6 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { EntriesService } from './entries.service';
-import { UpdateEntryInput } from './dto/update-entry.input';
-import { CreateEntryInput } from 'src/graphql';
+import { CreateEntryInput, UpdateEntryInput } from 'src/graphql';
 
 @Resolver('Entry')
 export class EntriesResolver {
@@ -24,7 +23,7 @@ export class EntriesResolver {
 
   @Mutation('updateEntry')
   update(@Args('updateEntryInput') updateEntryInput: UpdateEntryInput) {
-    return this.entriesService.update(updateEntryInput.id, updateEntryInput);
+    return this.entriesService.update(updateEntryInput);
   }
 
   @Mutation('removeEntry')

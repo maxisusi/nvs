@@ -19,6 +19,11 @@ input CreateEntryInput {
 
 input UpdateEntryInput {
   id: String!
+  date: DateTime
+  description: String
+  quantity: Float
+  rate: Float
+  total: Float
 }
 
 type Query {
