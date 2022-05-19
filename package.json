@@ -11,5 +11,8 @@
   },
   "keywords": [],
   "author": "Max Balej",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jest-mock-extended": "^2.0.4"
+  }
 }
