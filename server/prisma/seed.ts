@@ -8,7 +8,7 @@ const generator = new GenerateDatas();
 async function main() {
   await clearFields();
 
-  await generateFields();
+  // await generateFields();
 }
 
 const generateFields = async () => {

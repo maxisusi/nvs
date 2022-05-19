@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CustomerCreateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-create.input';
 import { OrderByParams, UpdateCustomerInput } from 'src/graphql';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CustomersService {

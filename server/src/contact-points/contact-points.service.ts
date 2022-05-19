@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ContactPointCreateInput } from 'src/@generated/prisma-nestjs-graphql/contact-point/contact-point-create.input';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ContactPointsService {
