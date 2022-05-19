@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
-import { UpdateCompanyInput } from 'src/graphql';
+import { UpdateCompanyInput } from '../../src/graphql';
 import { CompaniesService } from './companies.service';
 
 @Resolver('Company')

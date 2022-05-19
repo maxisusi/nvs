@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { Prisma } from '@prisma/client';
-import { CustomerCreateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-create.input';
-import { OrderByParams, UpdateCustomerInput } from 'src/graphql';
+
+import { CustomerCreateInput } from '../../src/@generated/prisma-nestjs-graphql/customer/customer-create.input';
+import { OrderByParams, UpdateCustomerInput } from '../../src/graphql';
 import { CustomersService } from './customers.service';
 
 @Resolver('Customer')
