@@ -9,10 +9,11 @@ type Invoice {
   taxes: Float
   total: Float
   remarks: String
-  customer: Customer
-  company: Company
+  customer: Customer!
+  company: Company!
   createdAt: DateTime
   updatedAt: DateTime
+  entry: [Entry!]
 }
 
 input CreateInvoiceInput {

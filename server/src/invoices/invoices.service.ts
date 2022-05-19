@@ -42,14 +42,19 @@ export class InvoicesService {
 
   findAll() {
     return this.prisma.invoice.findMany({
-      include: { company: true, customer: true },
+      include: {
+        company: true,
+        customer: true,
+
+        entry: true,
+      },
     });
   }
 
   findOne(id: string) {
     return this.prisma.invoice.findUnique({
       where: { id },
-      include: { company: true, customer: true },
+      include: { company: true, customer: true, entry: true },
     });
   }
 

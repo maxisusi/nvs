@@ -234,6 +234,7 @@ export class Entry {
     quantity?: Nullable<number>;
     rate?: Nullable<number>;
     total?: Nullable<number>;
+    invoice?: Nullable<Invoice>;
 }
 
 export class Invoice {
@@ -246,10 +247,11 @@ export class Invoice {
     taxes?: Nullable<number>;
     total?: Nullable<number>;
     remarks?: Nullable<string>;
-    customer?: Nullable<Customer>;
-    company?: Nullable<Company>;
+    customer: Customer;
+    company: Company;
     createdAt?: Nullable<DateTime>;
     updatedAt?: Nullable<DateTime>;
+    entry?: Nullable<Entry[]>;
 }
 
 export type DateTime = any;

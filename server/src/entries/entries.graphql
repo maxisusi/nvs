@@ -6,6 +6,7 @@ type Entry {
   quantity: Float
   rate: Float
   total: Float
+  invoice: Invoice
 }
 
 input CreateEntryInput {
