@@ -5,23 +5,9 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class PrismaService
-  extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy
-{
-  constructor(config: ConfigService) {
-    super({
-      datasources: {
-        db: {
-          url: config.get<string>('DATABASE_URL'),
-        },
-      },
-    });
-  }
-
+export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
   }
@@ -36,7 +22,7 @@ export class PrismaService
     });
   }
 
-  async cleandDataBase() {
+  async cleanDataBase() {
     if (process.env.NODE_ENV === 'production') return;
     const models = Reflect.ownKeys(this).filter((key) => key[0] !== '_');
 
