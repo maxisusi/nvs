@@ -113,7 +113,7 @@ const generateFields = async () => {
 };
 
 // * Clear DB Fields
-const clearFields = async () => {
+export const clearFields = async () => {
   const deleteContactPoint = prisma.contactPoint.deleteMany();
   const deleteCustomers = prisma.customer.deleteMany();
   const deleteInvoices = prisma.invoice.deleteMany();

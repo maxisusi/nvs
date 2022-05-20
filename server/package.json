@@ -9,7 +9,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
-    "dev": "concurrently \"npm:start:dev\" \"npm:gen-typings\" \"npm:prisma:generate\" ",
+    "dev": "concurrently \"npm:start:dev\" \"npm:gen-typings\" \"npm:prisma:generate\"",
     "prisma:generate": "prisma generate --watch",
     "gen-typings": "ts-node ./src/generate-typings",
     "prebuild": "rimraf dist",
@@ -32,6 +32,7 @@
   "dependencies": {
     "@nestjs/apollo": "^10.0.9",
     "@nestjs/common": "^8.0.0",
+    "@nestjs/config": "^2.0.1",
     "@nestjs/core": "^8.0.0",
     "@nestjs/graphql": "^10.0.10",
     "@nestjs/mapped-types": "*",
@@ -58,6 +59,7 @@
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "concurrently": "^7.1.0",
+    "dotenv-cli": "^5.1.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",

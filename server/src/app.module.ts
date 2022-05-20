@@ -8,6 +8,7 @@ import { ContactPointsModule } from './contact-points/contact-points.module';
 import { CompaniesModule } from './companies/companies.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { EntriesModule } from './entries/entries.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -17,6 +18,9 @@ import { EntriesModule } from './entries/entries.module';
       playground: false,
       typePaths: ['./**/*.graphql'],
       resolvers: { DateTime: GraphQLDateTime },
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
     }),
     CustomersModule,
     ContactPointsModule,
