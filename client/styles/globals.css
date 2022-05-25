@@ -5,10 +5,14 @@
 @layer base {
   :root {
     --color-text-base: #232d42;
+    --color-text-base-sc: #232d42;
     --color-text-white: #ffff;
+    --color-text-fill: #3a57e8;
     --color-text-gray: #8a92a6;
     --color-lightGray-fill: #adb5bd;
+    --color-white-fill: #adb5bd;
     --color-fill: #3a57e8;
+    --color-menu-over: #e0edff;
   }
 }
 
