@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-text-base: #232d42;
+    --color-text-white: #ffff;
+    --color-text-gray: #8a92a6;
+    --color-lightGray-fill: #adb5bd;
+    --color-fill: #3a57e8;
+  }
+}
+
 html,
 body {
   padding: 0;
