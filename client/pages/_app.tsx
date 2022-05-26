@@ -5,7 +5,7 @@ import Layout from '../widgets/layout/Layout';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Layout>
-      <div className='w-full  p-14'>
+      <div className='w-full ml-72 mt-24 mr-14'>
         <Component {...pageProps} />
       </div>
     </Layout>

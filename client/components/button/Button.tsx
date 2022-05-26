@@ -8,7 +8,7 @@ type Props = {
 
 const Button = (props: Props) => {
   return (
-    <button className='bg-skin-fill text-skin-white p-3 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-3 items-center'>
+    <button className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
       {props.icon && props.icon}
       {props.text}
     </button>
