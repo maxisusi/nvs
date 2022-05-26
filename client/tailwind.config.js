@@ -21,6 +21,7 @@ module.exports = {
           light: 'var(--color-lightGray-fill)',
           white: 'var(--color-white-fil)',
           hover: 'var(--color-menu-over)',
+          btnHover: 'var(--color-button-hover)',
         },
       },
     },
