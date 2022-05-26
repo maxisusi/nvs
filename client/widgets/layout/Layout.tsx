@@ -12,7 +12,7 @@ const Layout = (props: Props) => {
       <Header />
       <div className='flex w-screen h-screen '>
         <MenuBar />
-        <div className='p-16'>{props.children}</div>
+        <div className='p-14'>{props.children}</div>
       </div>
     </>
   );
