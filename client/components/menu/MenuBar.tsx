@@ -26,7 +26,7 @@ const MenuBar = () => {
     router.push(link);
 
     menu.map((e) => {
-      if (e.link === link) {
+      if (e.link.includes(link)) {
         e.active = true;
       } else {
         e.active = false;

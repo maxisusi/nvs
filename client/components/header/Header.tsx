@@ -7,11 +7,11 @@ type Props = {};
 const Header = (props: Props) => {
   return (
     <div className='bg-skin-fill h-14 w-screen flex items-center p-6'>
-      <div className='flex justify-between w-full  items-center'>
+      <div className='flex justify-between w-full items-center'>
         <h1 className='text-skin-white'>KREATER</h1>
         <div className='flex gap-5 items-center'>
           <IconButton sx={{ color: 'white' }}>
-            <NotificationsNoneIcon sx={{ color: 'white' }} />
+            <NotificationsNoneIcon className='text-skin-white' />
           </IconButton>
           <Avatar
             alt='Remy Sharp'
