@@ -24,6 +24,11 @@ module.exports = {
           btnHover: 'var(--color-button-hover)',
         },
       },
+      ringColor: {
+        skin: {
+          gray: 'var(--color-border-gray)',
+        },
+      },
     },
   },
   plugins: [],

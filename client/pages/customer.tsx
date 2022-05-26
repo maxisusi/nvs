@@ -21,7 +21,7 @@ const Customer: NextPage = () => {
           type='text'
           placeholder='Search customer'
           id='search'
-          className='shadow-sm px-9 py-2 w-80 rounded ring-1 ring-inset ring-gray-200'
+          className='shadow-sm px-9 py-2 w-80 rounded ring-1 ring-inset ring-skin-gray'
         />
       </div>
 
