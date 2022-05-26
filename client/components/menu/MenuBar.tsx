@@ -6,9 +6,9 @@ import { useRouter } from 'next/router';
 const menu = [
   {
     id: 0,
-    name: 'clients',
+    name: 'customers',
     icon: <AccountCircleOutlinedIcon />,
-    link: `/client`,
+    link: `/customer`,
     active: false,
   },
   {
