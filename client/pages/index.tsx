@@ -1,11 +1,7 @@
 import type { NextPage } from 'next';
 
 const Home: NextPage = () => {
-  return (
-    <>
-      <h1>Webite Content</h1>
-    </>
-  );
+  return <>Home Page</>;
 };
 
 export default Home;
