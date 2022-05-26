@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import Button from '../components/button/Button';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
+import CustomerList from '../components/customerList/customerList';
 
 const Customer: NextPage = () => {
   return (
@@ -14,7 +15,7 @@ const Customer: NextPage = () => {
         <Button icon={<AddIcon />} text='Create Customer' />
       </div>
 
-      <div className='relative flex items-center'>
+      <div className='relative flex items-center mb-14'>
         <SearchIcon className='absolute left-2 text-skin-gray' />
         <input
           type='text'
@@ -23,6 +24,8 @@ const Customer: NextPage = () => {
           className='shadow-sm px-9 py-2 w-80 rounded ring-1 ring-inset ring-gray-200'
         />
       </div>
+
+      <CustomerList />
     </>
   );
 };
