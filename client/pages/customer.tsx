@@ -6,7 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 const Customer: NextPage = () => {
   return (
     <>
-      <div className='flex items-center justify-between mb-24'>
+      <div className='flex items-center justify-between mb-20'>
         <div>
           <h1 className='text-2xl mb-3 font-bold'>Customers</h1>
           <p className='text-skin-gray'>Create and manage your customers</p>
