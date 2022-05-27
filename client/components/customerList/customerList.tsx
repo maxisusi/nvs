@@ -1,5 +1,10 @@
 import React from 'react';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColDef,
+  GridValueFormatterParams,
+  GridValueGetterParams,
+} from '@mui/x-data-grid';
 
 type Props = {};
 
@@ -31,6 +36,8 @@ const columns: GridColDef[] = [
     flex: 1,
     cellClassName: 'field-style',
     headerClassName: 'MuiDataGrid-columnHeaders',
+    valueGetter: (params: GridValueGetterParams) =>
+      `${params.row.amountDue}.- `,
   },
   {
     field: 'createdOn',
@@ -126,6 +133,10 @@ const CustomerList = (props: Props) => {
           sx={{
             backgroundColor: 'white',
             fontFamily: 'unset',
+            border: 'none',
+
+            filter:
+              'drop-shadow(0 2px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
 
             '& .MuiDataGrid-columnHeaders': {
               backgroundColor: '#F5F6FA',
@@ -136,19 +147,20 @@ const CustomerList = (props: Props) => {
               fontSize: '.75rem',
               letterSpacing: '1px',
             },
+            '& .MuiDataGrid-columnHeaders:focus': {
+              outline: 0,
+            },
 
             '& .MuiDataGrid-virtualScroller': {
               marginTop: '35px !important',
             },
             '& .name-style': {
               fontWeight: '500',
-
               fontSize: '0.95rem',
               cursor: 'pointer',
             },
             '& .field-style': {
               color: '#58667a',
-              fontWeight: 'light',
             },
 
             '& .MuiDataGrid-row:nth-child(even)': {
@@ -156,6 +168,9 @@ const CustomerList = (props: Props) => {
             },
             '& .MuiDataGrid-cell': {
               border: 'none',
+            },
+            '& .MuiDataGrid-cell:focus': {
+              outline: 0,
             },
           }}
         />
