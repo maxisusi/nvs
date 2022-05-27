@@ -24,6 +24,12 @@ module.exports = {
           btnHover: 'var(--color-button-hover)',
         },
       },
+      borderColor: {
+        skin: {
+          fill: 'var(--color-fill)',
+        },
+      },
+
       ringColor: {
         skin: {
           gray: 'var(--color-border-gray)',
