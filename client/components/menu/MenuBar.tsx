@@ -35,7 +35,7 @@ const MenuBar = () => {
   };
 
   return (
-    <div className='w-60 pt-6 h-screen drop-shadow-xl bg-white'>
+    <div className='fixed z-40 top-16 left-0 right-0 w-64 pt-6 h-screen  bg-white border-r border-gray-200'>
       {menu.map((item) => (
         <div key={item.id} onClick={() => handleChangePage(item.link)}>
           <MenuList icon={item.icon} name={item.name} active={item.active} />
