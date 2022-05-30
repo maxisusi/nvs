@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import type { NextPage } from 'next';
 import Button from '../components/button/Button';
-import CustomerList from '../components/customerList/CustomerList';
+import CustomerList from '../components/customerList/customerList';
 
 const Customer: NextPage = () => {
   return (

@@ -163,7 +163,7 @@ const CustomerList = (props: Props) => {
               color: '#58667a',
             },
 
-            '& .MuiDataGrid-row:nth-child(even)': {
+            '& .MuiDataGrid-row:nth-of-type(even)': {
               backgroundColor: '#f8fafc',
             },
             '& .MuiDataGrid-cell': {
