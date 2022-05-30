@@ -117,23 +117,46 @@ const rows = [
   },
 ];
 
+const ErrorData = () => (
+  <div className='h-full w-full flex flex-col items-center  '>
+    <img className='w-1/5 mt-20 mb-10' src='/Something.svg' />
+    <h4 className='text-3xl mb-2'>Oopsy, Something went wrong...</h4>
+    <p className='text-skin-gray'>Try to reload the page to fix the issue</p>
+  </div>
+);
+
+const NoDatas = () => (
+  <div className='h-full w-full flex flex-col items-center  '>
+    <img className='w-1/4 mt-10 mb-10' src='/Nothing.svg' />
+    <h4 className='text-3xl mb-2'>Oopsy, You don't have any customers!</h4>
+    <p className='text-skin-gray'>
+      Click on <strong>"New Customer"</strong> to create your first customer
+    </p>
+  </div>
+);
+
 const CustomerList = (props: Props) => {
   return (
     <>
       <div style={{ width: '100%' }}>
         <DataGrid
           rows={rows}
-          autoHeight
           columns={columns}
           density='comfortable'
+          // error={ErrorData}
           pageSize={5}
           rowsPerPageOptions={[5]}
           checkboxSelection
+          components={{
+            NoRowsOverlay: NoDatas,
+            ErrorOverlay: ErrorData,
+          }}
           disableSelectionOnClick
           sx={{
             backgroundColor: 'white',
             fontFamily: 'unset',
             border: 'none',
+            minHeight: '650px',
 
             filter:
               'drop-shadow(0 2px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
