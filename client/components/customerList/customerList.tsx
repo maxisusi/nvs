@@ -1,10 +1,12 @@
-import React from 'react';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { IconButton } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
-  GridValueFormatterParams,
+  GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
+import React from 'react';
 
 type Props = {};
 
@@ -48,6 +50,20 @@ const columns: GridColDef[] = [
     cellClassName: 'field-style',
     headerClassName: 'MuiDataGrid-columnHeaders',
   },
+  {
+    field: 'actionButton',
+    headerName: '',
+    disableColumnMenu: true,
+    sortable: false,
+    editable: false,
+    flex: 0.2,
+    cellClassName: 'MuiDataGrid-cell',
+    renderCell: (params: GridRenderCellParams) => (
+      <IconButton>
+        <MoreHorizIcon />
+      </IconButton>
+    ),
+  },
 ];
 
 const rows = [
@@ -75,46 +91,46 @@ const rows = [
     phone: '089382782',
     createdOn: '01/05/1999',
   },
-  {
-    id: 4,
-    lastName: 'Edward',
-    firstName: 'London',
-    amountDue: '27381',
-    phone: '089382782',
-    createdOn: '01/05/1999',
-  },
-  {
-    id: 5,
-    lastName: 'Snow',
-    firstName: 'Jon',
-    amountDue: '254',
-    phone: '079227817',
-    createdOn: '01/05/1999',
-  },
-  {
-    id: 6,
-    lastName: 'Lannister',
-    firstName: 'Cersei',
-    phone: '079227817',
-    amountDue: '3823782',
-    createdOn: '01/05/1999',
-  },
-  {
-    id: 7,
-    lastName: 'Edward',
-    firstName: 'London',
-    amountDue: '27381',
-    phone: '089382782',
-    createdOn: '01/05/1999',
-  },
-  {
-    id: 8,
-    lastName: 'Edward',
-    firstName: 'London',
-    amountDue: '27381',
-    phone: '089382782',
-    createdOn: '01/05/1999',
-  },
+  // {
+  //   id: 4,
+  //   lastName: 'Edward',
+  //   firstName: 'London',
+  //   amountDue: '27381',
+  //   phone: '089382782',
+  //   createdOn: '01/05/1999',
+  // },
+  // {
+  //   id: 5,
+  //   lastName: 'Snow',
+  //   firstName: 'Jon',
+  //   amountDue: '254',
+  //   phone: '079227817',
+  //   createdOn: '01/05/1999',
+  // },
+  // {
+  //   id: 6,
+  //   lastName: 'Lannister',
+  //   firstName: 'Cersei',
+  //   phone: '079227817',
+  //   amountDue: '3823782',
+  //   createdOn: '01/05/1999',
+  // },
+  // {
+  //   id: 7,
+  //   lastName: 'Edward',
+  //   firstName: 'London',
+  //   amountDue: '27381',
+  //   phone: '089382782',
+  //   createdOn: '01/05/1999',
+  // },
+  // {
+  //   id: 8,
+  //   lastName: 'Edward',
+  //   firstName: 'London',
+  //   amountDue: '27381',
+  //   phone: '089382782',
+  //   createdOn: '01/05/1999',
+  // },
 ];
 
 const ErrorData = () => (
@@ -156,10 +172,8 @@ const CustomerList = (props: Props) => {
             fontFamily: 'unset',
             border: 'none',
             minHeight: '650px',
-
             filter:
               'drop-shadow(0 2px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
-
             '& .MuiDataGrid-columnHeaders': {
               backgroundColor: '#F5F6FA',
               color: '#64748b',
@@ -191,7 +205,7 @@ const CustomerList = (props: Props) => {
             '& .MuiDataGrid-cell': {
               border: 'none',
             },
-            '& .MuiDataGrid-cell:focus': {
+            '& .MuiDataGrid-cell:focus-within': {
               outline: 0,
             },
           }}
