@@ -162,7 +162,6 @@ const CustomerList = (props: Props) => {
           density='comfortable'
           pageSize={5}
           rowsPerPageOptions={[5]}
-          checkboxSelection
           components={{
             NoRowsOverlay: NoDatas,
             ErrorOverlay: ErrorData,
