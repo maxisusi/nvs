@@ -17,7 +17,7 @@ const MenuList = (props: Props) => {
           className={`h-full w-1  ${props.active && 'bg-skin-fill'}`}></span>
         <div
           className={`text-sm ml-3 text-skin-gray group-hover:text-skin-sc  ${
-            props.active && 'text-skin-fill'
+            props.active && 'text-skin-fill group-hover:text-skin-fill'
           }`}>
           {props.icon}
         </div>
