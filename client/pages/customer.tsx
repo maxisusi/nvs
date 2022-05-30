@@ -1,10 +1,8 @@
+import AddIcon from '@mui/icons-material/Add';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import type { NextPage } from 'next';
 import Button from '../components/button/Button';
-import AddIcon from '@mui/icons-material/Add';
-
 import CustomerList from '../components/customerList/CustomerList';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 const Customer: NextPage = () => {
   return (
@@ -15,7 +13,10 @@ const Customer: NextPage = () => {
           <p className='text-skin-gray'>Create and manage your customers</p>
         </div>
         <div className='flex gap-3'>
-          <Button variant='outlined' icon={<FilterAltIcon />} text='Filter' />
+          <button className='border border-skin-fill font-semibold text-skin-fill px-3 py-2 rounded text-sm hover:bg-skin-fill hover:text-skin-white flex gap-2 items-center'>
+            Filter
+            <FilterAltIcon />
+          </button>
           <Button variant='full' icon={<AddIcon />} text='New Customer' />
         </div>
       </div>
