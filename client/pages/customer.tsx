@@ -6,6 +6,7 @@ import Button from '../components/button/Button';
 import CustomerFilter from '../components/customerList/customerFilter/CustomerFilter';
 import CustomerList from '../components/customerList/CustomerList';
 import ClearIcon from '@mui/icons-material/Clear';
+import { motion } from 'framer-motion';
 
 const Customer: NextPage = () => {
   const [filterCustomer, setFilterCustomer] = useState(false);
@@ -30,7 +31,13 @@ const Customer: NextPage = () => {
           <Button variant='full' icon={<AddIcon />} text='New Customer' />
         </div>
       </div>
-      {filterCustomer && <CustomerFilter />}
+      {filterCustomer && (
+        <motion.div
+          animate={{ y: [-50, 0], opacity: [0, 1] }}
+          transition={{ duration: 0.3 }}>
+          <CustomerFilter />
+        </motion.div>
+      )}
       <CustomerList />
     </>
   );
