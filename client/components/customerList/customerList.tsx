@@ -1,6 +1,7 @@
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton } from '@mui/material';
 import { useQuery, gql } from '@apollo/client';
+import { format, parseISO } from 'date-fns';
 
 import {
   DataGrid,
@@ -109,6 +110,7 @@ const CustomerList = (props: Props) => {
   });
 
   const [row, setRow] = useState([]);
+  console.log(data);
 
   useEffect(() => {
     if (!data) return;
@@ -119,7 +121,7 @@ const CustomerList = (props: Props) => {
           lastName: customer.lastName,
           firstName: customer.firstName,
           phone: customer.phone,
-          createdOn: customer.createdAt,
+          createdOn: format(parseISO(customer.createdAt), 'yyyy-MM-dd'),
           amountDue: '',
         };
       });
