@@ -1,10 +1,14 @@
 import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import type { NextPage } from 'next';
+import { useState } from 'react';
 import Button from '../components/button/Button';
-import CustomerList from '../components/customerList/customerList';
+import CustomerFilter from '../components/customerList/customerFilter/CustomerFilter';
+import CustomerList from '../components/customerList/CustomerList';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const Customer: NextPage = () => {
+  const [filterCustomer, setFilterCustomer] = useState(false);
   return (
     <>
       <div className='flex items-center justify-between mb-10'>
@@ -13,14 +17,20 @@ const Customer: NextPage = () => {
           <p className='text-skin-gray'>Create and manage your customers</p>
         </div>
         <div className='flex gap-3'>
-          <button className='border border-skin-fill font-semibold text-skin-fill px-3 py-2 rounded text-sm hover:bg-skin-fill hover:text-skin-white flex gap-2 items-center'>
+          <button
+            onClick={() => setFilterCustomer(!filterCustomer)}
+            className={`px-3 py-2 text-sm rounded flex gap-2 items-center font-semibold border border-skin-fill ${
+              filterCustomer === false
+                ? ' text-skin-fill hover:bg-skin-fill hover:text-skin-white'
+                : 'bg-skin-fill text-skin-white hover:bg-skin-btnHover'
+            }`}>
             Filter
-            <FilterAltIcon />
+            {filterCustomer === false ? <FilterAltIcon /> : <ClearIcon />}
           </button>
           <Button variant='full' icon={<AddIcon />} text='New Customer' />
         </div>
       </div>
-
+      {filterCustomer && <CustomerFilter />}
       <CustomerList />
     </>
   );
