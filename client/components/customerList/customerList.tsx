@@ -143,7 +143,6 @@ const CustomerList = (props: Props) => {
           rows={rows}
           columns={columns}
           density='comfortable'
-          // error={ErrorData}
           pageSize={5}
           rowsPerPageOptions={[5]}
           checkboxSelection
