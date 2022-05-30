@@ -1,5 +1,6 @@
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton } from '@mui/material';
+import { useQuery, gql } from '@apollo/client';
 
 import {
   DataGrid,
@@ -7,7 +8,8 @@ import {
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { LastPageRounded } from '@mui/icons-material';
 
 type Props = {};
 
@@ -67,73 +69,6 @@ const columns: GridColDef[] = [
   },
 ];
 
-const rows = [
-  {
-    id: 1,
-    lastName: 'Snow',
-    firstName: 'Jon',
-    amountDue: '254',
-    phone: '079227817',
-    createdOn: '01/05/1999',
-  },
-  {
-    id: 2,
-    lastName: 'Lannister',
-    firstName: 'Cersei',
-    phone: '079227817',
-    amountDue: '3823782',
-    createdOn: '01/05/1999',
-  },
-  {
-    id: 3,
-    lastName: 'Edward',
-    firstName: 'London',
-    amountDue: '27381',
-    phone: '089382782',
-    createdOn: '01/05/1999',
-  },
-  // {
-  //   id: 4,
-  //   lastName: 'Edward',
-  //   firstName: 'London',
-  //   amountDue: '27381',
-  //   phone: '089382782',
-  //   createdOn: '01/05/1999',
-  // },
-  // {
-  //   id: 5,
-  //   lastName: 'Snow',
-  //   firstName: 'Jon',
-  //   amountDue: '254',
-  //   phone: '079227817',
-  //   createdOn: '01/05/1999',
-  // },
-  // {
-  //   id: 6,
-  //   lastName: 'Lannister',
-  //   firstName: 'Cersei',
-  //   phone: '079227817',
-  //   amountDue: '3823782',
-  //   createdOn: '01/05/1999',
-  // },
-  // {
-  //   id: 7,
-  //   lastName: 'Edward',
-  //   firstName: 'London',
-  //   amountDue: '27381',
-  //   phone: '089382782',
-  //   createdOn: '01/05/1999',
-  // },
-  // {
-  //   id: 8,
-  //   lastName: 'Edward',
-  //   firstName: 'London',
-  //   amountDue: '27381',
-  //   phone: '089382782',
-  //   createdOn: '01/05/1999',
-  // },
-];
-
 const ErrorData = () => (
   <div className='h-full w-full flex flex-col items-center  '>
     <img className='w-1/5 mt-20 mb-10' src='/Something.svg' />
@@ -152,12 +87,52 @@ const NoDatas = () => (
   </div>
 );
 
+const GET_CLIENTS = gql`
+  query Customers($orderBy: OrderByParams) {
+    customers(orderBy: $orderBy) {
+      id
+      firstName
+      lastName
+      phone
+      createdAt
+    }
+  }
+`;
+
 const CustomerList = (props: Props) => {
+  const { loading, error, data } = useQuery(GET_CLIENTS, {
+    variables: {
+      orderBy: {
+        input: '',
+      },
+    },
+  });
+
+  const [row, setRow] = useState([]);
+
+  useEffect(() => {
+    if (!data) return;
+    else {
+      const formattedRows = data.customers.map((customer: any) => {
+        return {
+          id: customer.id,
+          lastName: customer.lastName,
+          firstName: customer.firstName,
+          phone: customer.phone,
+          createdOn: customer.createdAt,
+          amountDue: '',
+        };
+      });
+      setRow(formattedRows);
+    }
+  }, [loading]);
   return (
     <>
       <div style={{ width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={row}
+          loading={loading}
+          error={error}
           columns={columns}
           density='comfortable'
           pageSize={5}
