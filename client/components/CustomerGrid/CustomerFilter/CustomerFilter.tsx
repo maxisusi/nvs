@@ -1,8 +1,17 @@
 import React from 'react';
+import { useCustomerFilter } from '../../../context/CustomerFilterContext';
 
 type Props = {};
 
 const CustomerFilter = (props: Props) => {
+  const [filterQuery, setFilterQuery] = useCustomerFilter();
+
+  const handleFormChange = (e: any) => {
+    setFilterQuery({
+      ...filterQuery,
+      displayName: e.target.value,
+    });
+  };
   return (
     <form className='relative'>
       <input
@@ -14,17 +23,21 @@ const CustomerFilter = (props: Props) => {
       <div className='my-10 bg-gray-200 py-8 px-6 rounded flex gap-5'>
         <div className='flex flex-col gap-1 w-full'>
           <label className='text-sm'>Display Name</label>
-          <input type='text' className='rounded p-1.5 px-3 shadow' />
+          <input
+            onChange={(e) => handleFormChange(e)}
+            type='text'
+            className='rounded p-1.5 px-3 shadow'
+          />
         </div>
 
         <div className='flex flex-col gap-1 w-full'>
-          <label className='text-sm'>Contact Name</label>
-          <input type='text' className='rounded p-1.5 px-3 shadow' />
+          <label className='text-sm text-skin-gray'>Contact Name</label>
+          <input disabled type='text' className='rounded p-1.5 px-3 shadow' />
         </div>
 
         <div className='flex flex-col gap-1 w-full'>
-          <label className='text-sm'>Phone</label>
-          <input type='text' className='rounded p-1.5 px-3 shadow' />
+          <label className='text-sm text-skin-gray'>Phone</label>
+          <input disabled type='text' className='rounded p-1.5 px-3 shadow' />
         </div>
       </div>
     </form>

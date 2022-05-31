@@ -7,6 +7,7 @@ import CustomerFilter from '../components/CustomerGrid/CustomerFilter/CustomerFi
 import CustomerList from '../components/CustomerGrid/CustomerGrid';
 import ClearIcon from '@mui/icons-material/Clear';
 import { motion } from 'framer-motion';
+import CustomerFilterProvider from '../context/CustomerFilterContext';
 
 const Customer: NextPage = () => {
   const [filterCustomer, setFilterCustomer] = useState(false);
@@ -31,14 +32,16 @@ const Customer: NextPage = () => {
           <Button variant='full' icon={<AddIcon />} text='New Customer' />
         </div>
       </div>
-      {filterCustomer && (
-        <motion.div
-          animate={{ y: [-50, 0], opacity: [0, 1] }}
-          transition={{ duration: 0.3 }}>
-          <CustomerFilter />
-        </motion.div>
-      )}
-      <CustomerList />
+      <CustomerFilterProvider>
+        {filterCustomer && (
+          <motion.div
+            animate={{ y: [-50, 0], opacity: [0, 1] }}
+            transition={{ duration: 0.3 }}>
+            <CustomerFilter />
+          </motion.div>
+        )}
+        <CustomerList />
+      </CustomerFilterProvider>
     </>
   );
 };

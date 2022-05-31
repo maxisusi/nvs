@@ -104,7 +104,7 @@ const CustomerList = (props: Props) => {
   const { loading, error, data } = useQuery(GET_CLIENTS, {
     variables: {
       orderBy: {
-        input: '',
+        input: 'Darrin',
       },
     },
   });
