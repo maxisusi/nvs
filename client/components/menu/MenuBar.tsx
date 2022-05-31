@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MenuList from './menu-list/MenuList';
+import MenuList from './MenuList/MenuList';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { useRouter } from 'next/router';
