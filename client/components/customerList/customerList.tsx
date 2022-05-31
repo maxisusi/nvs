@@ -1,16 +1,14 @@
+import { gql, useQuery } from '@apollo/client';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton } from '@mui/material';
-import { useQuery, gql } from '@apollo/client';
-import { format, parseISO } from 'date-fns';
-
 import {
   DataGrid,
   GridColDef,
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
+import { format, parseISO } from 'date-fns';
 import React, { useEffect, useState } from 'react';
-import { LastPageRounded } from '@mui/icons-material';
 
 type Props = {};
 
@@ -33,6 +31,8 @@ const columns: GridColDef[] = [
     headerAlign: 'left',
     cellClassName: 'field-style',
     headerClassName: 'MuiDataGrid-columnHeaders',
+    valueGetter: (params: GridValueGetterParams) =>
+      `${params.row.phone === '' ? '-' : `${params.row.phone}`}`,
   },
   {
     field: 'amountDue',
@@ -43,7 +43,7 @@ const columns: GridColDef[] = [
     cellClassName: 'field-style',
     headerClassName: 'MuiDataGrid-columnHeaders',
     valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.amountDue}.- `,
+      `${params.row.amountDue === '' ? '-' : `${params.row.amountDue}.-`}`,
   },
   {
     field: 'createdOn',

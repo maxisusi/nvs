@@ -2,9 +2,9 @@ import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import type { NextPage } from 'next';
 import { useState } from 'react';
-import Button from '../components/button/Button';
-import CustomerFilter from '../components/customerList/customerFilter/CustomerFilter';
-import CustomerList from '../components/customerList/CustomerList';
+import Button from '../components/Button/Button';
+import CustomerFilter from '../components/CustomerList/CustomerFilter/CustomerFilter';
+import CustomerList from '../components/CustomerList/CustomerList';
 import ClearIcon from '@mui/icons-material/Clear';
 import { motion } from 'framer-motion';
 
