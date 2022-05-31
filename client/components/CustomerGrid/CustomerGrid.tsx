@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton } from '@mui/material';
+
 import {
   DataGrid,
   GridColDef,
@@ -9,6 +10,7 @@ import {
 } from '@mui/x-data-grid';
 import { format, parseISO } from 'date-fns';
 import React, { useEffect, useState } from 'react';
+import { useCustomerFilter } from '../../context/CustomerFilterContext';
 
 type Props = {};
 
@@ -101,13 +103,16 @@ const GET_CLIENTS = gql`
 `;
 
 const CustomerList = (props: Props) => {
+  const [filterQuery, setFilterQuery] = useCustomerFilter();
   const { loading, error, data } = useQuery(GET_CLIENTS, {
     variables: {
       orderBy: {
-        input: 'Darrin',
+        input: filterQuery.displayName,
       },
     },
   });
+
+  console.log(filterQuery);
 
   const [row, setRow] = useState([]);
 

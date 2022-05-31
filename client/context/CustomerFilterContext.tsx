@@ -4,14 +4,26 @@ type Props = {
   children: React.ReactNode;
 };
 
-const CFilterContext = createContext({});
+interface CustomerFilterParams {
+  displayName: string;
+  contactName: string;
+  phone: string;
+}
+
+const CFilterContext = createContext<
+  | [
+      CustomerFilterParams,
+      React.Dispatch<React.SetStateAction<CustomerFilterParams>>
+    ]
+  | any
+>([]);
 
 export const useCustomerFilter = () => {
   return useContext(CFilterContext);
 };
 
 export const CustomerFilterProvider = (props: Props) => {
-  const [filterQuery, setFilterQuery] = useState({
+  const [filterQuery, setFilterQuery] = useState<CustomerFilterParams>({
     displayName: '',
     contactName: '',
     phone: '',

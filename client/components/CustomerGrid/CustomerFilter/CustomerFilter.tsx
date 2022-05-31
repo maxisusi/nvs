@@ -1,16 +1,23 @@
 import React from 'react';
 import { useCustomerFilter } from '../../../context/CustomerFilterContext';
+import debounce from 'lodash.debounce';
 
 type Props = {};
 
 const CustomerFilter = (props: Props) => {
   const [filterQuery, setFilterQuery] = useCustomerFilter();
 
-  const handleFormChange = (e: any) => {
-    setFilterQuery({
-      ...filterQuery,
-      displayName: e.target.value,
-    });
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const debounceSave = debounce(
+      () =>
+        setFilterQuery({
+          ...filterQuery,
+          displayName: e.target.value,
+        }),
+      2000
+    );
+
+    debounceSave();
   };
   return (
     <form className='relative'>
