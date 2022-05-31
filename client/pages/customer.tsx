@@ -3,8 +3,8 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import type { NextPage } from 'next';
 import { useState } from 'react';
 import Button from '../components/Button/Button';
-import CustomerFilter from '../components/CustomerList/CustomerFilter/CustomerFilter';
-import CustomerList from '../components/CustomerList/CustomerList';
+import CustomerFilter from '../components/CustomerGrid/CustomerFilter/CustomerFilter';
+import CustomerList from '../components/CustomerGrid/CustomerGrid';
 import ClearIcon from '@mui/icons-material/Clear';
 import { motion } from 'framer-motion';
 
