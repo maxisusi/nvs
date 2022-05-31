@@ -110,7 +110,6 @@ const CustomerList = (props: Props) => {
   });
 
   const [row, setRow] = useState([]);
-  console.log(data);
 
   useEffect(() => {
     if (!data) return;
