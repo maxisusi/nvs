@@ -1,14 +1,16 @@
 import { gql, useQuery } from '@apollo/client';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { IconButton } from '@mui/material';
+import { Box, IconButton, Modal } from '@mui/material';
 import debounce from 'lodash.debounce';
 import Skeleton from '@mui/material/Skeleton';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 
 import {
   DataGrid,
+  GridCellParams,
   GridColDef,
   GridRenderCellParams,
   GridValueGetterParams,
@@ -85,14 +87,41 @@ const CustomerList = (props: Props) => {
   const [loadStatus, setLoadStatus] = useState(true);
   const [row, setRow] = useState([]);
   const [customerData, setCustomerData] = useState([]);
+  const [selectedCellId, setSelectedCellId] = useState<$TSFixIt>();
+
+  const [openModal, setOpenModal] = React.useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 500,
+    borderRadius: '0.5rem',
+    bgcolor: 'background.paper',
+    filter:
+      'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
+    p: 4,
+  };
+
+  const handleDeleteCustomer = () => {
+    console.log(selectedCellId);
+
+    handleClose();
+
+    handleOpenModal();
   };
 
   /**
@@ -140,7 +169,6 @@ const CustomerList = (props: Props) => {
   /**
    * Format the datas to display them on the grid
    */
-
   useEffect(() => {
     if (!data) return;
     else {
@@ -230,6 +258,9 @@ const CustomerList = (props: Props) => {
           loading={loadStatus}
           error={error}
           columns={columns}
+          onCellClick={(params: GridCellParams) => {
+            setSelectedCellId(params.id);
+          }}
           density='comfortable'
           pageSize={5}
           rowsPerPageOptions={[10]}
@@ -325,7 +356,7 @@ const CustomerList = (props: Props) => {
             </ListItemIcon>
             <ListItemText>View</ListItemText>
           </MenuItem>
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleDeleteCustomer}>
             <ListItemIcon>
               <DeleteOutlineOutlinedIcon
                 className='text-skin-gray'
@@ -336,6 +367,37 @@ const CustomerList = (props: Props) => {
           </MenuItem>
         </Menu>
       </div>
+
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'>
+        <Box sx={style}>
+          <div className='flex justify-center '>
+            <div className='bg-red-100 p-3 rounded-full'>
+              <WarningAmberOutlinedIcon className='text-red-500  text-3xl' />
+            </div>
+          </div>
+          <div className='flex justify-center mt-6 flex-col text-center gap-3'>
+            <h3 className='text-xl text-skin-base'>Are you sure?</h3>
+            <p className='text-skin-gray text-sm'>
+              You will not be able to recover this customer and all the related
+              Invoices, Estimates and Payments.
+            </p>
+            <div className='flex gap-3 mt-5'>
+              <button className='bg-red-500 text-skin-white w-full rounded py-2'>
+                Ok
+              </button>
+              <button
+                onClick={handleCloseModal}
+                className='border text-skin-base w-full rounded py-2'>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </Box>
+      </Modal>
     </>
   );
 };
