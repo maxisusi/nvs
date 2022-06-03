@@ -161,12 +161,9 @@ const CustomerList = (props: Props) => {
    */
   useEffect(() => {
     if (filterQuery.displayName === '') return setRow(customerData);
-
     setLoadStatus(true);
     const res = searchCustomer(row);
-
     loadAfterInput();
-
     setRow(res);
   }, [filterQuery.displayName]);
 
