@@ -12,17 +12,9 @@ export class CustomersService {
     });
   }
 
-  async findAll(orderBy?: OrderByParams) {
-    const { input } = orderBy || {};
+  async findAll() {
     return this.prisma.customer.findMany({
       include: { contactPoint: true },
-      orderBy: {
-        _relevance: {
-          sort: 'desc',
-          fields: ['firstName', 'lastName', 'mobile', 'phone'],
-          search: input.replace(/\s+/g, ''),
-        },
-      },
     });
   }
 

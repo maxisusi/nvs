@@ -17,8 +17,8 @@ export class CustomersResolver {
   }
 
   @Query('customers')
-  findAll(@Args('orderBy') orderBy?: OrderByParams) {
-    return this.customersService.findAll(orderBy);
+  findAll() {
+    return this.customersService.findAll();
   }
 
   @Query('customer')

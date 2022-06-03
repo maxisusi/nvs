@@ -8,17 +8,17 @@ const CustomerFilter = (props: Props) => {
   const [filterQuery, setFilterQuery] = useCustomerFilter();
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const debounceSave = debounce(
+    const debounceSearch = debounce(
       () =>
         setFilterQuery({
           ...filterQuery,
           displayName: e.target.value,
         }),
-      2000
+      500
     );
-
-    debounceSave();
+    debounceSearch();
   };
+
   return (
     <form className='relative'>
       <input

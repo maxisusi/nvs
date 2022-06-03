@@ -1,7 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton } from '@mui/material';
-
 import {
   DataGrid,
   GridColDef,
@@ -11,6 +10,7 @@ import {
 import { format, parseISO } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { useCustomerFilter } from '../../context/CustomerFilterContext';
+import { $TSFixIt } from '../../shared/types';
 
 type Props = {};
 
@@ -91,8 +91,8 @@ const NoDatas = () => (
 );
 
 const GET_CLIENTS = gql`
-  query Customers($orderBy: OrderByParams) {
-    customers(orderBy: $orderBy) {
+  query Customers {
+    customers {
       id
       firstName
       lastName
@@ -104,22 +104,41 @@ const GET_CLIENTS = gql`
 
 const CustomerList = (props: Props) => {
   const [filterQuery, setFilterQuery] = useCustomerFilter();
-  const { loading, error, data } = useQuery(GET_CLIENTS, {
-    variables: {
-      orderBy: {
-        input: filterQuery.displayName,
-      },
-    },
-  });
-
-  console.log(filterQuery);
-
+  const { loading, error, data, refetch } = useQuery(GET_CLIENTS);
   const [row, setRow] = useState([]);
+  const [customerData, setCustomerData] = useState([]);
 
+  /**
+   * Search algorithm
+   *
+   * @param data
+   * @returns
+   */
+  const searchCustomer = (data: $TSFixIt) => {
+    const keys = ['firstName', 'lastName', 'phone'];
+    return data.filter((item: any) =>
+      keys.some((key) =>
+        item[key].toLowerCase().includes(filterQuery.displayName.toLowerCase())
+      )
+    );
+  };
+
+  /**
+   * Checks the user input to start researching
+   */
+  useEffect(() => {
+    if (filterQuery.displayName === '') return setRow(customerData);
+    const res = searchCustomer(row);
+    setRow(res);
+  }, [filterQuery.displayName]);
+
+  /**
+   * Format the datas to display them on the grid
+   */
   useEffect(() => {
     if (!data) return;
     else {
-      const formattedRows = data.customers.map((customer: any) => {
+      const formattedRows = data.customers.map((customer: $TSFixIt) => {
         return {
           id: customer.id,
           lastName: customer.lastName,
@@ -129,6 +148,10 @@ const CustomerList = (props: Props) => {
           amountDue: '',
         };
       });
+      // * Set the default data formatted from the DB
+      setCustomerData(formattedRows);
+
+      // * Displays the customers
       setRow(formattedRows);
     }
   }, [loading]);
@@ -142,7 +165,7 @@ const CustomerList = (props: Props) => {
           columns={columns}
           density='comfortable'
           pageSize={5}
-          rowsPerPageOptions={[5]}
+          rowsPerPageOptions={[10]}
           components={{
             NoRowsOverlay: NoDatas,
             ErrorOverlay: ErrorData,
