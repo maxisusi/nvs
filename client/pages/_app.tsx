@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
       <Layout>
-        <div className='w-full pl-72 pt-24 pr-14 bg-gray-100'>
+        <div className='w-full pl-72 pt-24 pr-14 '>
           <Component {...pageProps} />
         </div>
       </Layout>
