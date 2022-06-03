@@ -16,11 +16,11 @@ const CustomerFilter = (props: Props) => {
 
   return (
     <form className='relative'>
-      <input
+      {/* <input
         type='reset'
         value='Clear all'
         className='absolute top-2 right-7 cursor-pointer hover:text-skin-fill'
-      />
+      /> */}
 
       <div className='my-10 bg-gray-200 py-8 px-6 rounded flex gap-5'>
         <div className='flex flex-col gap-1 w-full'>

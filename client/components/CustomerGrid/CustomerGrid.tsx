@@ -78,16 +78,20 @@ const columns: GridColDef[] = [
 ];
 
 const ErrorData = () => (
-  <div className='h-full w-full flex flex-col items-center  '>
-    <img className='w-1/5 mt-20 mb-10' src='/Something.svg' />
+  <div
+    style={{ marginTop: '-20px' }}
+    className='h-full w-full flex flex-col items-center  '>
+    <img className='w-48 mt-20 mb-10' src='/Something.svg' />
     <h4 className='text-3xl mb-2'>Oopsy, Something went wrong...</h4>
     <p className='text-skin-gray'>Try to reload the page to fix the issue</p>
   </div>
 );
 
 const NoDatas = () => (
-  <div className='h-full w-full flex flex-col items-center  '>
-    <img className='w-1/4 mt-10 mb-10' src='/Nothing.svg' />
+  <div
+    style={{ marginTop: '-20px' }}
+    className='h-full w-full flex flex-col items-center  '>
+    <img className='w-48 mt-10 mb-10' src='/Nothing.svg' />
     <h4 className='text-3xl mb-2'>No customer found</h4>
     <p className='text-skin-gray'>
       Click on <strong>"New Customer"</strong> to create your first customer
@@ -97,17 +101,17 @@ const NoDatas = () => (
 
 const LoadingOverlay = () => (
   <div
-    style={{ marginTop: '-36px' }}
+    style={{ marginTop: '-35px' }}
     className='h-full w-full flex flex-col items-center z-10 absolute bg-white'>
-    <div className='h-14 bg-white w-full flex items-center px-6'>
+    <div className='h-16 bg-white w-full flex items-center px-6'>
       <Skeleton sx={{ width: '100%' }}></Skeleton>
     </div>
 
-    <div className='h-14 bg-slate-100 w-full flex items-center px-6'>
+    <div className='h-16 bg-slate-100 w-full flex items-center px-6'>
       <Skeleton sx={{ width: '100%' }}></Skeleton>
     </div>
 
-    <div className='h-14 bg-white w-full flex items-center px-6'>
+    <div className='h-16 bg-white w-full flex items-center px-6'>
       <Skeleton sx={{ width: '100%' }}></Skeleton>
     </div>
   </div>
@@ -220,7 +224,7 @@ const CustomerList = (props: Props) => {
             backgroundColor: 'white',
             fontFamily: 'unset',
             border: 'none',
-            minHeight: '650px',
+            minHeight: '500px',
             filter:
               'drop-shadow(0 2px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
             '& .MuiDataGrid-columnHeaders': {
