@@ -1,6 +1,9 @@
 import { gql, useQuery } from '@apollo/client';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton } from '@mui/material';
+import debounce from 'lodash.debounce';
+import Skeleton from '@mui/material/Skeleton';
+
 import {
   DataGrid,
   GridColDef,
@@ -8,11 +11,13 @@ import {
   GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { format, parseISO } from 'date-fns';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useCustomerFilter } from '../../context/CustomerFilterContext';
 import { $TSFixIt } from '../../shared/types';
 
-type Props = {};
+type Props = {
+  isActive: boolean;
+};
 
 const columns: GridColDef[] = [
   {
@@ -83,10 +88,28 @@ const ErrorData = () => (
 const NoDatas = () => (
   <div className='h-full w-full flex flex-col items-center  '>
     <img className='w-1/4 mt-10 mb-10' src='/Nothing.svg' />
-    <h4 className='text-3xl mb-2'>Oopsy, You don't have any customers!</h4>
+    <h4 className='text-3xl mb-2'>No customer found</h4>
     <p className='text-skin-gray'>
       Click on <strong>"New Customer"</strong> to create your first customer
     </p>
+  </div>
+);
+
+const LoadingOverlay = () => (
+  <div
+    style={{ marginTop: '-36px' }}
+    className='h-full w-full flex flex-col items-center z-10 absolute bg-white'>
+    <div className='h-14 bg-white w-full flex items-center px-6'>
+      <Skeleton sx={{ width: '100%' }}></Skeleton>
+    </div>
+
+    <div className='h-14 bg-slate-100 w-full flex items-center px-6'>
+      <Skeleton sx={{ width: '100%' }}></Skeleton>
+    </div>
+
+    <div className='h-14 bg-white w-full flex items-center px-6'>
+      <Skeleton sx={{ width: '100%' }}></Skeleton>
+    </div>
   </div>
 );
 
@@ -105,6 +128,7 @@ const GET_CLIENTS = gql`
 const CustomerList = (props: Props) => {
   const [filterQuery, setFilterQuery] = useCustomerFilter();
   const { loading, error, data, refetch } = useQuery(GET_CLIENTS);
+  const [loadStatus, setLoadStatus] = useState(true);
   const [row, setRow] = useState([]);
   const [customerData, setCustomerData] = useState([]);
 
@@ -124,20 +148,43 @@ const CustomerList = (props: Props) => {
   };
 
   /**
+   * Checks if the filter is active
+   */
+  useEffect(() => {
+    if (!props.isActive) {
+      setRow(customerData);
+    }
+  }, [props.isActive]);
+
+  /**
    * Checks the user input to start researching
    */
   useEffect(() => {
     if (filterQuery.displayName === '') return setRow(customerData);
+
+    setLoadStatus(true);
     const res = searchCustomer(row);
+
+    loadAfterInput();
+
     setRow(res);
   }, [filterQuery.displayName]);
+
+  const loadAfterInput = useCallback(
+    debounce(() => {
+      setLoadStatus(false);
+    }, 500),
+    []
+  );
 
   /**
    * Format the datas to display them on the grid
    */
+
   useEffect(() => {
     if (!data) return;
     else {
+      setLoadStatus(false);
       const formattedRows = data.customers.map((customer: $TSFixIt) => {
         return {
           id: customer.id,
@@ -160,7 +207,7 @@ const CustomerList = (props: Props) => {
       <div style={{ width: '100%' }}>
         <DataGrid
           rows={row}
-          loading={loading}
+          loading={loadStatus}
           error={error}
           columns={columns}
           density='comfortable'
@@ -169,6 +216,7 @@ const CustomerList = (props: Props) => {
           components={{
             NoRowsOverlay: NoDatas,
             ErrorOverlay: ErrorData,
+            LoadingOverlay: LoadingOverlay,
           }}
           disableSelectionOnClick
           sx={{
@@ -201,6 +249,9 @@ const CustomerList = (props: Props) => {
             },
             '& .field-style': {
               color: '#58667a',
+            },
+            '& .MuiDataGrid-row': {
+              zIndex: 1,
             },
 
             '& .MuiDataGrid-row:nth-of-type(even)': {

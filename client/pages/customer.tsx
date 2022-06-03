@@ -40,7 +40,7 @@ const Customer: NextPage = () => {
             <CustomerFilter />
           </motion.div>
         )}
-        <CustomerList />
+        <CustomerList isActive={filterCustomer} />
       </CustomerFilterProvider>
     </>
   );

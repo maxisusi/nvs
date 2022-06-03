@@ -8,15 +8,10 @@ const CustomerFilter = (props: Props) => {
   const [filterQuery, setFilterQuery] = useCustomerFilter();
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const debounceSearch = debounce(
-      () =>
-        setFilterQuery({
-          ...filterQuery,
-          displayName: e.target.value,
-        }),
-      500
-    );
-    debounceSearch();
+    setFilterQuery({
+      ...filterQuery,
+      displayName: e.target.value,
+    });
   };
 
   return (
