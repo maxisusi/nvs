@@ -3,6 +3,9 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton } from '@mui/material';
 import debounce from 'lodash.debounce';
 import Skeleton from '@mui/material/Skeleton';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 import {
   DataGrid,
@@ -15,67 +18,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useCustomerFilter } from '../../context/CustomerFilterContext';
 import { $TSFixIt } from '../../shared/types';
 
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+
 type Props = {
   isActive: boolean;
 };
-
-const columns: GridColDef[] = [
-  {
-    field: 'Name',
-    headerName: 'Name',
-    flex: 1,
-    cellClassName: 'name-style',
-    headerClassName: 'MuiDataGrid-columnHeaders',
-    disableColumnMenu: true,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
-  {
-    field: 'phone',
-    headerName: 'Phone',
-    flex: 1,
-    disableColumnMenu: true,
-    headerAlign: 'left',
-    cellClassName: 'field-style',
-    headerClassName: 'MuiDataGrid-columnHeaders',
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.phone === '' ? '-' : `${params.row.phone}`}`,
-  },
-  {
-    field: 'amountDue',
-    headerName: 'Amount Due',
-    headerAlign: 'left',
-    disableColumnMenu: true,
-    flex: 1,
-    cellClassName: 'field-style',
-    headerClassName: 'MuiDataGrid-columnHeaders',
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.amountDue === '' ? '-' : `${params.row.amountDue}.-`}`,
-  },
-  {
-    field: 'createdOn',
-    headerName: 'Created On',
-    flex: 1,
-    disableColumnMenu: true,
-    headerAlign: 'left',
-    cellClassName: 'field-style',
-    headerClassName: 'MuiDataGrid-columnHeaders',
-  },
-  {
-    field: 'actionButton',
-    headerName: '',
-    disableColumnMenu: true,
-    sortable: false,
-    editable: false,
-    flex: 0.2,
-    cellClassName: 'MuiDataGrid-cell',
-    renderCell: (params: GridRenderCellParams) => (
-      <IconButton>
-        <MoreHorizIcon />
-      </IconButton>
-    ),
-  },
-];
 
 const ErrorData = () => (
   <div
@@ -135,6 +85,15 @@ const CustomerList = (props: Props) => {
   const [loadStatus, setLoadStatus] = useState(true);
   const [row, setRow] = useState([]);
   const [customerData, setCustomerData] = useState([]);
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   /**
    * Search algorithm
@@ -203,6 +162,66 @@ const CustomerList = (props: Props) => {
       setRow(formattedRows);
     }
   }, [loading]);
+
+  const columns: GridColDef[] = [
+    {
+      field: 'Name',
+      headerName: 'Name',
+      flex: 1,
+      cellClassName: 'name-style',
+      headerClassName: 'MuiDataGrid-columnHeaders',
+      disableColumnMenu: true,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+    },
+    {
+      field: 'phone',
+      headerName: 'Phone',
+      flex: 1,
+      disableColumnMenu: true,
+      headerAlign: 'left',
+      cellClassName: 'field-style',
+      headerClassName: 'MuiDataGrid-columnHeaders',
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.phone === '' ? '-' : `${params.row.phone}`}`,
+    },
+    {
+      field: 'amountDue',
+      headerName: 'Amount Due',
+      headerAlign: 'left',
+      disableColumnMenu: true,
+      flex: 1,
+      cellClassName: 'field-style',
+      headerClassName: 'MuiDataGrid-columnHeaders',
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.amountDue === '' ? '-' : `${params.row.amountDue}.-`}`,
+    },
+    {
+      field: 'createdOn',
+      headerName: 'Created On',
+      flex: 1,
+      disableColumnMenu: true,
+      headerAlign: 'left',
+      cellClassName: 'field-style',
+      headerClassName: 'MuiDataGrid-columnHeaders',
+    },
+    {
+      field: 'actionButton',
+      headerName: '',
+      disableColumnMenu: true,
+      sortable: false,
+      editable: false,
+      flex: 0.2,
+      cellClassName: 'MuiDataGrid-cell',
+      renderCell: (params: GridRenderCellParams) => (
+        <div>
+          <IconButton onClick={handleClick}>
+            <MoreHorizIcon />
+          </IconButton>
+        </div>
+      ),
+    },
+  ];
   return (
     <>
       <div style={{ width: '100%' }}>
@@ -266,6 +285,56 @@ const CustomerList = (props: Props) => {
             },
           }}
         />
+
+        <Menu
+          id='customer-menu'
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={open}
+          onClose={handleClose}
+          sx={{
+            '& .MuiPaper-root': {
+              boxShadow: 'none',
+              filter:
+                'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
+              width: '150px',
+            },
+          }}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}>
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <EditOutlinedIcon className='text-skin-gray' fontSize='small' />
+            </ListItemIcon>
+            <ListItemText className='text-skin-base'>Edit</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <VisibilityOutlinedIcon
+                className='text-skin-gray'
+                fontSize='small'
+              />
+            </ListItemIcon>
+            <ListItemText>View</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <DeleteOutlineOutlinedIcon
+                className='text-skin-gray'
+                fontSize='small'
+              />
+            </ListItemIcon>
+            <ListItemText>Delete</ListItemText>
+          </MenuItem>
+        </Menu>
       </div>
     </>
   );
