@@ -67,7 +67,7 @@ const LoadingOverlay = () => (
   </div>
 );
 
-const GET_CLIENTS = gql`
+const GET_CUSTOMERS = gql`
   query Customers {
     customers {
       id
@@ -89,8 +89,8 @@ const DEL_CUSTOMER = gql`
 
 const CustomerList = (props: Props) => {
   const [filterQuery, setFilterQuery] = useCustomerFilter();
-  const { loading, error, data, refetch } = useQuery(GET_CLIENTS);
-  const [removeCustomer, customerMutation] = useMutation(DEL_CUSTOMER);
+  const { loading, error, data, refetch } = useQuery(GET_CUSTOMERS);
+  const [removeCustomer] = useMutation(DEL_CUSTOMER);
   const [loadStatus, setLoadStatus] = useState(true);
   const [row, setRow] = useState([]);
   const [customerData, setCustomerData] = useState([]);
@@ -129,8 +129,33 @@ const CustomerList = (props: Props) => {
   };
 
   const deleteCustomerInDB = () => {
-    removeCustomer({ variables: { removeCustomerId: selectedCellId } });
-    console.log(selectedCellId);
+    removeCustomer({
+      variables: { removeCustomerId: selectedCellId },
+
+      // optimisticResponse: {
+      //   __typename: 'Mutation',
+      //   removeCustomer: {
+      //     __typename: 'Customer',
+      //     firstName: true,
+      //     removeCustomerId: selectedCellId,
+      //   },
+      // },
+      update: (store) => {
+        const previousData = store.readQuery({ query: GET_CUSTOMERS });
+
+        console.log(data);
+        store.writeQuery({
+          query: GET_CUSTOMERS,
+          data: {
+            customers: previousData.customers.filter(
+              (customer) => customer.id !== selectedCellId
+            ),
+          },
+          overwrite: true,
+        });
+      },
+    });
+
     handleCloseModal();
   };
 
@@ -199,7 +224,7 @@ const CustomerList = (props: Props) => {
       // * Displays the customers
       setRow(formattedRows);
     }
-  }, [loading]);
+  }, [loading, data]);
 
   const columns: GridColDef[] = [
     {
