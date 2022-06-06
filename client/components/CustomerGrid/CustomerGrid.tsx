@@ -1,13 +1,15 @@
-import { gql, useQuery } from '@apollo/client';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { Box, IconButton, Modal } from '@mui/material';
-import debounce from 'lodash.debounce';
-import Skeleton from '@mui/material/Skeleton';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-
+import { Box, IconButton, Modal } from '@mui/material';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Skeleton from '@mui/material/Skeleton';
 import {
   DataGrid,
   GridCellParams,
@@ -16,14 +18,10 @@ import {
   GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { format, parseISO } from 'date-fns';
+import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useCustomerFilter } from '../../context/CustomerFilterContext';
 import { $TSFixIt } from '../../shared/types';
-
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
 
 type Props = {
   isActive: boolean;
@@ -81,9 +79,18 @@ const GET_CLIENTS = gql`
   }
 `;
 
+const DEL_CUSTOMER = gql`
+  mutation Mutation($removeCustomerId: String!) {
+    removeCustomer(id: $removeCustomerId) {
+      firstName
+    }
+  }
+`;
+
 const CustomerList = (props: Props) => {
   const [filterQuery, setFilterQuery] = useCustomerFilter();
   const { loading, error, data, refetch } = useQuery(GET_CLIENTS);
+  const [removeCustomer, customerMutation] = useMutation(DEL_CUSTOMER);
   const [loadStatus, setLoadStatus] = useState(true);
   const [row, setRow] = useState([]);
   const [customerData, setCustomerData] = useState([]);
@@ -117,11 +124,14 @@ const CustomerList = (props: Props) => {
   };
 
   const handleDeleteCustomer = () => {
-    console.log(selectedCellId);
-
     handleClose();
-
     handleOpenModal();
+  };
+
+  const deleteCustomerInDB = () => {
+    removeCustomer({ variables: { removeCustomerId: selectedCellId } });
+    console.log(selectedCellId);
+    handleCloseModal();
   };
 
   /**
@@ -379,19 +389,20 @@ const CustomerList = (props: Props) => {
               <WarningAmberOutlinedIcon className='text-red-500  text-3xl' />
             </div>
           </div>
-          <div className='flex justify-center mt-6 flex-col text-center gap-3'>
+          <div className='flex justify-center mt-6 flex-col text-center gap-2'>
             <h3 className='text-xl text-skin-base'>Are you sure?</h3>
             <p className='text-skin-gray text-sm'>
-              You will not be able to recover this customer and all the related
-              Invoices, Estimates and Payments.
+              You will not be able to recover this customer.
             </p>
             <div className='flex gap-3 mt-5'>
-              <button className='bg-red-500 text-skin-white w-full rounded py-2'>
+              <button
+                onClick={deleteCustomerInDB}
+                className='bg-red-500 hover:bg-red-600 text-skin-white w-full rounded py-2'>
                 Ok
               </button>
               <button
                 onClick={handleCloseModal}
-                className='border text-skin-base w-full rounded py-2'>
+                className='border hover:bg-slate-100 text-skin-base w-full rounded py-2'>
                 Cancel
               </button>
             </div>
