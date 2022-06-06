@@ -1,16 +1,24 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { IconButton } from '@mui/material';
-import debounce from 'lodash.debounce';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import { Box, IconButton, Modal } from '@mui/material';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import Skeleton from '@mui/material/Skeleton';
-
 import {
   DataGrid,
+  GridCellParams,
   GridColDef,
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { format, parseISO } from 'date-fns';
+import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useCustomerFilter } from '../../context/CustomerFilterContext';
 import { $TSFixIt } from '../../shared/types';
@@ -18,64 +26,6 @@ import { $TSFixIt } from '../../shared/types';
 type Props = {
   isActive: boolean;
 };
-
-const columns: GridColDef[] = [
-  {
-    field: 'Name',
-    headerName: 'Name',
-    flex: 1,
-    cellClassName: 'name-style',
-    headerClassName: 'MuiDataGrid-columnHeaders',
-    disableColumnMenu: true,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
-  {
-    field: 'phone',
-    headerName: 'Phone',
-    flex: 1,
-    disableColumnMenu: true,
-    headerAlign: 'left',
-    cellClassName: 'field-style',
-    headerClassName: 'MuiDataGrid-columnHeaders',
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.phone === '' ? '-' : `${params.row.phone}`}`,
-  },
-  {
-    field: 'amountDue',
-    headerName: 'Amount Due',
-    headerAlign: 'left',
-    disableColumnMenu: true,
-    flex: 1,
-    cellClassName: 'field-style',
-    headerClassName: 'MuiDataGrid-columnHeaders',
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.amountDue === '' ? '-' : `${params.row.amountDue}.-`}`,
-  },
-  {
-    field: 'createdOn',
-    headerName: 'Created On',
-    flex: 1,
-    disableColumnMenu: true,
-    headerAlign: 'left',
-    cellClassName: 'field-style',
-    headerClassName: 'MuiDataGrid-columnHeaders',
-  },
-  {
-    field: 'actionButton',
-    headerName: '',
-    disableColumnMenu: true,
-    sortable: false,
-    editable: false,
-    flex: 0.2,
-    cellClassName: 'MuiDataGrid-cell',
-    renderCell: (params: GridRenderCellParams) => (
-      <IconButton>
-        <MoreHorizIcon />
-      </IconButton>
-    ),
-  },
-];
 
 const ErrorData = () => (
   <div
@@ -117,7 +67,7 @@ const LoadingOverlay = () => (
   </div>
 );
 
-const GET_CLIENTS = gql`
+const GET_CUSTOMERS = gql`
   query Customers {
     customers {
       id
@@ -129,12 +79,85 @@ const GET_CLIENTS = gql`
   }
 `;
 
+const DEL_CUSTOMER = gql`
+  mutation Mutation($removeCustomerId: String!) {
+    removeCustomer(id: $removeCustomerId) {
+      firstName
+    }
+  }
+`;
+
 const CustomerList = (props: Props) => {
   const [filterQuery, setFilterQuery] = useCustomerFilter();
-  const { loading, error, data, refetch } = useQuery(GET_CLIENTS);
+  const { loading, error, data, refetch } = useQuery(GET_CUSTOMERS);
+  const [removeCustomer] = useMutation(DEL_CUSTOMER);
   const [loadStatus, setLoadStatus] = useState(true);
   const [row, setRow] = useState([]);
   const [customerData, setCustomerData] = useState([]);
+  const [selectedCellId, setSelectedCellId] = useState<$TSFixIt>();
+
+  const [openModal, setOpenModal] = React.useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 500,
+    borderRadius: '0.5rem',
+    bgcolor: 'background.paper',
+    filter:
+      'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
+    p: 4,
+  };
+
+  const handleDeleteCustomer = () => {
+    handleClose();
+    handleOpenModal();
+  };
+
+  const deleteCustomerInDB = () => {
+    removeCustomer({
+      variables: { removeCustomerId: selectedCellId },
+
+      // optimisticResponse: {
+      //   __typename: 'Mutation',
+      //   removeCustomer: {
+      //     __typename: 'Customer',
+      //     firstName: true,
+      //     removeCustomerId: selectedCellId,
+      //   },
+      // },
+      update: (store) => {
+        const previousData = store.readQuery({ query: GET_CUSTOMERS });
+
+        console.log(data);
+        store.writeQuery({
+          query: GET_CUSTOMERS,
+          data: {
+            customers: previousData.customers.filter(
+              (customer) => customer.id !== selectedCellId
+            ),
+          },
+          overwrite: true,
+        });
+      },
+    });
+
+    handleCloseModal();
+  };
 
   /**
    * Search algorithm
@@ -181,7 +204,6 @@ const CustomerList = (props: Props) => {
   /**
    * Format the datas to display them on the grid
    */
-
   useEffect(() => {
     if (!data) return;
     else {
@@ -202,7 +224,67 @@ const CustomerList = (props: Props) => {
       // * Displays the customers
       setRow(formattedRows);
     }
-  }, [loading]);
+  }, [loading, data]);
+
+  const columns: GridColDef[] = [
+    {
+      field: 'Name',
+      headerName: 'Name',
+      flex: 1,
+      cellClassName: 'name-style',
+      headerClassName: 'MuiDataGrid-columnHeaders',
+      disableColumnMenu: true,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+    },
+    {
+      field: 'phone',
+      headerName: 'Phone',
+      flex: 1,
+      disableColumnMenu: true,
+      headerAlign: 'left',
+      cellClassName: 'field-style',
+      headerClassName: 'MuiDataGrid-columnHeaders',
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.phone === '' ? '-' : `${params.row.phone}`}`,
+    },
+    {
+      field: 'amountDue',
+      headerName: 'Amount Due',
+      headerAlign: 'left',
+      disableColumnMenu: true,
+      flex: 1,
+      cellClassName: 'field-style',
+      headerClassName: 'MuiDataGrid-columnHeaders',
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.amountDue === '' ? '-' : `${params.row.amountDue}.-`}`,
+    },
+    {
+      field: 'createdOn',
+      headerName: 'Created On',
+      flex: 1,
+      disableColumnMenu: true,
+      headerAlign: 'left',
+      cellClassName: 'field-style',
+      headerClassName: 'MuiDataGrid-columnHeaders',
+    },
+    {
+      field: 'actionButton',
+      headerName: '',
+      disableColumnMenu: true,
+      sortable: false,
+      editable: false,
+      flex: 0.2,
+      cellClassName: 'MuiDataGrid-cell',
+      renderCell: (params: GridRenderCellParams) => (
+        <div>
+          <IconButton onClick={handleClick}>
+            <MoreHorizIcon />
+          </IconButton>
+        </div>
+      ),
+    },
+  ];
   return (
     <>
       <div style={{ width: '100%' }}>
@@ -211,6 +293,9 @@ const CustomerList = (props: Props) => {
           loading={loadStatus}
           error={error}
           columns={columns}
+          onCellClick={(params: GridCellParams) => {
+            setSelectedCellId(params.id);
+          }}
           density='comfortable'
           pageSize={5}
           rowsPerPageOptions={[10]}
@@ -266,7 +351,89 @@ const CustomerList = (props: Props) => {
             },
           }}
         />
+
+        <Menu
+          id='customer-menu'
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={open}
+          onClose={handleClose}
+          sx={{
+            '& .MuiPaper-root': {
+              boxShadow: 'none',
+              filter:
+                'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
+              width: '150px',
+            },
+          }}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}>
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <EditOutlinedIcon className='text-skin-gray' fontSize='small' />
+            </ListItemIcon>
+            <ListItemText className='text-skin-base'>Edit</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <VisibilityOutlinedIcon
+                className='text-skin-gray'
+                fontSize='small'
+              />
+            </ListItemIcon>
+            <ListItemText>View</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleDeleteCustomer}>
+            <ListItemIcon>
+              <DeleteOutlineOutlinedIcon
+                className='text-skin-gray'
+                fontSize='small'
+              />
+            </ListItemIcon>
+            <ListItemText>Delete</ListItemText>
+          </MenuItem>
+        </Menu>
       </div>
+
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'>
+        <Box sx={style}>
+          <div className='flex justify-center '>
+            <div className='bg-red-100 p-3 rounded-full'>
+              <WarningAmberOutlinedIcon className='text-red-500  text-3xl' />
+            </div>
+          </div>
+          <div className='flex justify-center mt-6 flex-col text-center gap-2'>
+            <h3 className='text-xl text-skin-base'>Are you sure?</h3>
+            <p className='text-skin-gray text-sm'>
+              You will not be able to recover this customer.
+            </p>
+            <div className='flex gap-3 mt-5'>
+              <button
+                onClick={deleteCustomerInDB}
+                className='bg-red-500 hover:bg-red-600 text-skin-white w-full rounded py-2'>
+                Ok
+              </button>
+              <button
+                onClick={handleCloseModal}
+                className='border hover:bg-slate-100 text-skin-base w-full rounded py-2'>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </Box>
+      </Modal>
     </>
   );
 };
