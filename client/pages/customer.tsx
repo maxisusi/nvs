@@ -3,8 +3,8 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import type { NextPage } from 'next';
 import { useState } from 'react';
 import Button from '../components/Button/Button';
-import CustomerFilter from '../components/CustomerGrid/CustomerFilter/CustomerFilter';
-import CustomerList from '../components/CustomerGrid/CustomerGrid';
+import CustomerFilter from '../components/CustomerFilter/CustomerFilter';
+import CustomerGrid from '../components/CustomerGrid';
 import ClearIcon from '@mui/icons-material/Clear';
 import { motion } from 'framer-motion';
 import CustomerFilterProvider from '../context/CustomerFilterContext';
@@ -40,7 +40,7 @@ const Customer: NextPage = () => {
             <CustomerFilter />
           </motion.div>
         )}
-        <CustomerList isActive={filterCustomer} />
+        <CustomerGrid isActive={filterCustomer} />
       </CustomerFilterProvider>
     </>
   );

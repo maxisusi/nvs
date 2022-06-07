@@ -10,6 +10,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Skeleton from '@mui/material/Skeleton';
+import GridDisplayOverlay from './GridDisplayOverlay';
 import {
   DataGrid,
   GridCellParams,
@@ -27,45 +28,7 @@ type Props = {
   isActive: boolean;
 };
 
-const ErrorData = () => (
-  <div
-    style={{ marginTop: '-20px' }}
-    className='h-full w-full flex flex-col items-center  '>
-    <img className='w-48 mt-20 mb-10' src='/Something.svg' />
-    <h4 className='text-3xl mb-2'>Oopsy, Something went wrong...</h4>
-    <p className='text-skin-gray'>Try to reload the page to fix the issue</p>
-  </div>
-);
-
-const NoDatas = () => (
-  <div
-    style={{ marginTop: '-20px' }}
-    className='h-full w-full flex flex-col items-center  '>
-    <img className='w-48 mt-10 mb-10' src='/Nothing.svg' />
-    <h4 className='text-3xl mb-2'>No customer found</h4>
-    <p className='text-skin-gray'>
-      Click on <strong>"New Customer"</strong> to create your first customer
-    </p>
-  </div>
-);
-
-const LoadingOverlay = () => (
-  <div
-    style={{ marginTop: '-35px' }}
-    className='h-full w-full flex flex-col items-center z-10 absolute bg-white'>
-    <div className='h-16 bg-white w-full flex items-center px-6'>
-      <Skeleton sx={{ width: '100%' }}></Skeleton>
-    </div>
-
-    <div className='h-16 bg-slate-100 w-full flex items-center px-6'>
-      <Skeleton sx={{ width: '100%' }}></Skeleton>
-    </div>
-
-    <div className='h-16 bg-white w-full flex items-center px-6'>
-      <Skeleton sx={{ width: '100%' }}></Skeleton>
-    </div>
-  </div>
-);
+const { ErrorData, LoadingOverlay, NoDatas } = GridDisplayOverlay();
 
 const GET_CUSTOMERS = gql`
   query Customers {
@@ -131,24 +94,16 @@ const CustomerList = (props: Props) => {
   const deleteCustomerInDB = () => {
     removeCustomer({
       variables: { removeCustomerId: selectedCellId },
-
-      // optimisticResponse: {
-      //   __typename: 'Mutation',
-      //   removeCustomer: {
-      //     __typename: 'Customer',
-      //     firstName: true,
-      //     removeCustomerId: selectedCellId,
-      //   },
-      // },
       update: (store) => {
-        const previousData = store.readQuery({ query: GET_CUSTOMERS });
+        const previousData: $TSFixIt = store.readQuery({
+          query: GET_CUSTOMERS,
+        });
 
-        console.log(data);
         store.writeQuery({
           query: GET_CUSTOMERS,
           data: {
             customers: previousData.customers.filter(
-              (customer) => customer.id !== selectedCellId
+              (customer: $TSFixIt) => customer.id !== selectedCellId
             ),
           },
           overwrite: true,

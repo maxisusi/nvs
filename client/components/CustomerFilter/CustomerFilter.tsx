@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCustomerFilter } from '../../../context/CustomerFilterContext';
+import { useCustomerFilter } from '../../context/CustomerFilterContext';
 import debounce from 'lodash.debounce';
 
 type Props = {};
