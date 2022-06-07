@@ -18,10 +18,9 @@ import {
 import { format, parseISO } from 'date-fns';
 import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useCustomerFilter } from '../../context/CustomerFilterContext';
-import { DEL_CUSTOMER, GET_CUSTOMERS } from '../../shared/graphql/customers';
-import { Customer } from '../../shared/types/customer';
-import { $TSFixIt } from '../../shared/types/general';
+import { useCustomerFilter } from '@nvs-context/CustomerFilterContext';
+import { DEL_CUSTOMER, GET_CUSTOMERS } from '@nvs-shared/graphql/customers';
+import { Customer } from '@nvs-shared/types/customer';
 import GridDisplayOverlays from './utils/GridDisplayOverlays';
 
 type Props = {
@@ -56,7 +55,6 @@ const CustomerList = (props: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleCloseMenu = () => setAnchorEl(null);
-
   const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -75,7 +73,7 @@ const CustomerList = (props: Props) => {
       await removeCustomer({
         variables: { removeCustomerId: cellId },
         update: (store) => {
-          const previousData: $TSFixIt = store.readQuery({
+          const previousData: any = store.readQuery({
             query: GET_CUSTOMERS,
           });
 
@@ -301,7 +299,7 @@ export default CustomerList;
 const filterCustomers = (row: CustomerRow[], query: string): CustomerRow[] => {
   const querySearch = query.toLocaleLowerCase();
   const keys = ['firstName', 'lastName', 'phone'];
-  return row.filter((item: $TSFixIt) =>
+  return row.filter((item: any) =>
     keys.some((key) => item[key].toLowerCase().includes(querySearch))
   );
 };
