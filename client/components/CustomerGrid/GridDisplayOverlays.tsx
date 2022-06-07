@@ -1,6 +1,6 @@
 import Skeleton from '@mui/material/Skeleton';
 
-const GridDisplayOverlay = () => {
+const GridDisplayOverlays = () => {
   const ErrorData = () => <div style={{
     marginTop: '-20px'
   }} className="h-full w-full flex flex-col items-center ">
@@ -48,4 +48,4 @@ const GridDisplayOverlay = () => {
   };
 };
 
-export default GridDisplayOverlay;
+export default GridDisplayOverlays;

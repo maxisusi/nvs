@@ -1,4 +1,4 @@
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -9,8 +9,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Skeleton from '@mui/material/Skeleton';
-import GridDisplayOverlay from './GridDisplayOverlay';
 import {
   DataGrid,
   GridCellParams,
@@ -22,33 +20,15 @@ import { format, parseISO } from 'date-fns';
 import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useCustomerFilter } from '../../context/CustomerFilterContext';
+import { DEL_CUSTOMER, GET_CUSTOMERS } from '../../shared/graphql';
 import { $TSFixIt } from '../../shared/types';
+import GridDisplayOverlays from './GridDisplayOverlays';
 
 type Props = {
   isActive: boolean;
 };
 
-const { ErrorData, LoadingOverlay, NoDatas } = GridDisplayOverlay();
-
-const GET_CUSTOMERS = gql`
-  query Customers {
-    customers {
-      id
-      firstName
-      lastName
-      phone
-      createdAt
-    }
-  }
-`;
-
-const DEL_CUSTOMER = gql`
-  mutation Mutation($removeCustomerId: String!) {
-    removeCustomer(id: $removeCustomerId) {
-      firstName
-    }
-  }
-`;
+const { ErrorData, LoadingOverlay, NoDatas } = GridDisplayOverlays();
 
 const CustomerList = (props: Props) => {
   const [filterQuery, setFilterQuery] = useCustomerFilter();
