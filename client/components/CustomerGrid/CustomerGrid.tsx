@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -12,196 +12,169 @@ import MenuItem from '@mui/material/MenuItem';
 import {
   DataGrid,
   GridCellParams,
-  GridColDef,
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { format, parseISO } from 'date-fns';
 import debounce from 'lodash.debounce';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useCustomerFilter } from '../../context/CustomerFilterContext';
 import { DEL_CUSTOMER, GET_CUSTOMERS } from '../../shared/graphql/customers';
+import { Customer } from '../../shared/types/customer';
 import { $TSFixIt } from '../../shared/types/general';
-import GridDisplayOverlays from './GridDisplayOverlays';
+import GridDisplayOverlays from './utils/GridDisplayOverlays';
 
 type Props = {
   isActive: boolean;
 };
 
-const { ErrorData, LoadingOverlay, NoDatas } = GridDisplayOverlays();
+interface CustomerRow {
+  id: string;
+  lastName: string;
+  firstName: string;
+  phone: string;
+  createdOn: string;
+  amountDue: string;
+}
 
 const CustomerList = (props: Props) => {
-  const [filterQuery, setFilterQuery] = useCustomerFilter();
-  const { loading, error, data, refetch } = useQuery(GET_CUSTOMERS);
+  const { loading, error, data } = useQuery(GET_CUSTOMERS);
   const [removeCustomer] = useMutation(DEL_CUSTOMER);
-  const [loadStatus, setLoadStatus] = useState(true);
-  const [row, setRow] = useState([]);
-  const [customerData, setCustomerData] = useState([]);
-  const [selectedCellId, setSelectedCellId] = useState<$TSFixIt>();
+  const [{ displayName }] = useCustomerFilter();
 
+  const [loadingOverlay, setLoadingOverlay] = useState(true);
+  const [row, setRow] = useState<CustomerRow[] | []>([]);
+
+  const [cellId, setCellId] = useState<string>();
+
+  // * Modal State manager
   const [openModal, setOpenModal] = React.useState(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
+  // * Menu State manager
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCloseMenu = () => setAnchorEl(null);
+
+  const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 500,
-    borderRadius: '0.5rem',
-    bgcolor: 'background.paper',
-    filter:
-      'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
-    p: 4,
-  };
-
-  const handleDeleteCustomer = () => {
-    handleClose();
+  const handleOpenDeleteCustomerModal = () => {
+    handleCloseMenu();
     handleOpenModal();
   };
 
-  const deleteCustomerInDB = () => {
-    removeCustomer({
-      variables: { removeCustomerId: selectedCellId },
-      update: (store) => {
-        const previousData: $TSFixIt = store.readQuery({
-          query: GET_CUSTOMERS,
-        });
-
-        store.writeQuery({
-          query: GET_CUSTOMERS,
-          data: {
-            customers: previousData.customers.filter(
-              (customer: $TSFixIt) => customer.id !== selectedCellId
-            ),
-          },
-          overwrite: true,
-        });
-      },
-    });
-
-    handleCloseModal();
-  };
-
   /**
-   * Search algorithm
-   *
-   * @param data
-   * @returns
+   * Delete customer in DB and updates the UI
+   * @param cellId
    */
-  const searchCustomer = (data: $TSFixIt) => {
-    const keys = ['firstName', 'lastName', 'phone'];
-    return data.filter((item: any) =>
-      keys.some((key) =>
-        item[key].toLowerCase().includes(filterQuery.displayName.toLowerCase())
-      )
-    );
-  };
+  const handleDeleteCustomer = async (cellId: string) => {
+    try {
+      await removeCustomer({
+        variables: { removeCustomerId: cellId },
+        update: (store) => {
+          const previousData: $TSFixIt = store.readQuery({
+            query: GET_CUSTOMERS,
+          });
 
-  /**
-   * Checks if the filter is active
-   */
-  useEffect(() => {
-    if (!props.isActive) {
-      setRow(customerData);
+          store.writeQuery({
+            query: GET_CUSTOMERS,
+            data: {
+              customers: previousData.customers.filter(
+                (customer: Customer) => customer.id !== cellId
+              ),
+            },
+            overwrite: true,
+          });
+        },
+      }).then(() => handleCloseModal());
+    } catch (e) {
+      alert('There was an error, please check the console for further details');
+      console.log(e);
+
+      handleCloseModal();
     }
-  }, [props.isActive]);
+  };
 
   /**
-   * Checks the user input to start researching
+   * Display the filtered results of customers
+   * based on the search query
    */
-  useEffect(() => {
-    if (filterQuery.displayName === '') return setRow(customerData);
-    setLoadStatus(true);
-    const res = searchCustomer(row);
-    loadAfterInput();
-    setRow(res);
-  }, [filterQuery.displayName]);
 
-  const loadAfterInput = useCallback(
+  useEffect(() => {
+    if (!displayName || !props.isActive)
+      return setRow(defaultCustomerRowValues);
+
+    setLoadingOverlay(true);
+    const searchResult = filterCustomers(row, displayName);
+    debounceSearchResult();
+
+    setRow(searchResult);
+  }, [displayName, props.isActive]);
+
+  const debounceSearchResult = useCallback(
     debounce(() => {
-      setLoadStatus(false);
+      setLoadingOverlay(false);
     }, 500),
     []
   );
 
   /**
-   * Format the datas to display them on the grid
+   * Format the data after fetching and
+   * displays to the customer grid component
    */
+
   useEffect(() => {
     if (!data) return;
     else {
-      setLoadStatus(false);
-      const formattedRows = data.customers.map((customer: $TSFixIt) => {
-        return {
-          id: customer.id,
-          lastName: customer.lastName,
-          firstName: customer.firstName,
-          phone: customer.phone,
-          createdOn: format(parseISO(customer.createdAt), 'yyyy-MM-dd'),
-          amountDue: '',
-        };
-      });
-      // * Set the default data formatted from the DB
-      setCustomerData(formattedRows);
-
-      // * Displays the customers
-      setRow(formattedRows);
+      setLoadingOverlay(false);
+      setRow(defaultCustomerRowValues);
     }
   }, [loading, data]);
 
-  const columns: GridColDef[] = [
+  const defaultCustomerRowValues = useMemo(() => {
+    if (!data) return row;
+
+    return data.customers.map((customer: Customer) => {
+      return {
+        id: customer.id,
+        lastName: customer.lastName,
+        firstName: customer.firstName,
+        phone: customer.phone,
+        createdOn: format(parseISO(customer.createdAt), 'yyyy-MM-dd'),
+        amountDue: '',
+      };
+    });
+  }, [data]);
+
+  const columns = [
     {
       field: 'Name',
       headerName: 'Name',
-      flex: 1,
       cellClassName: 'name-style',
-      headerClassName: 'MuiDataGrid-columnHeaders',
-      disableColumnMenu: true,
+      ...columnParams(),
       valueGetter: (params: GridValueGetterParams) =>
         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
     },
     {
       field: 'phone',
       headerName: 'Phone',
-      flex: 1,
-      disableColumnMenu: true,
-      headerAlign: 'left',
       cellClassName: 'field-style',
-      headerClassName: 'MuiDataGrid-columnHeaders',
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.phone === '' ? '-' : `${params.row.phone}`}`,
+      ...columnParams('phone'),
     },
     {
       field: 'amountDue',
       headerName: 'Amount Due',
-      headerAlign: 'left',
-      disableColumnMenu: true,
-      flex: 1,
       cellClassName: 'field-style',
-      headerClassName: 'MuiDataGrid-columnHeaders',
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.amountDue === '' ? '-' : `${params.row.amountDue}.-`}`,
+      ...columnParams('amountDue'),
     },
     {
       field: 'createdOn',
       headerName: 'Created On',
-      flex: 1,
-      disableColumnMenu: true,
-      headerAlign: 'left',
       cellClassName: 'field-style',
-      headerClassName: 'MuiDataGrid-columnHeaders',
+      ...columnParams(),
     },
     {
       field: 'actionButton',
@@ -213,7 +186,7 @@ const CustomerList = (props: Props) => {
       cellClassName: 'MuiDataGrid-cell',
       renderCell: (params: GridRenderCellParams) => (
         <div>
-          <IconButton onClick={handleClick}>
+          <IconButton onClick={handleOpenMenu}>
             <MoreHorizIcon />
           </IconButton>
         </div>
@@ -225,11 +198,11 @@ const CustomerList = (props: Props) => {
       <div style={{ width: '100%' }}>
         <DataGrid
           rows={row}
-          loading={loadStatus}
+          loading={loadingOverlay}
           error={error}
           columns={columns}
           onCellClick={(params: GridCellParams) => {
-            setSelectedCellId(params.id);
+            setCellId(params.id as string);
           }}
           density='comfortable'
           pageSize={5}
@@ -240,51 +213,7 @@ const CustomerList = (props: Props) => {
             LoadingOverlay: LoadingOverlay,
           }}
           disableSelectionOnClick
-          sx={{
-            backgroundColor: 'white',
-            fontFamily: 'unset',
-            border: 'none',
-            minHeight: '500px',
-            filter:
-              'drop-shadow(0 2px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
-            '& .MuiDataGrid-columnHeaders': {
-              backgroundColor: '#F5F6FA',
-              color: '#64748b',
-              minHeight: '3em !important',
-              maxHeight: '3em !important',
-              textTransform: 'uppercase',
-              fontSize: '.75rem',
-              letterSpacing: '1px',
-            },
-            '& .MuiDataGrid-columnHeaders:focus': {
-              outline: 0,
-            },
-
-            '& .MuiDataGrid-virtualScroller': {
-              marginTop: '35px !important',
-            },
-            '& .name-style': {
-              fontWeight: '500',
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-            },
-            '& .field-style': {
-              color: '#58667a',
-            },
-            '& .MuiDataGrid-row': {
-              zIndex: 1,
-            },
-
-            '& .MuiDataGrid-row:nth-of-type(even)': {
-              backgroundColor: '#f8fafc',
-            },
-            '& .MuiDataGrid-cell': {
-              border: 'none',
-            },
-            '& .MuiDataGrid-cell:focus-within': {
-              outline: 0,
-            },
-          }}
+          sx={gridStyle}
         />
 
         <Menu
@@ -299,25 +228,18 @@ const CustomerList = (props: Props) => {
             horizontal: 'right',
           }}
           open={open}
-          onClose={handleClose}
-          sx={{
-            '& .MuiPaper-root': {
-              boxShadow: 'none',
-              filter:
-                'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
-              width: '150px',
-            },
-          }}
+          onClose={handleCloseMenu}
+          sx={menuStyle}
           MenuListProps={{
             'aria-labelledby': 'basic-button',
           }}>
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleCloseMenu}>
             <ListItemIcon>
               <EditOutlinedIcon className='text-skin-gray' fontSize='small' />
             </ListItemIcon>
             <ListItemText className='text-skin-base'>Edit</ListItemText>
           </MenuItem>
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleCloseMenu}>
             <ListItemIcon>
               <VisibilityOutlinedIcon
                 className='text-skin-gray'
@@ -326,7 +248,7 @@ const CustomerList = (props: Props) => {
             </ListItemIcon>
             <ListItemText>View</ListItemText>
           </MenuItem>
-          <MenuItem onClick={handleDeleteCustomer}>
+          <MenuItem onClick={handleOpenDeleteCustomerModal}>
             <ListItemIcon>
               <DeleteOutlineOutlinedIcon
                 className='text-skin-gray'
@@ -343,7 +265,7 @@ const CustomerList = (props: Props) => {
         onClose={handleCloseModal}
         aria-labelledby='modal-modal-title'
         aria-describedby='modal-modal-description'>
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <div className='flex justify-center '>
             <div className='bg-red-100 p-3 rounded-full'>
               <WarningAmberOutlinedIcon className='text-red-500  text-3xl' />
@@ -352,11 +274,12 @@ const CustomerList = (props: Props) => {
           <div className='flex justify-center mt-6 flex-col text-center gap-2'>
             <h3 className='text-xl text-skin-base'>Are you sure?</h3>
             <p className='text-skin-gray text-sm'>
-              You will not be able to recover this customer.
+              You will not be able to recover this customer and all the related
+              Invoices, Estimates and Payments.
             </p>
             <div className='flex gap-3 mt-5'>
               <button
-                onClick={deleteCustomerInDB}
+                onClick={() => handleDeleteCustomer(cellId as string)}
                 className='bg-red-500 hover:bg-red-600 text-skin-white w-full rounded py-2'>
                 Ok
               </button>
@@ -374,3 +297,103 @@ const CustomerList = (props: Props) => {
 };
 
 export default CustomerList;
+
+const filterCustomers = (row: CustomerRow[], query: string): CustomerRow[] => {
+  const querySearch = query.toLocaleLowerCase();
+  const keys = ['firstName', 'lastName', 'phone'];
+  return row.filter((item: $TSFixIt) =>
+    keys.some((key) => item[key].toLowerCase().includes(querySearch))
+  );
+};
+
+const handleRowEmptyValue = (field: string) => {
+  return `${field === '' ? '-' : `${field}`}`;
+};
+
+const { ErrorData, LoadingOverlay, NoDatas } = GridDisplayOverlays();
+
+const columnParams: any = (field?: string) => {
+  const params = {
+    flex: 1,
+    disableColumnMenu: true,
+    headerAlign: 'left',
+    headerClassName: 'MuiDataGrid-columnHeaders',
+  };
+
+  if (!field) {
+    return params;
+  } else {
+    return Object.assign(params, {
+      valueGetter: (params: GridValueGetterParams) =>
+        handleRowEmptyValue(params.row[field]),
+    });
+  }
+};
+
+const modalStyle = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 500,
+  borderRadius: '0.5rem',
+  bgcolor: 'background.paper',
+  filter:
+    'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
+  p: 4,
+};
+
+const gridStyle = {
+  backgroundColor: 'white',
+  fontFamily: 'unset',
+  border: 'none',
+  minHeight: '500px',
+  filter:
+    'drop-shadow(0 2px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
+  '& .MuiDataGrid-columnHeaders': {
+    backgroundColor: '#F5F6FA',
+    color: '#64748b',
+    minHeight: '3em !important',
+    maxHeight: '3em !important',
+    textTransform: 'uppercase',
+    fontSize: '.75rem',
+    letterSpacing: '1px',
+  },
+  '& .MuiDataGrid-columnHeaders:focus': {
+    outline: 0,
+  },
+
+  '& .MuiDataGrid-virtualScroller': {
+    marginTop: '35px !important',
+  },
+  '& .name-style': {
+    fontWeight: '500',
+    fontSize: '0.95rem',
+    cursor: 'pointer',
+  },
+  '& .field-style': {
+    color: '#58667a',
+  },
+  '& .MuiDataGrid-row': {
+    zIndex: 1,
+  },
+
+  '& .MuiDataGrid-row:nth-of-type(even)': {
+    backgroundColor: '#f8fafc',
+  },
+  '& .MuiDataGrid-cell': {
+    border: 'none',
+  },
+  '& .MuiDataGrid-cell:focus-within': {
+    outline: 0,
+  },
+};
+
+const menuStyle = {
+  '& .MuiPaper-root': {
+    boxShadow: 'none',
+    filter:
+      'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
+    width: '150px',
+  },
+};
