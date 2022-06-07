@@ -20,8 +20,8 @@ import { format, parseISO } from 'date-fns';
 import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useCustomerFilter } from '../../context/CustomerFilterContext';
-import { DEL_CUSTOMER, GET_CUSTOMERS } from '../../shared/graphql';
-import { $TSFixIt } from '../../shared/types';
+import { DEL_CUSTOMER, GET_CUSTOMERS } from '../../shared/graphql/customers';
+import { $TSFixIt } from '../../shared/types/general';
 import GridDisplayOverlays from './GridDisplayOverlays';
 
 type Props = {
