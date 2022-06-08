@@ -1,14 +1,13 @@
 import AddIcon from '@mui/icons-material/Add';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import type { NextPage } from 'next';
-import { useState } from 'react';
-import Button from '@nvs-components/Button/Button';
-import CustomerFilter from '@nvs-components/CustomerFilter/CustomerFilter';
-import CustomerGrid from '@nvs-components/CustomerGrid';
 import ClearIcon from '@mui/icons-material/Clear';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import CustomerFilter from '@nvs-components/CustomerFilter';
+import CustomerGrid from '@nvs-components/CustomerGrid';
 import { motion } from 'framer-motion';
-import CustomerFilterProvider from '../../context/CustomerFilterContext';
+import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import CustomerFilterProvider from '@nvs-context/CustomerFilterContext';
 
 const Customer: NextPage = () => {
   const [filterCustomer, setFilterCustomer] = useState(false);

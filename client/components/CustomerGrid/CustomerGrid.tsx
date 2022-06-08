@@ -337,7 +337,7 @@ const modalStyle = {
   borderRadius: '0.5rem',
   bgcolor: 'background.paper',
   filter:
-    'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
+    'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))',
   p: 4,
 };
 
@@ -347,7 +347,7 @@ const gridStyle = {
   border: 'none',
   minHeight: '500px',
   filter:
-    'drop-shadow(0 2px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));',
+    'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))',
   '& .MuiDataGrid-columnHeaders': {
     backgroundColor: '#F5F6FA',
     color: '#64748b',
