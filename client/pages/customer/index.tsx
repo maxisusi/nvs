@@ -24,7 +24,7 @@ const Customer: NextPage = () => {
             onClick={() => setFilterCustomer(!filterCustomer)}
             className={`px-3 py-2 text-sm rounded flex gap-2 items-center font-semibold border border-skin-fill ${
               filterCustomer === false
-                ? ' text-skin-fill hover:bg-skin-fill hover:text-skin-white'
+                ? '  text-skin-fill hover:bg-skin-fill hover:text-skin-white'
                 : 'bg-skin-fill text-skin-white hover:bg-skin-btnHover'
             }`}>
             Filter
