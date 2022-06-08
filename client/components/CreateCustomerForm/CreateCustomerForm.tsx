@@ -3,34 +3,6 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-interface CustomerFormInputs {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  mobile: string;
-  address: string;
-  postalCode: string;
-  countryName: string;
-  city: string;
-  region: string;
-}
-
-const schema = yup
-  .object({
-    firstName: yup.string().required('First Name is required'),
-    lastName: yup.string().required('Last Name is required'),
-    email: yup.string().email('The Email must be valid'),
-    phone: yup.string(),
-    mobile: yup.string(),
-    address: yup.string().required('Address is required'),
-    postalCode: yup.string().required('Zip Code is required'),
-    countryName: yup.string().required('Country is required'),
-    city: yup.string().required('City is required'),
-    region: yup.string().required('Region is required'),
-  })
-  .required();
-
 const CreateCustomerForm = () => {
   const {
     register,
@@ -48,7 +20,7 @@ const CreateCustomerForm = () => {
       className='bg-white h-fit p-8 rounded drop-shadow grid grid-cols-8 gap-3 gap-y-6'>
       <div className='  h-14 col-span-2 row-span-3'>
         <h4 className='text-xl font-bold'>Basic Info</h4>
-        <button type='submit'>SUBMIT</button>
+        <button hidden type='submit'></button>
       </div>
 
       <TextInput
@@ -122,6 +94,34 @@ const CreateCustomerForm = () => {
 
 export default CreateCustomerForm;
 
+interface CustomerFormInputs {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  mobile: string;
+  address: string;
+  postalCode: string;
+  countryName: string;
+  city: string;
+  region: string;
+}
+
+const schema = yup
+  .object({
+    firstName: yup.string().required('First Name is required'),
+    lastName: yup.string().required('Last Name is required'),
+    email: yup.string().email('The Email must be valid'),
+    phone: yup.string(),
+    mobile: yup.string(),
+    address: yup.string().required('Address is required'),
+    postalCode: yup.string().required('Zip Code is required'),
+    countryName: yup.string().required('Country is required'),
+    city: yup.string().required('City is required'),
+    region: yup.string().required('Region is required'),
+  })
+  .required();
+
 type InputProps = {
   label: string;
   required?: boolean;
@@ -154,11 +154,3 @@ const TextInput = (props: InputProps) => {
     </div>
   );
 };
-
-// <input
-//   type='text'
-//   className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
-//     onErrorMessage?.length &&
-//     'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
-//   }`}
-// />;
