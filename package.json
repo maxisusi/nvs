@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@mui/x-data-grid": "^5.11.1",
-    "@nestjs/mapped-types": "*"
+    "@nestjs/mapped-types": "*",
+    "@tailwindcss/forms": "^0.5.2"
   },
   "name": "nvs-invoice-app",
   "version": "1.0.0",
