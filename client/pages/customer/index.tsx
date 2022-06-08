@@ -8,9 +8,11 @@ import CustomerGrid from '@nvs-components/CustomerGrid';
 import ClearIcon from '@mui/icons-material/Clear';
 import { motion } from 'framer-motion';
 import CustomerFilterProvider from '../../context/CustomerFilterContext';
+import { useRouter } from 'next/router';
 
 const Customer: NextPage = () => {
   const [filterCustomer, setFilterCustomer] = useState(false);
+  const router = useRouter();
   return (
     <>
       <div className='flex items-center justify-between mb-10'>
@@ -29,7 +31,13 @@ const Customer: NextPage = () => {
             Filter
             {filterCustomer === false ? <FilterAltIcon /> : <ClearIcon />}
           </button>
-          <Button variant='full' icon={<AddIcon />} text='New Customer' />
+
+          <button
+            onClick={() => router.push('/customer/create')}
+            className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
+            <AddIcon />
+            New Customer
+          </button>
         </div>
       </div>
       <CustomerFilterProvider>
