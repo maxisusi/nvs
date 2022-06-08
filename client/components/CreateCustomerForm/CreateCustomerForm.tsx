@@ -9,13 +9,25 @@ interface CustomerFormInputs {
   email: string;
   phone: string;
   mobile: string;
+  address: string;
+  postalCode: string;
+  countryName: string;
+  city: string;
+  region: string;
 }
 
 const schema = yup
   .object({
-    firstName: yup.string().required(),
-    lastName: yup.string().required(),
-    email: yup.string().email(),
+    firstName: yup.string().required('First Name is required'),
+    lastName: yup.string().required('Last Name is required'),
+    email: yup.string().email('The Email must be valid'),
+    phone: yup.string(),
+    mobile: yup.string(),
+    address: yup.string().required('Address is required'),
+    postalCode: yup.string().required('Zip Code is required'),
+    countryName: yup.string().required('Country is required'),
+    city: yup.string().required('City is required'),
+    region: yup.string().required('Region is required'),
   })
   .required();
 
@@ -57,9 +69,16 @@ const CreateCustomerForm = () => {
         onError={errors.email}
         label='Email'
       />
-      <TextInput label='Phone' />
-      <TextInput label='Mobile' />
-      <TextInput label='Mobile' />
+      <TextInput
+        formHandler={register('phone')}
+        onError={errors.phone}
+        label='Phone'
+      />
+      <TextInput
+        formHandler={register('mobile')}
+        onError={errors.mobile}
+        label='Mobile'
+      />
 
       <hr className='col-span-full my-2' />
 
@@ -67,11 +86,36 @@ const CreateCustomerForm = () => {
         <h4 className='text-xl font-bold'>Billing Address</h4>
       </div>
 
-      <TextInput label='Country' required />
-      <TextInput label='City' required />
-      <TextInput label='Region' required />
-      <TextInput label='Zip Code' required />
-      <TextInput label='Address' required />
+      <TextInput
+        formHandler={register('countryName')}
+        onError={errors.countryName}
+        label='Country'
+        required
+      />
+      <TextInput
+        formHandler={register('city')}
+        onError={errors.city}
+        label='City'
+        required
+      />
+      <TextInput
+        formHandler={register('region')}
+        onError={errors.region}
+        label='Region'
+        required
+      />
+      <TextInput
+        formHandler={register('postalCode')}
+        onError={errors.postalCode}
+        label='Zip Code'
+        required
+      />
+      <TextInput
+        formHandler={register('address')}
+        onError={errors.address}
+        label='Address'
+        required
+      />
     </form>
   );
 };
