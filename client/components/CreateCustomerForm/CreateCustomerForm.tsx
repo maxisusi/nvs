@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import countries from '../../utils/countries.json';
 
 const CreateCustomerForm = () => {
   const {
@@ -27,7 +28,6 @@ const CreateCustomerForm = () => {
         formHandler={register('firstName')}
         onError={errors.firstName}
         label='First Name'
-        value='firstName'
         required
       />
       <TextInput
@@ -58,10 +58,11 @@ const CreateCustomerForm = () => {
         <h4 className='text-xl font-bold'>Billing Address</h4>
       </div>
 
-      <TextInput
+      <SelectInput
         formHandler={register('countryName')}
         onError={errors.countryName}
         label='Country'
+        values={countries}
         required
       />
       <TextInput
@@ -126,13 +127,12 @@ type InputProps = {
   label: string;
   required?: boolean;
   size?: 'standard' | 'full';
-  value?: string;
-  formHandler?: any;
-  onError?: any;
+  formHandler: any;
+  onError: any;
 };
 
 const TextInput = (props: InputProps) => {
-  const { required, size, label, value, formHandler, onError } = props;
+  const { required, size, label, formHandler, onError } = props;
 
   return (
     <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-3'}`}>
@@ -149,6 +149,53 @@ const TextInput = (props: InputProps) => {
             'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
           }`}
         />
+      </div>
+      <p className='text-sm text-red-500 mt-1'>{onError?.message}</p>
+    </div>
+  );
+};
+
+type SelectInput = {
+  label: string;
+  required?: boolean;
+  size?: 'standard' | 'full';
+  formHandler: any;
+  onError: any;
+  values: any;
+};
+
+type Country = {
+  name: string;
+  code: string;
+};
+
+const SelectInput = (props: SelectInput) => {
+  const { required, size, label, formHandler, onError, values } = props;
+
+  return (
+    <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-3'}`}>
+      <div className='flex flex-col gap-1 w-full'>
+        <label className='text-sm font-medium capitalize'>
+          {label}
+          {required && <span className='text-red-500'>*</span>}
+        </label>
+
+        <select
+          {...formHandler}
+          type='select'
+          className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
+            onError &&
+            'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
+          }`}>
+          <option hidden value={''}>
+            Select a country
+          </option>
+          {values.map((country: Country) => (
+            <option key={country.code} value={country.name}>
+              {country.name}
+            </option>
+          ))}
+        </select>
       </div>
       <p className='text-sm text-red-500 mt-1'>{onError?.message}</p>
     </div>
