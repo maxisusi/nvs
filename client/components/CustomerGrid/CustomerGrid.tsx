@@ -19,7 +19,10 @@ import { format, parseISO } from 'date-fns';
 import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useCustomerFilter } from '@nvs-context/CustomerFilterContext';
-import { DEL_CUSTOMER, GET_CUSTOMERS } from '@nvs-shared/graphql/customers';
+import {
+  DEL_CUSTOMER,
+  GET_CUSTOMERS_GRID,
+} from '@nvs-shared/graphql/customers';
 import { Customer } from '@nvs-shared/types/customer';
 import GridDisplayOverlays from './utils/GridDisplayOverlays';
 
@@ -37,7 +40,7 @@ interface CustomerRow {
 }
 
 const CustomerList = (props: Props) => {
-  const { loading, error, data } = useQuery(GET_CUSTOMERS);
+  const { loading, error, data } = useQuery(GET_CUSTOMERS_GRID);
   const [removeCustomer] = useMutation(DEL_CUSTOMER);
   const [{ displayName }] = useCustomerFilter();
 
@@ -74,11 +77,11 @@ const CustomerList = (props: Props) => {
         variables: { removeCustomerId: cellId },
         update: (store) => {
           const previousData: any = store.readQuery({
-            query: GET_CUSTOMERS,
+            query: GET_CUSTOMERS_GRID,
           });
 
           store.writeQuery({
-            query: GET_CUSTOMERS,
+            query: GET_CUSTOMERS_GRID,
             data: {
               customers: previousData.customers.filter(
                 (customer: Customer) => customer.id !== cellId
@@ -90,7 +93,7 @@ const CustomerList = (props: Props) => {
       }).then(() => handleCloseModal());
     } catch (e) {
       alert('There was an error, please check the console for further details');
-      console.log(e);
+      console.error(e);
 
       handleCloseModal();
     }

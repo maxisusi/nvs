@@ -15,7 +15,7 @@ const generateFields = async () => {
   // * Generate clients
   await prisma.customer
     .createMany({
-      data: generator.createCustomer(300),
+      data: generator.createCustomer(5),
     })
     .catch((e) => console.log('There was an error', e));
 

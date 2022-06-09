@@ -3,21 +3,49 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import countries from '../../utils/countries.json';
-
+import { useMutation } from '@apollo/client';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useRouter } from 'next/router';
+import {
+  CREATE_CUSTOMER,
+  GET_CUSTOMERS_GRID,
+} from '@nvs-shared/graphql/customers';
 
 const CreateCustomerForm = () => {
+  // * Form Params
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<CustomerFormInputs>({
     resolver: yupResolver(schema),
   });
+  const router = useRouter();
 
-  const formSubmit = (data: CustomerFormInputs) => console.log(data);
+  // * Create a new customer mutation
+  const [createCustomer] = useMutation(CREATE_CUSTOMER);
+  const formSubmit = async (data: CustomerFormInputs) => {
+    try {
+      await createCustomer({
+        variables: { createCustomerInput: data },
+
+        refetchQueries: () => [
+          {
+            query: GET_CUSTOMERS_GRID,
+          },
+        ],
+      }).then(() => {
+        reset();
+        router.push('/customer');
+      });
+    } catch (e) {
+      alert('There was an error, please check the console for further details');
+      console.error(e);
+    }
+  };
 
   return (
     <div>
@@ -36,7 +64,9 @@ const CreateCustomerForm = () => {
             Reset
             <ClearIcon />
           </button>
-          <button className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
+          <button
+            onClick={handleSubmit(formSubmit)}
+            className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <SaveAltOutlinedIcon />
             Save Customer
           </button>
