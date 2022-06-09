@@ -4,10 +4,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import countries from '../../utils/countries.json';
 
+import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
+import ClearIcon from '@mui/icons-material/Clear';
+
 const CreateCustomerForm = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CustomerFormInputs>({
     resolver: yupResolver(schema),
@@ -16,80 +20,104 @@ const CreateCustomerForm = () => {
   const formSubmit = (data: CustomerFormInputs) => console.log(data);
 
   return (
-    <form
-      onSubmit={handleSubmit(formSubmit)}
-      className='bg-white h-fit p-8 rounded drop-shadow grid grid-cols-8 gap-3 gap-y-6'>
-      <div className='  h-14 col-span-2 row-span-3'>
-        <h4 className='text-xl font-bold'>Basic Info</h4>
-        <button hidden type='submit'></button>
+    <div>
+      <div className='flex items-center justify-between mb-12'>
+        <div>
+          <h1 className='text-3xl mb-3 font-bold'>New Customer </h1>
+          <p className='text-skin-gray'>
+            Please fill-up the mandatory fields to create the customer
+          </p>
+        </div>
+
+        <div className='flex gap-3'>
+          <button
+            onClick={() => reset()}
+            className={`px-3 py-2 text-sm rounded flex gap-2 items-center font-semibold border border-skin-fill text-skin-fill hover:bg-skin-fill hover:text-skin-white`}>
+            Reset
+            <ClearIcon />
+          </button>
+          <button className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
+            <SaveAltOutlinedIcon />
+            Save Customer
+          </button>
+        </div>
       </div>
 
-      <TextInput
-        formHandler={register('firstName')}
-        onError={errors.firstName}
-        label='First Name'
-        required
-      />
-      <TextInput
-        formHandler={register('lastName')}
-        onError={errors.lastName}
-        label='Last Name'
-        required
-      />
-      <TextInput
-        formHandler={register('email')}
-        onError={errors.email}
-        label='Email'
-      />
-      <TextInput
-        formHandler={register('phone')}
-        onError={errors.phone}
-        label='Phone'
-      />
-      <TextInput
-        formHandler={register('mobile')}
-        onError={errors.mobile}
-        label='Mobile'
-      />
+      <form
+        onSubmit={handleSubmit(formSubmit)}
+        className='bg-white h-fit p-8 rounded drop-shadow grid grid-cols-8 gap-3 gap-y-6'>
+        <div className='  h-14 col-span-2 row-span-3'>
+          <h4 className='text-xl font-bold'>Basic Info</h4>
+          <button hidden type='submit'></button>
+        </div>
 
-      <hr className='col-span-full my-2' />
+        <TextInput
+          formHandler={register('firstName')}
+          onError={errors.firstName}
+          label='First Name'
+          required
+        />
+        <TextInput
+          formHandler={register('lastName')}
+          onError={errors.lastName}
+          label='Last Name'
+          required
+        />
+        <TextInput
+          formHandler={register('email')}
+          onError={errors.email}
+          label='Email'
+        />
+        <TextInput
+          formHandler={register('phone')}
+          onError={errors.phone}
+          label='Phone'
+        />
+        <TextInput
+          formHandler={register('mobile')}
+          onError={errors.mobile}
+          label='Mobile'
+        />
 
-      <div className='  h-14 col-span-2 row-span-3'>
-        <h4 className='text-xl font-bold'>Billing Address</h4>
-      </div>
+        <hr className='col-span-full my-2' />
 
-      <SelectInput
-        formHandler={register('countryName')}
-        onError={errors.countryName}
-        label='Country'
-        values={countries}
-        required
-      />
-      <TextInput
-        formHandler={register('city')}
-        onError={errors.city}
-        label='City'
-        required
-      />
-      <TextInput
-        formHandler={register('region')}
-        onError={errors.region}
-        label='Region'
-        required
-      />
-      <TextInput
-        formHandler={register('postalCode')}
-        onError={errors.postalCode}
-        label='Zip Code'
-        required
-      />
-      <TextInput
-        formHandler={register('address')}
-        onError={errors.address}
-        label='Address'
-        required
-      />
-    </form>
+        <div className='  h-14 col-span-2 row-span-3'>
+          <h4 className='text-xl font-bold'>Billing Address</h4>
+        </div>
+
+        <SelectInput
+          formHandler={register('countryName')}
+          onError={errors.countryName}
+          label='Country'
+          values={countries}
+          required
+        />
+        <TextInput
+          formHandler={register('city')}
+          onError={errors.city}
+          label='City'
+          required
+        />
+        <TextInput
+          formHandler={register('region')}
+          onError={errors.region}
+          label='Region'
+          required
+        />
+        <TextInput
+          formHandler={register('postalCode')}
+          onError={errors.postalCode}
+          label='Zip Code'
+          required
+        />
+        <TextInput
+          formHandler={register('address')}
+          onError={errors.address}
+          label='Address'
+          required
+        />
+      </form>
+    </div>
   );
 };
 
