@@ -17,7 +17,8 @@
     "baseUrl": ".",
     "paths": {
       "@nvs-shared/*": ["shared/*"],
-      "@nvs-context/*": ["context/*"]
+      "@nvs-context/*": ["context/*"],
+      "@nvs-components/*": ["components/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

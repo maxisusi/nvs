@@ -19,13 +19,12 @@ generator nestgraphql {
 }
 
 model Customer {
-  id        String   @id @default(uuid())
+  id        String @id @default(uuid())
   /// @Validator.MinLength(3)
   firstName String
   /// @Validator.MinLength(3)
   lastName  String
-  /// @Validator.IsOptional()
-  /// @Validator.IsEmail()
+
   email     String?
   mobile    String?
   phone     String?

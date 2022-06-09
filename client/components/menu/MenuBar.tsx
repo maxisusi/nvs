@@ -56,7 +56,8 @@ const MenuBar = () => {
    */
   useEffect(() => {
     const link: string = router.pathname;
-    activateBarLink(link);
+    const linkName = link.split('/')[1];
+    activateBarLink(linkName);
   }, [router.pathname]);
 
   return (
