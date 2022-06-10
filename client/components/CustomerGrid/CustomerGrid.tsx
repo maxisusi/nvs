@@ -241,15 +241,11 @@ const CustomerList = (props: Props) => {
           MenuListProps={{
             'aria-labelledby': 'basic-button',
           }}>
-          <MenuItem onClick={handleCloseMenu}>
+          <MenuItem onClick={() => handleEditCustomer(cellId as string)}>
             <ListItemIcon>
               <EditOutlinedIcon className='text-skin-gray' fontSize='small' />
             </ListItemIcon>
-            <ListItemText
-              onClick={() => handleEditCustomer(cellId as string)}
-              className='text-skin-base'>
-              Edit
-            </ListItemText>
+            <ListItemText className='text-skin-base'>Edit</ListItemText>
           </MenuItem>
           <MenuItem onClick={handleCloseMenu}>
             <ListItemIcon>
