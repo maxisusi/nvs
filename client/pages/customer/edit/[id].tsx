@@ -2,17 +2,22 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import countries from '../../utils/countries.json';
-import { useMutation } from '@apollo/client';
+import countries from '../../../utils/countries.json';
+import { useMutation, useQuery } from '@apollo/client';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useRouter } from 'next/router';
 import {
   CREATE_CUSTOMER,
   GET_CUSTOMERS_FOR_GRID,
+  GET_CUSTOMER_TO_EDIT,
+  UPDATE_CUSTOMER,
 } from '@nvs-shared/graphql/customers';
+import client from 'pages/client.graphql';
+import { Customer } from '@nvs-shared/types/customer';
 
-const CreateCustomerForm = () => {
+const EditCustomerForm = (props: Customer) => {
+  console.log(props);
   // * Form Params
   const {
     register,
@@ -21,23 +26,27 @@ const CreateCustomerForm = () => {
     formState: { errors },
   } = useForm<CustomerFormInputs>({
     resolver: yupResolver(schema),
+    defaultValues: {
+      ...(props as CustomerFormInputs),
+    },
   });
   const router = useRouter();
 
   // * Create a new customer mutation
-  const [createCustomer] = useMutation(CREATE_CUSTOMER);
-  const formSubmit = async (data: CustomerFormInputs) => {
-    try {
-      await createCustomer({
-        variables: { createCustomerInput: data },
+  const [updateCustomer] = useMutation(UPDATE_CUSTOMER);
 
+  const formSubmit = async (data: any) => {
+    delete data['__typename'];
+
+    try {
+      await updateCustomer({
+        variables: { updateCustomerInput: { ...data } },
         refetchQueries: () => [
           {
             query: GET_CUSTOMERS_FOR_GRID,
           },
         ],
       }).then(() => {
-        reset();
         router.push('/customer');
       });
     } catch (e) {
@@ -50,19 +59,13 @@ const CreateCustomerForm = () => {
     <div>
       <div className='flex items-center justify-between mb-12'>
         <div>
-          <h1 className='text-3xl mb-3 font-bold'>New Customer </h1>
+          <h1 className='text-3xl mb-3 font-bold'>Edit Customer </h1>
           <p className='text-skin-gray'>
-            Please fill-up the mandatory fields to create the customer
+            Please fill-up the mandatory fields to edit the customer
           </p>
         </div>
 
         <div className='flex gap-3'>
-          <button
-            onClick={() => reset()}
-            className={`px-3 py-2 text-sm rounded flex gap-2 items-center font-semibold border border-skin-fill text-skin-fill hover:bg-skin-fill hover:text-skin-white`}>
-            Reset
-            <ClearIcon />
-          </button>
           <button
             onClick={handleSubmit(formSubmit)}
             className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
@@ -150,7 +153,27 @@ const CreateCustomerForm = () => {
   );
 };
 
-export default CreateCustomerForm;
+export default EditCustomerForm;
+
+export async function getServerSideProps({ params }: any) {
+  const customerId = params.id;
+
+  const { data, error } = await client.query({
+    query: GET_CUSTOMER_TO_EDIT,
+    variables: { customerId: customerId },
+    fetchPolicy: 'network-only',
+  });
+
+  if (error) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: data.customer,
+  };
+}
 
 interface CustomerFormInputs {
   firstName: string;

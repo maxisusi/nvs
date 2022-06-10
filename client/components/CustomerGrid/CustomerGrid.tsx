@@ -21,10 +21,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useCustomerFilter } from '@nvs-context/CustomerFilterContext';
 import {
   DEL_CUSTOMER,
-  GET_CUSTOMERS_GRID,
+  GET_CUSTOMERS_FOR_GRID,
 } from '@nvs-shared/graphql/customers';
 import { Customer } from '@nvs-shared/types/customer';
 import GridDisplayOverlays from './utils/GridDisplayOverlays';
+import { useRouter } from 'next/router';
 
 type Props = {
   isActive: boolean;
@@ -40,7 +41,7 @@ interface CustomerRow {
 }
 
 const CustomerList = (props: Props) => {
-  const { loading, error, data } = useQuery(GET_CUSTOMERS_GRID);
+  const { loading, error, data } = useQuery(GET_CUSTOMERS_FOR_GRID);
   const [removeCustomer] = useMutation(DEL_CUSTOMER);
   const [{ displayName }] = useCustomerFilter();
 
@@ -62,9 +63,15 @@ const CustomerList = (props: Props) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const router = useRouter();
+
   const handleOpenDeleteCustomerModal = () => {
     handleCloseMenu();
     handleOpenModal();
+  };
+
+  const handleEditCustomer = (customerId: string) => {
+    router.push(`customer/edit/${customerId}`);
   };
 
   /**
@@ -77,11 +84,11 @@ const CustomerList = (props: Props) => {
         variables: { removeCustomerId: cellId },
         update: (store) => {
           const previousData: any = store.readQuery({
-            query: GET_CUSTOMERS_GRID,
+            query: GET_CUSTOMERS_FOR_GRID,
           });
 
           store.writeQuery({
-            query: GET_CUSTOMERS_GRID,
+            query: GET_CUSTOMERS_FOR_GRID,
             data: {
               customers: previousData.customers.filter(
                 (customer: Customer) => customer.id !== cellId
@@ -238,7 +245,11 @@ const CustomerList = (props: Props) => {
             <ListItemIcon>
               <EditOutlinedIcon className='text-skin-gray' fontSize='small' />
             </ListItemIcon>
-            <ListItemText className='text-skin-base'>Edit</ListItemText>
+            <ListItemText
+              onClick={() => handleEditCustomer(cellId as string)}
+              className='text-skin-base'>
+              Edit
+            </ListItemText>
           </MenuItem>
           <MenuItem onClick={handleCloseMenu}>
             <ListItemIcon>
