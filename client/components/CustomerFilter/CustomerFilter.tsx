@@ -28,18 +28,26 @@ const CustomerFilter = (props: Props) => {
           <input
             onChange={(e) => handleFormChange(e)}
             type='text'
-            className='rounded p-1.5 px-3 shadow'
+            className='rounded p-1.5 px-3 shadow border-none'
           />
         </div>
 
         <div className='flex flex-col gap-1 w-full'>
           <label className='text-sm text-skin-gray'>Contact Name</label>
-          <input disabled type='text' className='rounded p-1.5 px-3 shadow' />
+          <input
+            disabled
+            type='text'
+            className='rounded p-1.5 px-3 shadow border-none'
+          />
         </div>
 
         <div className='flex flex-col gap-1 w-full'>
           <label className='text-sm text-skin-gray'>Phone</label>
-          <input disabled type='text' className='rounded p-1.5 px-3 shadow' />
+          <input
+            disabled
+            type='text'
+            className='rounded p-1.5 px-3 shadow border-none'
+          />
         </div>
       </div>
     </form>

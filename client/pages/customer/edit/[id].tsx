@@ -1,23 +1,19 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useMutation } from '@apollo/client';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import countries from '../../../utils/countries.json';
-import { useMutation, useQuery } from '@apollo/client';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
-import ClearIcon from '@mui/icons-material/Clear';
-import { useRouter } from 'next/router';
 import {
-  CREATE_CUSTOMER,
   GET_CUSTOMERS_FOR_GRID,
   GET_CUSTOMER_TO_EDIT,
   UPDATE_CUSTOMER,
 } from '@nvs-shared/graphql/customers';
-import client from 'pages/client.graphql';
 import { Customer } from '@nvs-shared/types/customer';
+import { useRouter } from 'next/router';
+import client from 'pages/client.graphql';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import countries from '../../../utils/countries.json';
 
 const EditCustomerForm = (props: Customer) => {
-  console.log(props);
   // * Form Params
   const {
     register,
@@ -37,10 +33,10 @@ const EditCustomerForm = (props: Customer) => {
 
   const formSubmit = async (data: any) => {
     delete data['__typename'];
-
     try {
       await updateCustomer({
         variables: { updateCustomerInput: { ...data } },
+
         refetchQueries: () => [
           {
             query: GET_CUSTOMERS_FOR_GRID,
@@ -50,7 +46,7 @@ const EditCustomerForm = (props: Customer) => {
         router.push('/customer');
       });
     } catch (e) {
-      alert('There was an error, please check the console for further details');
+      // alert('There was an error, please check the console for further details');
       console.error(e);
     }
   };
