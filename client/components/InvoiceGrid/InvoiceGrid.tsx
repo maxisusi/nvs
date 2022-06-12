@@ -167,13 +167,20 @@ const InvoiceGrid = (props: Props) => {
     {
       field: 'createdAt',
       headerName: 'Date',
-      cellClassName: 'name-style',
-      ...columnParams(),
+      cellClassName: 'field-style',
+      flex: 0.5,
+      disableColumnMenu: true,
+      headerAlign: 'left',
+      headerClassName: 'MuiDataGrid-columnHeaders',
     },
     {
       field: 'invoiceNumber',
       headerName: 'Number',
-      ...columnParams(),
+      flex: 0.5,
+      disableColumnMenu: true,
+      cellClassName: 'name-style',
+      headerAlign: 'left',
+      headerClassName: 'MuiDataGrid-columnHeaders',
       valueGetter: (params: GridValueGetterParams) => {
         const fullID = params.row.invoiceNumber;
         const id = fullID.split('-')[0];
@@ -184,14 +191,20 @@ const InvoiceGrid = (props: Props) => {
       field: 'name',
       headerName: 'Customer',
       cellClassName: 'field-style',
-      ...columnParams(),
+      flex: 0.5,
+      disableColumnMenu: true,
+      headerAlign: 'left',
+      headerClassName: 'MuiDataGrid-columnHeaders',
       valueGetter: (params: GridValueGetterParams) =>
         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
     },
     {
       field: 'status',
       headerName: 'Status',
-      ...columnParams(),
+      flex: 0.5,
+      disableColumnMenu: true,
+      headerAlign: 'left',
+      headerClassName: 'MuiDataGrid-columnHeaders',
       renderCell: (params: GridRenderCellParams) =>
         displayInvoiceStatus(params.row.status),
     },
@@ -200,8 +213,11 @@ const InvoiceGrid = (props: Props) => {
       field: 'total',
       headerName: 'Total',
       cellClassName: 'field-style',
-      ...columnParams('total'),
-      valueGetter: (params: GridValueGetterParams) => `CHF ${params.row.total}`,
+      flex: 0.5,
+      disableColumnMenu: true,
+      headerAlign: 'left',
+      headerClassName: 'MuiDataGrid-columnHeaders',
+      valueGetter: (params: GridValueGetterParams) => `${params.row.total}.-`,
     },
 
     {
