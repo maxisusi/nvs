@@ -9,7 +9,7 @@ const GridDisplayOverlays = () => {
       className='h-full w-full flex flex-col items-center '>
       <img className='w-48 mt-20 mb-10' src='/Something.svg' />
       <h4 className='text-3xl mb-2'>Oopsy, Something went wrong...</h4>
-      <p className='text-skin-gray'>Try to reload the page to fix the issue</p>
+      <p className='text-skin-gray'>Try to reload the page to fix the issue.</p>
     </div>
   );
 
@@ -20,9 +20,9 @@ const GridDisplayOverlays = () => {
       }}
       className='h-full w-full flex flex-col items-center '>
       <img className='w-48 mt-10 mb-10' src='/Nothing.svg' />
-      <h4 className='text-3xl mb-2'>No customer found</h4>
+      <h4 className='text-3xl mb-2'>No invoice found</h4>
       <p className='text-skin-gray'>
-        Click on <strong>"New Customer"</strong> to create your first customer
+        Click on <strong>"New Invoice"</strong> to create your first invoice.
       </p>
     </div>
   );
