@@ -103,7 +103,7 @@ const CreateInvoiceForm = () => {
 
         {/* Table */}
 
-        <div className='bg-white rounded border col-span-full pt-3 relative'>
+        <div className='bg-white rounded border col-span-full pt-3 relative mb-10'>
           {/* Header */}
           <div className='grid grid-cols-8 gap-x-6 '>
             <div className='col-span-3 h-8 flex items-center font-semibold pl-12 text-slate-700 text-sm'>
@@ -118,39 +118,12 @@ const CreateInvoiceForm = () => {
             <div className='col-span-1 h-8 flex items-center font-semibold text-slate-700 justify-end text-sm pr-12 '>
               Amount
             </div>
-            <hr className='col-span-full border-slate-200 mb-3 w-full mt-2' />
+            <hr className='col-span-full border-slate-200  w-full mt-2' />
 
             {/* Items */}
 
-            <div className='mt-2 pb-24 grid grid-cols-8 gap-x-6 gap-y-2 col-span-full border border-r-0 border-l-0 border-t-0 '>
-              <div className='col-span-4 pl-12'>
-                <input
-                  type='text'
-                  className='w-full  border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
-                />
-              </div>
-
-              <div className='col-start-5'>
-                <input
-                  type='number'
-                  className='w-full border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
-                />
-              </div>
-
-              <div className=' col-start-6 '>
-                <input
-                  type='text'
-                  className='w-full border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
-                />
-              </div>
-
-              <div className=' pr-12 col-start-7 col-span-full self-center flex items-center justify-end'>
-                <p className='text-bold'>
-                  <span className='font-bold'>CHF </span>45.00
-                </p>
-                <DeleteOutlineOutlinedIcon className='absolute right-3 text-skin-gray cursor-pointer hover:text-red-500' />
-              </div>
-            </div>
+            <ItemEntry />
+            <ItemEntry />
 
             {/* Add new Item */}
             <div className='col-span-full hover:bg-slate-200 cursor-pointer h-14 items-center w-full bg-slate-100 flex justify-center gap-2'>
@@ -160,7 +133,22 @@ const CreateInvoiceForm = () => {
           </div>
         </div>
 
-        <hr className='col-span-full border-slate-300' />
+        {/* Footer */}
+        <div className='col-span-4  h-14 relative'>
+          <h3 className='font-semibold absolute -top-7'>Notes</h3>
+          <textarea className='w-full h-32 rounded border border-gray-200 resize-none' />
+        </div>
+
+        <div className='col-start-10 col-span-full bg-white border p-6 rounded '>
+          <div className='flex justify-between items-center '>
+            <h3 className='uppercase font-bold text-skin-gray text-sm'>
+              Total
+            </h3>
+            <h3 className='text-lg font-semibold'>
+              <span>CHF </span>45.00
+            </h3>
+          </div>
+        </div>
       </form>
     </div>
   );
@@ -202,6 +190,42 @@ type InputProps = {
   size?: 'standard' | 'full';
   formHandler?: any;
   onError?: any;
+};
+
+type Item = {};
+
+const ItemEntry = (props: Item) => {
+  return (
+    <div className='pt-5 pb-8 grid grid-cols-8 gap-x-6 gap-y-2 col-span-full border border-r-0 border-l-0 border-t-0 '>
+      <div className='col-span-4 pl-12'>
+        <input
+          type='text'
+          className='w-full  border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
+        />
+      </div>
+
+      <div className='col-start-5'>
+        <input
+          type='number'
+          className='w-full border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
+        />
+      </div>
+
+      <div className=' col-start-6 '>
+        <input
+          type='text'
+          className='w-full border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
+        />
+      </div>
+
+      <div className=' pr-12 col-start-7 col-span-full self-center flex items-center justify-end'>
+        <p className='text-bold'>
+          <span className='font-bold'>CHF </span>45.00
+        </p>
+        <DeleteOutlineOutlinedIcon className='absolute right-3 text-skin-gray cursor-pointer hover:text-red-500' />
+      </div>
+    </div>
+  );
 };
 
 const TextInput = (props: InputProps) => {
