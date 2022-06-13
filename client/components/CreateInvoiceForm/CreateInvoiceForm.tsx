@@ -8,6 +8,8 @@ import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useRouter } from 'next/router';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import {
   CREATE_CUSTOMER,
   GET_CUSTOMERS_FOR_GRID,
@@ -75,9 +77,12 @@ const CreateInvoiceForm = () => {
 
       <form
         onSubmit={handleSubmit(formSubmit)}
-        className='h-fit p-8  grid grid-cols-8 gap-4 gap-y-10'>
+        className='h-fit grid grid-cols-12 gap-y-10'>
         <button hidden type='submit'></button>
-        <div className='bg-white rounded border h-44 col-start-1 col-end-4 hover:bg-slate-100 cursor-pointer'>
+
+        {/* Customer Selector */}
+
+        <div className='bg-white rounded border h-44 col-span-5 hover:bg-slate-100 cursor-pointer'>
           <div className='flex justify-center items-center h-full gap-3'>
             <AccountCircleIcon className='text-gray-300 text-4xl' />
             <p className='text-skin-sc text-xl font-semibold'>
@@ -85,17 +90,77 @@ const CreateInvoiceForm = () => {
             </p>
           </div>
         </div>
-        <div className=' h-14 col-start-5 col-span-full'>
+
+        {/* Invoice Details */}
+
+        <div className='h-14  col-start-7 col-span-full'>
           <div className='grid grid-cols-2 gap-3'>
             <TextInput required label='Invoice Date' />
             <TextInput required label='Due Date' />
             <TextInput label='Invoice Number' />
           </div>
         </div>
-        <div className='bg-white rounded drop-shadow h-14 col-span-full'></div>
-        <hr className=' col-span-full border-slate-300' />
-        <div className='bg-white rounded drop-shadow h-14 col-span-4'></div>
-        <div className='bg-white rounded drop-shadow h-14 col-start-7 col-span-full'></div>
+
+        {/* Table */}
+
+        <div className='bg-white rounded border col-span-full pt-3 relative'>
+          {/* Header */}
+          <div className='grid grid-cols-8 gap-x-6 '>
+            <div className='col-span-3 h-8 flex items-center font-semibold pl-12 text-slate-700 text-sm'>
+              Items
+            </div>
+            <div className=' col-span-2 h-8 flex items-center justify-end font-semibold text-slate-700  text-sm'>
+              Quantity
+            </div>
+            <div className=' col-span-2 h-8 flex items-center font-semibold text-slate-700  text-sm'>
+              Price
+            </div>
+            <div className='col-span-1 h-8 flex items-center font-semibold text-slate-700 justify-end text-sm pr-12 '>
+              Amount
+            </div>
+            <hr className='col-span-full border-slate-200 mb-3 w-full mt-2' />
+
+            {/* Items */}
+
+            <div className='mt-2 pb-24 grid grid-cols-8 gap-x-6 gap-y-2 col-span-full border border-r-0 border-l-0 border-t-0 '>
+              <div className='col-span-4 pl-12'>
+                <input
+                  type='text'
+                  className='w-full  border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
+                />
+              </div>
+
+              <div className='col-start-5'>
+                <input
+                  type='number'
+                  className='w-full border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
+                />
+              </div>
+
+              <div className=' col-start-6 '>
+                <input
+                  type='text'
+                  className='w-full border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
+                />
+              </div>
+
+              <div className=' pr-12 col-start-7 col-span-full self-center flex items-center justify-end'>
+                <p className='text-bold'>
+                  <span className='font-bold'>CHF </span>45.00
+                </p>
+                <DeleteOutlineOutlinedIcon className='absolute right-3 text-skin-gray cursor-pointer hover:text-red-500' />
+              </div>
+            </div>
+
+            {/* Add new Item */}
+            <div className='col-span-full hover:bg-slate-200 cursor-pointer h-14 items-center w-full bg-slate-100 flex justify-center gap-2'>
+              <AddCircleIcon className='text-skin-fill' />
+              <p className='text-skin-fill'>Add New Item</p>
+            </div>
+          </div>
+        </div>
+
+        <hr className='col-span-full border-slate-300' />
       </form>
     </div>
   );
