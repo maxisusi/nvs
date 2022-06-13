@@ -23,3 +23,11 @@ export const DEL_INVOICE = gql`
     }
   }
 `;
+
+export const CREATE_INVOICE = gql`
+  mutation Mutation($createInvoiceInput: CreateInvoiceInput!) {
+    createInvoice(createInvoiceInput: $createInvoiceInput) {
+      id
+    }
+  }
+`;

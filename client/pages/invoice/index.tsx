@@ -4,9 +4,11 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import InvoiceGrid from '@nvs-components/InvoiceGrid';
 import type { NextPage } from 'next';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 const Invoice: NextPage = () => {
   const [filterCustomer, setFilterCustomer] = useState(false);
+  const router = useRouter();
   return (
     <>
       <div className='flex items-center justify-between mb-10'>
@@ -26,7 +28,9 @@ const Invoice: NextPage = () => {
             {filterCustomer === false ? <FilterAltIcon /> : <ClearIcon />}
           </button>
 
-          <button className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
+          <button
+            onClick={() => router.push('/invoice/create')}
+            className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <AddIcon />
             New Invoice
           </button>
