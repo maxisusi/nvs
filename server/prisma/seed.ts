@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Status } from '@prisma/client';
 import GenerateDatas from './generator';
 import { faker } from '@faker-js/faker';
 
@@ -30,7 +30,13 @@ const generateFields = async () => {
     .catch((e) => console.log('There was an error', e));
 
   // Generate Invoices
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 20; i++) {
+    const getStatus = (): Status => {
+      const statusIndex = Math.floor(Math.random() * 4);
+      const status = ['draft', 'pending', 'paid'];
+
+      return status[statusIndex] as Status;
+    };
     await prisma.invoice.create({
       data: {
         customer: {
@@ -89,7 +95,7 @@ const generateFields = async () => {
         date: faker.date.soon(),
         dueDate: faker.date.future(),
         remarks: faker.lorem.words(10),
-        status: 'draft',
+        status: getStatus() as Status,
         taxes: 7.7,
         terms: 'NET_21',
         total: parseFloat(faker.finance.amount(30, 100, 2)),

@@ -15,3 +15,11 @@ export const GET_INVOICES_FOR_GRID = gql`
     }
   }
 `;
+
+export const DEL_INVOICE = gql`
+  mutation Mutation($removeInvoiceId: String!) {
+    removeInvoice(id: $removeInvoiceId) {
+      invoiceNumber
+    }
+  }
+`;
