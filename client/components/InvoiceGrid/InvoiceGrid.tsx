@@ -26,8 +26,12 @@ import {
 import { Customer } from '@nvs-shared/types/customer';
 import GridDisplayOverlays from './utils/GridDisplayOverlays';
 import { useRouter } from 'next/router';
-import { GET_INVOICES_FOR_GRID } from '@nvs-shared/graphql/invoice';
+import {
+  DEL_INVOICE,
+  GET_INVOICES_FOR_GRID,
+} from '@nvs-shared/graphql/invoice';
 import { Invoice } from '@nvs-shared/types/invoice';
+import { $TSFixIt } from '@nvs-shared/types/general';
 
 type Props = {
   isActive: boolean;
@@ -45,7 +49,7 @@ interface InvoiceRow {
 
 const InvoiceGrid = (props: Props) => {
   const { loading, error, data } = useQuery(GET_INVOICES_FOR_GRID);
-  const [removeCustomer] = useMutation(DEL_CUSTOMER);
+  const [removeInvoice] = useMutation(DEL_INVOICE);
   // const [{ displayName }] = useCustomerFilter();
 
   const [loadingOverlay, setLoadingOverlay] = useState(true);
@@ -68,33 +72,34 @@ const InvoiceGrid = (props: Props) => {
 
   const router = useRouter();
 
-  const handleOpenDeleteCustomerModal = () => {
+  const handleOpenDeleteInvoiceModal = () => {
     handleCloseMenu();
     handleOpenModal();
   };
 
-  const handleEditCustomer = (customerId: string) => {
-    router.push(`customer/edit/${customerId}`);
+  // TODO: Make the invoice editable
+  const handleEditInvoice = (customerId: string) => {
+    // router.push(`customer/edit/${customerId}`);
   };
 
   /**
-   * Delete customer in DB and updates the UI
+   * Delete invoice in DB and updates the UI
    * @param cellId
    */
-  const handleDeleteCustomer = async (cellId: string) => {
+  const handleDeleteInvoice = async (cellId: string) => {
     try {
-      await removeCustomer({
-        variables: { removeCustomerId: cellId },
+      await removeInvoice({
+        variables: { removeInvoiceId: cellId },
         update: (store) => {
           const previousData: any = store.readQuery({
-            query: GET_CUSTOMERS_FOR_GRID,
+            query: GET_INVOICES_FOR_GRID,
           });
 
           store.writeQuery({
-            query: GET_CUSTOMERS_FOR_GRID,
+            query: GET_INVOICES_FOR_GRID,
             data: {
-              customers: previousData.customers.filter(
-                (customer: Customer) => customer.id !== cellId
+              invoices: previousData.invoices.filter(
+                (invoice: Invoice) => invoice.id !== cellId
               ),
             },
             overwrite: true,
@@ -114,6 +119,7 @@ const InvoiceGrid = (props: Props) => {
    * based on the search query
    */
 
+  // TODO: Make a query search for the invoices
   // useEffect(() => {
   //   if (!displayName || !props.isActive)
   //     return setRow(defaultCustomerRowValues);
@@ -157,13 +163,11 @@ const InvoiceGrid = (props: Props) => {
         invoiceNumber: invoice.invoiceNumber,
         status: invoice.status,
         total: invoice.total,
-        // createdOn: format(parseISO(customer.createdAt), 'yyyy-MM-dd'),
-        // amountDue: '',
       };
     });
   }, [data]);
 
-  const columns = [
+  const columns: $TSFixIt = [
     {
       field: 'createdAt',
       headerName: 'Date',
@@ -277,7 +281,7 @@ const InvoiceGrid = (props: Props) => {
           MenuListProps={{
             'aria-labelledby': 'basic-button',
           }}>
-          <MenuItem onClick={() => handleEditCustomer(cellId as string)}>
+          <MenuItem onClick={() => handleEditInvoice(cellId as string)}>
             <ListItemIcon>
               <EditOutlinedIcon className='text-skin-gray' fontSize='small' />
             </ListItemIcon>
@@ -292,7 +296,7 @@ const InvoiceGrid = (props: Props) => {
             </ListItemIcon>
             <ListItemText>View</ListItemText>
           </MenuItem>
-          <MenuItem onClick={handleOpenDeleteCustomerModal}>
+          <MenuItem onClick={handleOpenDeleteInvoiceModal}>
             <ListItemIcon>
               <DeleteOutlineOutlinedIcon
                 className='text-skin-gray'
@@ -318,12 +322,11 @@ const InvoiceGrid = (props: Props) => {
           <div className='flex justify-center mt-6 flex-col text-center gap-2'>
             <h3 className='text-xl text-skin-base'>Are you sure?</h3>
             <p className='text-skin-gray text-sm'>
-              You will not be able to recover this customer and all the related
-              Invoices, Estimates and Payments.
+              You will not be able to recover this invoice.
             </p>
             <div className='flex gap-3 mt-5'>
               <button
-                onClick={() => handleDeleteCustomer(cellId as string)}
+                onClick={() => handleDeleteInvoice(cellId as string)}
                 className='bg-red-500 hover:bg-red-600 text-skin-white w-full rounded py-2'>
                 Ok
               </button>
