@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import countries from '../../utils/countries.json';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useRouter } from 'next/router';
@@ -16,7 +16,9 @@ import { Avatar } from '@mui/material';
 import {
   CREATE_CUSTOMER,
   GET_CUSTOMERS_FOR_GRID,
+  GET_CUSTOMERS_LIST,
 } from '@nvs-shared/graphql/customers';
+import { Customer } from '@nvs-shared/types/customer';
 
 const CreateInvoiceForm = () => {
   const [openCustomerMenu, setOpenCustomerMenu] = useState<boolean>(true);
@@ -29,6 +31,9 @@ const CreateInvoiceForm = () => {
   } = useForm<CustomerFormInputs>({
     resolver: yupResolver(schema),
   });
+
+  const { data, loading, error } = useQuery(GET_CUSTOMERS_LIST);
+
   const router = useRouter();
 
   // * Create a new customer mutation
@@ -95,7 +100,9 @@ const CreateInvoiceForm = () => {
           </div>
 
           {/* Add new customer */}
-          {openCustomerMenu && <SelectCustomerMenu />}
+          {openCustomerMenu && (
+            <SelectCustomerMenu customers={data?.customers} />
+          )}
         </div>
 
         {/* Invoice Details */}
@@ -273,7 +280,11 @@ type Country = {
   code: string;
 };
 
-const SelectCustomerMenu = () => {
+type CustomerMenu = {
+  customers: Customer[];
+};
+
+const SelectCustomerMenu = (props: CustomerMenu) => {
   return (
     <div className='absolute flex flex-col justify-between min-h-full bg-white drop-shadow w-full z-30 top-0 rounded'>
       <div className='px-6 py-4 border border-r-0 border-l-0 border-t-0'>
@@ -285,7 +296,9 @@ const SelectCustomerMenu = () => {
       </div>
 
       <div>
-        <CustomerList />
+        {props.customers?.map((customer: Customer) => (
+          <CustomerList customer={customer} />
+        ))}
       </div>
 
       <div className=' flex w-full justify-center items-center h-12 gap-3 text-skin-fill bg-slate-100 hover:bg-slate-200 cursor-pointer'>
@@ -296,20 +309,22 @@ const SelectCustomerMenu = () => {
   );
 };
 
-type CustomerList = {
-  firstName: string;
-  lastName: string;
-  postalCode: string;
-  city: string;
+type SingleCustomer = {
+  customer: Customer;
 };
 
-const CustomerList = () => {
+const CustomerList = (props: SingleCustomer) => {
+  const { firstName, lastName, postalCode, city } = props.customer;
   return (
     <div className='hover:bg-slate-100 flex px-6 py-8 items-center gap-4 h-14 border border-r-0 border-l-0 border-t-0'>
-      <Avatar>E</Avatar>
+      <Avatar>{firstName?.substring(0, 1)}</Avatar>
       <div>
-        <h4 className='font-semibold'>Edouard Mouginot</h4>
-        <h4 className='text-sm text-skin-gray'>1947 - Versegeres</h4>
+        <h4 className='font-semibold'>
+          {firstName} {lastName}
+        </h4>
+        <h4 className='text-sm text-skin-gray'>
+          {postalCode} - {city}
+        </h4>
       </div>
     </div>
   );

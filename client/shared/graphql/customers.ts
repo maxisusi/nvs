@@ -30,6 +30,17 @@ export const GET_CUSTOMER_TO_EDIT = gql`
   }
 `;
 
+export const GET_CUSTOMERS_LIST = gql`
+  query Customers {
+    customers {
+      firstName
+      lastName
+      postalCode
+      city
+    }
+  }
+`;
+
 export const DEL_CUSTOMER = gql`
   mutation Mutation($removeCustomerId: String!) {
     removeCustomer(id: $removeCustomerId) {
