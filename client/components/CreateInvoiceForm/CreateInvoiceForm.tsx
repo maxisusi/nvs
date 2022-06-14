@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -10,12 +10,16 @@ import { useRouter } from 'next/router';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import AddReactionIcon from '@mui/icons-material/AddReaction';
+import { Avatar } from '@mui/material';
+
 import {
   CREATE_CUSTOMER,
   GET_CUSTOMERS_FOR_GRID,
 } from '@nvs-shared/graphql/customers';
 
 const CreateInvoiceForm = () => {
+  const [openCustomerMenu, setOpenCustomerMenu] = useState<boolean>(true);
   // * Form Params
   const {
     register,
@@ -82,13 +86,16 @@ const CreateInvoiceForm = () => {
 
         {/* Customer Selector */}
 
-        <div className='bg-white rounded border h-44 col-span-5 hover:bg-slate-100 cursor-pointer'>
+        <div className='relative bg-white rounded border h-44 col-span-5 hover:bg-slate-100 cursor-pointer'>
           <div className='flex justify-center items-center h-full gap-3'>
             <AccountCircleIcon className='text-gray-300 text-4xl' />
             <p className='text-skin-sc text-xl font-semibold'>
               New Customer <span className='text-red-500'>*</span>
             </p>
           </div>
+
+          {/* Add new customer */}
+          {openCustomerMenu && <SelectCustomerMenu />}
         </div>
 
         {/* Invoice Details */}
@@ -264,6 +271,48 @@ type SelectInput = {
 type Country = {
   name: string;
   code: string;
+};
+
+const SelectCustomerMenu = () => {
+  return (
+    <div className='absolute flex flex-col justify-between min-h-full bg-white drop-shadow w-full z-30 top-0 rounded'>
+      <div className='px-6 py-4 border border-r-0 border-l-0 border-t-0'>
+        <input
+          type='text'
+          className='w-full rounded border-skin-fill border-2'
+          placeholder='Search'
+        />
+      </div>
+
+      <div>
+        <CustomerList />
+      </div>
+
+      <div className=' flex w-full justify-center items-center h-12 gap-3 text-skin-fill bg-slate-100 hover:bg-slate-200 cursor-pointer'>
+        <AddReactionIcon className='' />
+        Add new customer
+      </div>
+    </div>
+  );
+};
+
+type CustomerList = {
+  firstName: string;
+  lastName: string;
+  postalCode: string;
+  city: string;
+};
+
+const CustomerList = () => {
+  return (
+    <div className='hover:bg-slate-100 flex px-6 py-8 items-center gap-4 h-14 border border-r-0 border-l-0 border-t-0'>
+      <Avatar>E</Avatar>
+      <div>
+        <h4 className='font-semibold'>Edouard Mouginot</h4>
+        <h4 className='text-sm text-skin-gray'>1947 - Versegeres</h4>
+      </div>
+    </div>
+  );
 };
 
 const SelectInput = (props: SelectInput) => {
