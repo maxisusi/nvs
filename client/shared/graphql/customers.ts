@@ -33,6 +33,7 @@ export const GET_CUSTOMER_TO_EDIT = gql`
 export const GET_CUSTOMERS_LIST = gql`
   query Customers {
     customers {
+      id
       firstName
       lastName
       postalCode

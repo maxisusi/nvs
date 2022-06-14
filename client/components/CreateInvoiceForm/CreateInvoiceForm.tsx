@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -33,8 +33,24 @@ const CreateInvoiceForm = () => {
   });
 
   const { data, loading, error } = useQuery(GET_CUSTOMERS_LIST);
-
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [customerList, setCustomerList] = useState<Customer[] | []>([]);
   const router = useRouter();
+
+  // * Triggers the search query when it detects user input
+  useEffect(() => {
+    if (searchQuery === '') return setCustomerList(data?.customers);
+
+    const searchResults = filterCustomers(customerList, searchQuery);
+
+    setCustomerList(searchResults);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    setCustomerList(data.customers);
+  }, [data]);
 
   // * Create a new customer mutation
   const [createCustomer] = useMutation(CREATE_CUSTOMER);
@@ -101,7 +117,10 @@ const CreateInvoiceForm = () => {
 
           {/* Add new customer */}
           {openCustomerMenu && (
-            <SelectCustomerMenu customers={data?.customers} />
+            <SelectCustomerMenu
+              setQuery={setSearchQuery}
+              customers={customerList}
+            />
           )}
         </div>
 
@@ -169,6 +188,14 @@ const CreateInvoiceForm = () => {
 };
 
 export default CreateInvoiceForm;
+
+const filterCustomers = (row: any, query: string) => {
+  const querySearch = query.toLocaleLowerCase();
+  const keys = ['firstName', 'lastName', 'postalCode', 'city'];
+  return row.filter((item: any) =>
+    keys.some((key) => item[key].toLowerCase().includes(querySearch))
+  );
+};
 
 interface CustomerFormInputs {
   firstName: string;
@@ -282,26 +309,32 @@ type Country = {
 
 type CustomerMenu = {
   customers: Customer[];
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const SelectCustomerMenu = (props: CustomerMenu) => {
   return (
-    <div className='absolute flex flex-col justify-between min-h-full bg-white drop-shadow w-full z-30 top-0 rounded'>
+    <div className='absolute overflow-hidden hover:overflow-y-auto  max-h-96 flex flex-col justify-between min-h-full bg-white drop-shadow w-full z-30 top-0 rounded'>
       <div className='px-6 py-4 border border-r-0 border-l-0 border-t-0'>
         <input
+          onChange={(e) => props.setQuery(e.target.value)}
           type='text'
-          className='w-full rounded border-skin-fill border-2'
+          className=' w-full rounded border-skin-fill border-2'
           placeholder='Search'
         />
       </div>
 
-      <div>
-        {props.customers?.map((customer: Customer) => (
-          <CustomerList customer={customer} />
-        ))}
-      </div>
+      {props.customers?.length === 0 ? (
+        <h4 className='text-skin-gray text-center'>No customer found!</h4>
+      ) : (
+        props.customers?.map((customer: Customer) => (
+          <div key={customer.id}>
+            <CustomerList customer={customer} />
+          </div>
+        ))
+      )}
 
-      <div className=' flex w-full justify-center items-center h-12 gap-3 text-skin-fill bg-slate-100 hover:bg-slate-200 cursor-pointer'>
+      <div className='flex w-full justify-center items-center px-6 py-3 gap-3 text-skin-fill bg-slate-100 hover:bg-slate-200 cursor-pointer'>
         <AddReactionIcon className='' />
         Add new customer
       </div>
@@ -315,6 +348,7 @@ type SingleCustomer = {
 
 const CustomerList = (props: SingleCustomer) => {
   const { firstName, lastName, postalCode, city } = props.customer;
+
   return (
     <div className='hover:bg-slate-100 flex px-6 py-8 items-center gap-4 h-14 border border-r-0 border-l-0 border-t-0'>
       <Avatar>{firstName?.substring(0, 1)}</Avatar>
