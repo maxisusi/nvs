@@ -4,9 +4,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddReactionIcon from '@mui/icons-material/AddReaction';
 import { Avatar } from '@mui/material';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 
 import { $TSFixIt } from '@nvs-shared/types/general';
 import { Customer } from '@nvs-shared/types/customer';
+import { motion } from 'framer-motion';
 type Props = {
   dispatch: any;
   state: any;
@@ -16,33 +18,44 @@ type Props = {
 const CustomerSearchList = (props: Props) => {
   const { dispatch, state, customerList } = props;
 
+  const handleClickAwayCustomerList = (isCustomerSelected: boolean) => {
+    if (isCustomerSelected) return;
+    dispatch({ type: 'REMOVE_SELECTED_CUSTOMER' });
+  };
+
   return (
-    <div className='relative  bg-white rounded border h-44 col-span-5 hover:bg-slate-100 cursor-pointer'>
-      <div
-        onClick={() => dispatch({ type: 'OPEN_CUSTOMER_LIST' })}
-        className='flex justify-center items-center h-full gap-3'>
-        <AccountCircleIcon className='text-gray-300 text-4xl' />
-        <p className='text-skin-sc text-xl font-semibold'>
-          New Customer <span className='text-red-500'>*</span>
-        </p>
+    <ClickAwayListener
+      onClickAway={() =>
+        handleClickAwayCustomerList(state.customerSelectedMenu)
+      }>
+      <div className='relative  bg-white rounded border h-44 col-span-5 hover:bg-slate-100 cursor-pointer'>
+        <div
+          onClick={() => dispatch({ type: 'OPEN_CUSTOMER_LIST' })}
+          className='flex justify-center items-center h-full gap-3'>
+          <AccountCircleIcon className='text-gray-300 text-4xl' />
+          <p className='text-skin-sc text-xl font-semibold'>
+            New Customer <span className='text-red-500'>*</span>
+          </p>
+        </div>
+
+        {state.customerListMenu && (
+          <SelectCustomerMenu
+            setCustomer={dispatch}
+            setQuery={dispatch}
+            customers={customerList}
+          />
+        )}
+
+        {/* Add new customer */}
+
+        {state.customerSelectedMenu && (
+          <SelectedCustomerInfo
+            setCustomer={dispatch}
+            customer={state.selectedCustomer}
+          />
+        )}
       </div>
-
-      {/* Add new customer */}
-      {state.customerListMenu && (
-        <SelectCustomerMenu
-          setCustomer={dispatch}
-          setQuery={dispatch}
-          customers={customerList}
-        />
-      )}
-
-      {state.customerSelectedMenu && (
-        <SelectedCustomerInfo
-          setCustomer={dispatch}
-          customer={state.selectedCustomer}
-        />
-      )}
-    </div>
+    </ClickAwayListener>
   );
 };
 
@@ -101,25 +114,31 @@ const SelectCustomerMenu = (props: CustomerMenu) => {
       <div className='px-6 py-4 border border-r-0 border-l-0 border-t-0'>
         <input
           onChange={(e) =>
-            props.setQuery({ type: 'SEARCH_CUSTOMER', payload: e.target.value })
+            props.setQuery({
+              type: 'SEARCH_CUSTOMER',
+              payload: e.target.value,
+            })
           }
           type='text'
           className=' w-full rounded border-skin-fill border-2'
           placeholder='Search'
         />
       </div>
-
-      {props.customers?.length === 0 ? (
-        <h4 className='text-skin-gray text-center'>No customer found!</h4>
-      ) : (
-        props.customers?.map((customer: Customer) => (
-          <div
-            onClick={() => handleSelectCustomer(customer.id as string)}
-            key={customer.id}>
-            <CustomerList customer={customer} />
-          </div>
-        ))
-      )}
+      <motion.div
+        animate={{ y: [15, 0], opacity: [0, 1] }}
+        transition={{ duration: 0.3, type: 'spring' }}>
+        {props.customers?.length === 0 ? (
+          <h4 className='text-skin-gray text-center'>No customer found!</h4>
+        ) : (
+          props.customers?.map((customer: Customer) => (
+            <div
+              onClick={() => handleSelectCustomer(customer.id as string)}
+              key={customer.id}>
+              <CustomerList customer={customer} />
+            </div>
+          ))
+        )}
+      </motion.div>
 
       <div className='flex w-full justify-center items-center px-6 py-3 gap-3 text-skin-fill bg-slate-100 hover:bg-slate-200 cursor-pointer'>
         <AddReactionIcon className='' />

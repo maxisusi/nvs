@@ -73,9 +73,8 @@ const CreateInvoiceForm = () => {
   };
 
   const [state, dispatch] = useReducer(reducer, menuInitialState);
-  const { data, loading, error } = useQuery(GET_CUSTOMERS_LIST);
+  const { data } = useQuery(GET_CUSTOMERS_LIST);
   const [customerList, setCustomerList] = useState<Customer[] | []>([]);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const router = useRouter();
 
   // * Triggers the search query when it detects user input
@@ -146,11 +145,13 @@ const CreateInvoiceForm = () => {
         <button hidden type='submit'></button>
 
         {/* Customer Selector */}
+
         <CustomerSearchList
           customerList={customerList}
           dispatch={dispatch}
           state={state}
         />
+
         {/* Invoice Details */}
 
         <div className='h-14  col-start-7 col-span-full'>
