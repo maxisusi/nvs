@@ -38,6 +38,7 @@ export const GET_CUSTOMERS_LIST = gql`
       lastName
       postalCode
       city
+      address
     }
   }
 `;
