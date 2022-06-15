@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -15,6 +15,7 @@ type Props = {
 
 const CustomerSearchList = (props: Props) => {
   const { dispatch, state, customerList } = props;
+
   return (
     <div className='relative  bg-white rounded border h-44 col-span-5 hover:bg-slate-100 cursor-pointer'>
       <div
