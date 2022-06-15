@@ -9,6 +9,7 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { $TSFixIt } from '@nvs-shared/types/general';
 import { Customer } from '@nvs-shared/types/customer';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 type Props = {
   dispatch: any;
   state: any;
@@ -109,6 +110,8 @@ const SelectCustomerMenu = (props: CustomerMenu) => {
 
     props.setCustomer({ type: 'SELECTED_CUSTOMER', payload: customer });
   };
+
+  const router = useRouter();
   return (
     <div className='absolute overflow-hidden hover:overflow-y-auto  max-h-96 flex flex-col justify-between min-h-full bg-white drop-shadow w-full z-30 top-0 rounded'>
       <div className='px-6 py-4 border border-r-0 border-l-0 border-t-0'>
@@ -140,8 +143,10 @@ const SelectCustomerMenu = (props: CustomerMenu) => {
         )}
       </motion.div>
 
-      <div className='flex w-full justify-center items-center px-6 py-3 gap-3 text-skin-fill bg-slate-100 hover:bg-slate-200 cursor-pointer'>
-        <AddReactionIcon className='' />
+      <div
+        onClick={() => router.push('/customer/create')}
+        className='flex w-full justify-center items-center px-6 py-3 gap-3 text-skin-fill bg-slate-100 hover:bg-slate-200 cursor-pointer'>
+        <AddReactionIcon />
         Add new customer
       </div>
     </div>
