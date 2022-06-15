@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -188,7 +188,7 @@ type InputProps = {
   onError: any;
 };
 
-const TextInput = (props: InputProps) => {
+const TextInput = (props: InputProps): JSX.Element => {
   const { required, size, label, formHandler, onError } = props;
 
   return (

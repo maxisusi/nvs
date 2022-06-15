@@ -1,19 +1,30 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useMutation, useQuery } from '@apollo/client';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import countries from '../../utils/countries.json';
-import { useMutation } from '@apollo/client';
-import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
+import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import { useRouter } from 'next/router';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useEffect, useReducer, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+
 import {
   CREATE_CUSTOMER,
   GET_CUSTOMERS_FOR_GRID,
+  GET_CUSTOMERS_LIST,
 } from '@nvs-shared/graphql/customers';
+import { Customer } from '@nvs-shared/types/customer';
+import CustomerSearchList from './CustomerSearchList';
+import { $TSFixIt } from '@nvs-shared/types/general';
+
+const menuInitialState = {
+  customerListMenu: false,
+  selectedCustomer: [],
+  customerSelectedMenu: false,
+  searchQuery: '',
+};
 
 const CreateInvoiceForm = () => {
   // * Form Params
@@ -25,7 +36,61 @@ const CreateInvoiceForm = () => {
   } = useForm<CustomerFormInputs>({
     resolver: yupResolver(schema),
   });
+
+  const reducer = (state: $TSFixIt, action: $TSFixIt) => {
+    switch (action.type) {
+      case 'SELECTED_CUSTOMER': {
+        return {
+          customerListMenu: false,
+          customerSelectedMenu: true,
+          selectedCustomer: action.payload,
+        };
+      }
+
+      case 'REMOVE_SELECTED_CUSTOMER': {
+        return {
+          ...menuInitialState,
+        };
+      }
+
+      case 'OPEN_CUSTOMER_LIST': {
+        return {
+          ...state,
+          customerListMenu: true,
+        };
+      }
+
+      case 'SEARCH_CUSTOMER': {
+        return {
+          ...state,
+          searchQuery: action.payload,
+        };
+      }
+
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, menuInitialState);
+  const { data, loading, error } = useQuery(GET_CUSTOMERS_LIST);
+  const [customerList, setCustomerList] = useState<Customer[] | []>([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const router = useRouter();
+
+  // * Triggers the search query when it detects user input
+  useEffect(() => {
+    if (state.searchQuery === '') return setCustomerList(data?.customers);
+
+    const searchResults = filterCustomers(customerList, state.searchQuery);
+
+    setCustomerList(searchResults);
+  }, [state.searchQuery]);
+
+  useEffect(() => {
+    if (!data) return;
+    setCustomerList(data.customers);
+  }, [data]);
 
   // * Create a new customer mutation
   const [createCustomer] = useMutation(CREATE_CUSTOMER);
@@ -81,16 +146,11 @@ const CreateInvoiceForm = () => {
         <button hidden type='submit'></button>
 
         {/* Customer Selector */}
-
-        <div className='bg-white rounded border h-44 col-span-5 hover:bg-slate-100 cursor-pointer'>
-          <div className='flex justify-center items-center h-full gap-3'>
-            <AccountCircleIcon className='text-gray-300 text-4xl' />
-            <p className='text-skin-sc text-xl font-semibold'>
-              New Customer <span className='text-red-500'>*</span>
-            </p>
-          </div>
-        </div>
-
+        <CustomerSearchList
+          customerList={customerList}
+          dispatch={dispatch}
+          state={state}
+        />
         {/* Invoice Details */}
 
         <div className='h-14  col-start-7 col-span-full'>
@@ -155,6 +215,14 @@ const CreateInvoiceForm = () => {
 };
 
 export default CreateInvoiceForm;
+
+const filterCustomers = (row: any, query: string) => {
+  const querySearch = query?.toLocaleLowerCase();
+  const keys = ['firstName', 'lastName', 'postalCode', 'city'];
+  return row.filter((item: any) =>
+    keys.some((key) => item[key].toLowerCase().includes(querySearch))
+  );
+};
 
 interface CustomerFormInputs {
   firstName: string;
