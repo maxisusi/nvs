@@ -153,11 +153,7 @@ const SelectCustomerMenu = (props: CustomerMenu) => {
   );
 };
 
-type SingleCustomer = {
-  customer: Customer;
-};
-
-const CustomerList = (props: SingleCustomer) => {
+const CustomerList = (props: { customer: Customer }) => {
   const { firstName, lastName, postalCode, city } = props.customer;
 
   return (
