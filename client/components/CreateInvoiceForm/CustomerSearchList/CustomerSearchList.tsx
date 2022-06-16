@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -10,14 +10,62 @@ import { $TSFixIt } from '@nvs-shared/types/general';
 import { Customer } from '@nvs-shared/types/customer';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-type Props = {
-  dispatch: any;
-  state: any;
-  customerList: any;
-};
+import { useQuery } from '@apollo/client';
+import { GET_CUSTOMERS_LIST } from '@nvs-shared/graphql/customers';
 
-const CustomerSearchList = (props: Props) => {
-  const { dispatch, state, customerList } = props;
+const CustomerSearchList = () => {
+  const reducer = (state: $TSFixIt, action: $TSFixIt) => {
+    switch (action.type) {
+      case 'SELECTED_CUSTOMER': {
+        return {
+          customerListMenu: false,
+          customerSelectedMenu: true,
+          selectedCustomer: action.payload,
+        };
+      }
+
+      case 'REMOVE_SELECTED_CUSTOMER': {
+        return {
+          ...menuInitialState,
+        };
+      }
+
+      case 'OPEN_CUSTOMER_LIST': {
+        return {
+          ...state,
+          customerListMenu: true,
+        };
+      }
+
+      case 'SEARCH_CUSTOMER': {
+        return {
+          ...state,
+          searchQuery: action.payload,
+        };
+      }
+
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, menuInitialState);
+  const [customerList, setCustomerList] = useState<Customer[] | []>([]);
+  const { data } = useQuery(GET_CUSTOMERS_LIST);
+
+  useEffect(() => {
+    if (!data) return;
+    setCustomerList(data.customers);
+  }, [data]);
+
+  // * Triggers the search query when it detects user input
+  useEffect(() => {
+    if (state.searchQuery === '') return setCustomerList(data?.customers);
+
+    const searchResults = filterCustomers(customerList, state.searchQuery);
+
+    setCustomerList(searchResults);
+  }, [state.searchQuery]);
 
   const handleClickAwayCustomerList = (isCustomerSelected: boolean) => {
     if (isCustomerSelected) return;
@@ -169,4 +217,19 @@ const CustomerList = (props: { customer: Customer }) => {
       </div>
     </div>
   );
+};
+
+const filterCustomers = (row: any, query: string) => {
+  const querySearch = query?.toLocaleLowerCase();
+  const keys = ['firstName', 'lastName', 'postalCode', 'city'];
+  return row.filter((item: any) =>
+    keys.some((key) => item[key].toLowerCase().includes(querySearch))
+  );
+};
+
+const menuInitialState = {
+  customerListMenu: false,
+  selectedCustomer: [],
+  customerSelectedMenu: false,
+  searchQuery: '',
 };

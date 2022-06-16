@@ -1,43 +1,58 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { yupResolver } from '@hookform/resolvers/yup';
 import ClearIcon from '@mui/icons-material/Clear';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import { useRouter } from 'next/router';
-import { useEffect, useReducer, useState } from 'react';
+import { useReducer, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import {
   CREATE_CUSTOMER,
   GET_CUSTOMERS_FOR_GRID,
-  GET_CUSTOMERS_LIST,
 } from '@nvs-shared/graphql/customers';
-import { Customer } from '@nvs-shared/types/customer';
 import CustomerSearchList from './CustomerSearchList';
+import TableRecord from './TableRecord';
 import { $TSFixIt } from '@nvs-shared/types/general';
-import { keys } from '@mui/system';
-
-const menuInitialState = {
-  customerListMenu: false,
-  selectedCustomer: [],
-  customerSelectedMenu: false,
-  searchQuery: '',
-};
+import { v4 as uuidv4 } from 'uuid';
 
 const termsList = {
   NET_7: 'Net 7 days',
   NET_21: 'Net 21 days',
   NET_30: 'Net 30 days',
 };
+const initialTableValues = {
+  isRemovable: false,
+  itemData: [],
+};
+const emptyEntry = { id: 0, item: '', quantity: 0, price: 0, amount: 0 };
 
 const CreateInvoiceForm = () => {
+  const reducer = (state: $TSFixIt, action: $TSFixIt) => {
+    switch (action.type) {
+      case 'ADD_NEW_ENTRY': {
+        return {
+          ...state,
+          itemData: [...state.itemData, emptyEntry],
+        };
+      }
+
+      case 'REMOVE_ENTRY': {
+        return {
+          ...state,
+          itemData: state.itemData.filter(
+            (item: $TSFixIt) => item.id !== action.payload
+          ),
+        };
+      }
+    }
+  };
   // * Form Params
   const {
     register,
@@ -48,62 +63,12 @@ const CreateInvoiceForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const reducer = (state: $TSFixIt, action: $TSFixIt) => {
-    switch (action.type) {
-      case 'SELECTED_CUSTOMER': {
-        return {
-          customerListMenu: false,
-          customerSelectedMenu: true,
-          selectedCustomer: action.payload,
-        };
-      }
-
-      case 'REMOVE_SELECTED_CUSTOMER': {
-        return {
-          ...menuInitialState,
-        };
-      }
-
-      case 'OPEN_CUSTOMER_LIST': {
-        return {
-          ...state,
-          customerListMenu: true,
-        };
-      }
-
-      case 'SEARCH_CUSTOMER': {
-        return {
-          ...state,
-          searchQuery: action.payload,
-        };
-      }
-
-      default:
-        return state;
-    }
-  };
-
-  const [state, dispatch] = useReducer(reducer, menuInitialState);
-  const { data } = useQuery(GET_CUSTOMERS_LIST);
-  const [customerList, setCustomerList] = useState<Customer[] | []>([]);
   const router = useRouter();
 
-  const [value, setValue] = useState<Date | null>(null);
+  const [invoiceDate, setInvoiceDate] = useState<Date | null>(null);
+  const [state, dispatch] = useReducer(reducer, initialTableValues);
 
-  // * Triggers the search query when it detects user input
-  useEffect(() => {
-    if (state.searchQuery === '') return setCustomerList(data?.customers);
-
-    const searchResults = filterCustomers(customerList, state.searchQuery);
-
-    setCustomerList(searchResults);
-  }, [state.searchQuery]);
-
-  useEffect(() => {
-    if (!data) return;
-    setCustomerList(data.customers);
-  }, [data]);
-
+  console.log(state);
   // * Create a new customer mutation
   const [createCustomer] = useMutation(CREATE_CUSTOMER);
   const formSubmit = async (data: CustomerFormInputs) => {
@@ -159,11 +124,7 @@ const CreateInvoiceForm = () => {
 
         {/* Customer Selector */}
 
-        <CustomerSearchList
-          customerList={customerList}
-          dispatch={dispatch}
-          state={state}
-        />
+        <CustomerSearchList />
 
         {/* Invoice Details */}
 
@@ -172,9 +133,9 @@ const CreateInvoiceForm = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label='Basic example'
-                value={value}
+                value={invoiceDate}
                 onChange={(newValue) => {
-                  setValue(newValue);
+                  setInvoiceDate(newValue);
                 }}
                 renderInput={({ inputRef, inputProps, InputProps }) => (
                   <div className='flex flex-col gap-1 w-full'>
@@ -222,11 +183,13 @@ const CreateInvoiceForm = () => {
 
             {/* Items */}
 
-            <ItemEntry />
-            <ItemEntry />
-
+            {state.itemData.map((item: $TSFixIt) => (
+              <TableRecord />
+            ))}
             {/* Add new Item */}
-            <div className='col-span-full hover:bg-slate-200 cursor-pointer h-14 items-center w-full bg-slate-100 flex justify-center gap-2'>
+            <div
+              onClick={() => dispatch({ type: 'ADD_NEW_ENTRY' })}
+              className='col-span-full hover:bg-slate-200 cursor-pointer h-14 items-center w-full bg-slate-100 flex justify-center gap-2'>
               <AddCircleIcon className='text-skin-fill' />
               <p className='text-skin-fill'>Add New Item</p>
             </div>
@@ -255,14 +218,6 @@ const CreateInvoiceForm = () => {
 };
 
 export default CreateInvoiceForm;
-
-const filterCustomers = (row: any, query: string) => {
-  const querySearch = query?.toLocaleLowerCase();
-  const keys = ['firstName', 'lastName', 'postalCode', 'city'];
-  return row.filter((item: any) =>
-    keys.some((key) => item[key].toLowerCase().includes(querySearch))
-  );
-};
 
 interface CustomerFormInputs {
   firstName: string;
@@ -299,42 +254,6 @@ type InputProps = {
   formHandler?: any;
   onError?: any;
   disabled?: boolean;
-};
-
-type Item = {};
-
-const ItemEntry = (props: Item) => {
-  return (
-    <div className='pt-5 pb-8 grid grid-cols-8 gap-x-6 gap-y-2 col-span-full border border-r-0 border-l-0 border-t-0 '>
-      <div className='col-span-4 pl-12'>
-        <input
-          type='text'
-          className='w-full  border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
-        />
-      </div>
-
-      <div className='col-start-5'>
-        <input
-          type='number'
-          className='w-full border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
-        />
-      </div>
-
-      <div className=' col-start-6 '>
-        <input
-          type='text'
-          className='w-full border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
-        />
-      </div>
-
-      <div className=' pr-12 col-start-7 col-span-full self-center flex items-center justify-end'>
-        <p className='text-bold'>
-          <span className='font-bold'>CHF</span>45.00
-        </p>
-        <DeleteOutlineOutlinedIcon className='absolute right-3 text-skin-gray cursor-pointer hover:text-red-500' />
-      </div>
-    </div>
-  );
 };
 
 const TextInput = (props: InputProps) => {
