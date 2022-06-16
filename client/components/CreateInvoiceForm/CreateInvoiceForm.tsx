@@ -10,6 +10,10 @@ import * as yup from 'yup';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import {
   CREATE_CUSTOMER,
   GET_CUSTOMERS_FOR_GRID,
@@ -76,6 +80,8 @@ const CreateInvoiceForm = () => {
   const { data } = useQuery(GET_CUSTOMERS_LIST);
   const [customerList, setCustomerList] = useState<Customer[] | []>([]);
   const router = useRouter();
+
+  const [value, setValue] = useState<Date | null>(null);
 
   // * Triggers the search query when it detects user input
   useEffect(() => {
@@ -156,7 +162,33 @@ const CreateInvoiceForm = () => {
 
         <div className='h-14  col-start-7 col-span-full'>
           <div className='grid grid-cols-2 gap-3'>
-            <TextInput required label='Invoice Date' />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label='Basic example'
+                value={value}
+                onChange={(newValue) => {
+                  setValue(newValue);
+                }}
+                renderInput={({ inputRef, inputProps, InputProps }) => (
+                  <div className='flex flex-col gap-1 w-full'>
+                    <label className='text-sm font-medium capitalize'>
+                      Invoice Date
+                      <span className='text-red-500'>*</span>
+                    </label>
+                    <div className='flex items-center relative'>
+                      <input
+                        className={` w-full rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill`}
+                        ref={inputRef}
+                        {...inputProps}
+                      />
+                      <span className='absolute right-5 '>
+                        {InputProps?.endAdornment}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              />
+            </LocalizationProvider>
             <TextInput required label='Due Date' />
             <TextInput label='Invoice Number' />
           </div>
