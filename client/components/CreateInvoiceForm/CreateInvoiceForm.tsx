@@ -366,8 +366,8 @@ type SelectInput = {
   label: string;
   required?: boolean;
   size?: 'standard' | 'full';
-  formHandler: any;
-  onError: any;
+  formHandler?: any;
+  onError?: any;
   values: any;
 };
 
@@ -398,7 +398,9 @@ const SelectInput = (props: SelectInput) => {
             Select term
           </option>
           {Object.keys(values).map((term: any) => (
-            <option value={term}>{values[term]}</option>
+            <option key={term} value={term}>
+              {values[term]}
+            </option>
           ))}
         </select>
       </div>
