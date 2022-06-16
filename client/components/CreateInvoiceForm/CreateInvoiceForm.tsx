@@ -22,12 +22,19 @@ import {
 import { Customer } from '@nvs-shared/types/customer';
 import CustomerSearchList from './CustomerSearchList';
 import { $TSFixIt } from '@nvs-shared/types/general';
+import { keys } from '@mui/system';
 
 const menuInitialState = {
   customerListMenu: false,
   selectedCustomer: [],
   customerSelectedMenu: false,
   searchQuery: '',
+};
+
+const termsList = {
+  NET_7: 'Net 7 days',
+  NET_21: 'Net 21 days',
+  NET_30: 'Net 30 days',
 };
 
 const CreateInvoiceForm = () => {
@@ -189,8 +196,8 @@ const CreateInvoiceForm = () => {
                 )}
               />
             </LocalizationProvider>
-            <TextInput required label='Due Date' />
-            <TextInput label='Invoice Number' />
+            <SelectInput values={termsList} required label='Terms' />
+            <TextInput disabled label='Payment Date' />
           </div>
         </div>
 
@@ -291,6 +298,7 @@ type InputProps = {
   size?: 'standard' | 'full';
   formHandler?: any;
   onError?: any;
+  disabled?: boolean;
 };
 
 type Item = {};
@@ -321,7 +329,7 @@ const ItemEntry = (props: Item) => {
 
       <div className=' pr-12 col-start-7 col-span-full self-center flex items-center justify-end'>
         <p className='text-bold'>
-          <span className='font-bold'>CHF </span>45.00
+          <span className='font-bold'>CHF</span>45.00
         </p>
         <DeleteOutlineOutlinedIcon className='absolute right-3 text-skin-gray cursor-pointer hover:text-red-500' />
       </div>
@@ -330,7 +338,7 @@ const ItemEntry = (props: Item) => {
 };
 
 const TextInput = (props: InputProps) => {
-  const { required, size, label, formHandler, onError } = props;
+  const { required, size, label, formHandler, onError, disabled } = props;
 
   return (
     <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-1'}`}>
@@ -340,12 +348,13 @@ const TextInput = (props: InputProps) => {
           {required && <span className='text-red-500'>*</span>}
         </label>
         <input
+          disabled={disabled}
           {...formHandler}
           type='text'
           className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
             onError &&
             'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
-          }`}
+          } ${disabled && `bg-slate-200`}`}
         />
       </div>
       <p className='text-sm text-red-500 mt-1'>{onError?.message}</p>
@@ -386,12 +395,10 @@ const SelectInput = (props: SelectInput) => {
             'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
           }`}>
           <option hidden value={''}>
-            Select a country
+            Select term
           </option>
-          {values.map((country: Country) => (
-            <option key={country.code} value={country.name}>
-              {country.name}
-            </option>
+          {Object.keys(values).map((term: any) => (
+            <option value={term}>{values[term]}</option>
           ))}
         </select>
       </div>
