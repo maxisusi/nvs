@@ -10,6 +10,10 @@ import * as yup from 'yup';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import {
   CREATE_CUSTOMER,
   GET_CUSTOMERS_FOR_GRID,
@@ -18,12 +22,19 @@ import {
 import { Customer } from '@nvs-shared/types/customer';
 import CustomerSearchList from './CustomerSearchList';
 import { $TSFixIt } from '@nvs-shared/types/general';
+import { keys } from '@mui/system';
 
 const menuInitialState = {
   customerListMenu: false,
   selectedCustomer: [],
   customerSelectedMenu: false,
   searchQuery: '',
+};
+
+const termsList = {
+  NET_7: 'Net 7 days',
+  NET_21: 'Net 21 days',
+  NET_30: 'Net 30 days',
 };
 
 const CreateInvoiceForm = () => {
@@ -76,6 +87,8 @@ const CreateInvoiceForm = () => {
   const { data } = useQuery(GET_CUSTOMERS_LIST);
   const [customerList, setCustomerList] = useState<Customer[] | []>([]);
   const router = useRouter();
+
+  const [value, setValue] = useState<Date | null>(null);
 
   // * Triggers the search query when it detects user input
   useEffect(() => {
@@ -156,9 +169,35 @@ const CreateInvoiceForm = () => {
 
         <div className='h-14  col-start-7 col-span-full'>
           <div className='grid grid-cols-2 gap-3'>
-            <TextInput required label='Invoice Date' />
-            <TextInput required label='Due Date' />
-            <TextInput label='Invoice Number' />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label='Basic example'
+                value={value}
+                onChange={(newValue) => {
+                  setValue(newValue);
+                }}
+                renderInput={({ inputRef, inputProps, InputProps }) => (
+                  <div className='flex flex-col gap-1 w-full'>
+                    <label className='text-sm font-medium capitalize'>
+                      Invoice Date
+                      <span className='text-red-500'>*</span>
+                    </label>
+                    <div className='flex items-center relative'>
+                      <input
+                        className={` w-full rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill`}
+                        ref={inputRef}
+                        {...inputProps}
+                      />
+                      <span className='absolute right-5 '>
+                        {InputProps?.endAdornment}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              />
+            </LocalizationProvider>
+            <SelectInput values={termsList} required label='Terms' />
+            <TextInput disabled label='Payment Date' />
           </div>
         </div>
 
@@ -259,6 +298,7 @@ type InputProps = {
   size?: 'standard' | 'full';
   formHandler?: any;
   onError?: any;
+  disabled?: boolean;
 };
 
 type Item = {};
@@ -289,7 +329,7 @@ const ItemEntry = (props: Item) => {
 
       <div className=' pr-12 col-start-7 col-span-full self-center flex items-center justify-end'>
         <p className='text-bold'>
-          <span className='font-bold'>CHF </span>45.00
+          <span className='font-bold'>CHF</span>45.00
         </p>
         <DeleteOutlineOutlinedIcon className='absolute right-3 text-skin-gray cursor-pointer hover:text-red-500' />
       </div>
@@ -298,7 +338,7 @@ const ItemEntry = (props: Item) => {
 };
 
 const TextInput = (props: InputProps) => {
-  const { required, size, label, formHandler, onError } = props;
+  const { required, size, label, formHandler, onError, disabled } = props;
 
   return (
     <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-1'}`}>
@@ -308,12 +348,13 @@ const TextInput = (props: InputProps) => {
           {required && <span className='text-red-500'>*</span>}
         </label>
         <input
+          disabled={disabled}
           {...formHandler}
           type='text'
           className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
             onError &&
             'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
-          }`}
+          } ${disabled && `bg-slate-200`}`}
         />
       </div>
       <p className='text-sm text-red-500 mt-1'>{onError?.message}</p>
@@ -325,8 +366,8 @@ type SelectInput = {
   label: string;
   required?: boolean;
   size?: 'standard' | 'full';
-  formHandler: any;
-  onError: any;
+  formHandler?: any;
+  onError?: any;
   values: any;
 };
 
@@ -354,11 +395,11 @@ const SelectInput = (props: SelectInput) => {
             'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
           }`}>
           <option hidden value={''}>
-            Select a country
+            Select term
           </option>
-          {values.map((country: Country) => (
-            <option key={country.code} value={country.name}>
-              {country.name}
+          {Object.keys(values).map((term: any) => (
+            <option key={term} value={term}>
+              {values[term]}
             </option>
           ))}
         </select>
