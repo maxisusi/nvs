@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import ClearIcon from '@mui/icons-material/Clear';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import { useRouter } from 'next/router';
-import { useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -29,17 +29,26 @@ const termsList = {
 };
 const initialTableValues = {
   isRemovable: false,
-  itemData: [],
+  itemData: [{ id: uuidv4(), item: '', quantity: 0, price: 0, amount: 0 }],
 };
-const emptyEntry = { id: 0, item: '', quantity: 0, price: 0, amount: 0 };
+const emptyEntry = () => {
+  return { id: uuidv4(), item: '', quantity: 0, price: 0, amount: 0 };
+};
 
 const CreateInvoiceForm = () => {
   const reducer = (state: $TSFixIt, action: $TSFixIt) => {
     switch (action.type) {
       case 'ADD_NEW_ENTRY': {
         return {
+          isRemovable: true,
+          itemData: [...state.itemData, emptyEntry()],
+        };
+      }
+
+      case 'NOT_REMOVABLE': {
+        return {
           ...state,
-          itemData: [...state.itemData, emptyEntry],
+          isRemovable: false,
         };
       }
 
@@ -69,6 +78,13 @@ const CreateInvoiceForm = () => {
   const [state, dispatch] = useReducer(reducer, initialTableValues);
 
   console.log(state);
+
+  // * Checks if the length of the list is above 1
+  useEffect(() => {
+    if (state.itemData.length === 1) {
+      dispatch({ type: 'NOT_REMOVABLE' });
+    }
+  }, [state.itemData]);
   // * Create a new customer mutation
   const [createCustomer] = useMutation(CREATE_CUSTOMER);
   const formSubmit = async (data: CustomerFormInputs) => {
@@ -184,7 +200,12 @@ const CreateInvoiceForm = () => {
             {/* Items */}
 
             {state.itemData.map((item: $TSFixIt) => (
-              <TableRecord />
+              <TableRecord
+                key={item.id}
+                isRemovable={state.isRemovable}
+                dispatch={dispatch}
+                id={item.id}
+              />
             ))}
             {/* Add new Item */}
             <div

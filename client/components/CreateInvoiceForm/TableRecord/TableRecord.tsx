@@ -1,7 +1,12 @@
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { $TSFixIt } from '@nvs-shared/types/general';
 import { useState } from 'react';
 
-type Props = {};
+type Props = {
+  dispatch: $TSFixIt;
+  id: string;
+  isRemovable: boolean;
+};
 
 const initialState = {
   id: 0,
@@ -39,7 +44,15 @@ const TableRecord = (props: Props) => {
         <p className='text-bold'>
           <span className='font-bold'>CHF</span>0.00
         </p>
-        <DeleteOutlineOutlinedIcon className='absolute right-3 text-skin-gray cursor-pointer hover:text-red-500' />
+        {props.isRemovable && (
+          <div
+            className='absolute right-3 text-skin-gray cursor-pointer hover:text-red-500'
+            onClick={() =>
+              props.dispatch({ type: 'REMOVE_ENTRY', payload: props.id })
+            }>
+            <DeleteOutlineOutlinedIcon />
+          </div>
+        )}
       </div>
     </div>
   );
