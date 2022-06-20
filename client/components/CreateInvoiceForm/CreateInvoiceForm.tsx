@@ -62,7 +62,7 @@ const CreateInvoiceForm = () => {
 
       case 'UPDATE_ENTRY': {
         const arrayIndex = state.itemData.findIndex(
-          (item) => item.id === action.payload.id
+          (item: any) => item.id === action.payload.id
         );
         let newArr = state.itemData;
         newArr[arrayIndex] = action.payload;
