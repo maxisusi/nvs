@@ -14,31 +14,25 @@ const TableRecord = (props: Props) => {
     item: '',
     quantity: 0,
     price: 0,
-    amount: 0,
+    amount: 0.0,
   };
 
   const [record, setRecord] = useState(initialState);
 
+  // * Updates the current state of all entries
   useEffect(() => {
-    const total = record.quantity * record.price;
-    // setRecord((prev) => {
-    //   return {
-    //     ...prev,
-    //     amount: total,
-    //   };
-    // });
+    props.dispatch({ type: 'UPDATE_ENTRY', payload: record });
   }, [record]);
 
+  // * Calculates the totla
   useEffect(() => {
     const total = record.quantity * record.price;
-    console.log(total);
     setRecord((prev) => {
       return {
         ...prev,
         amount: total,
       };
     });
-    console.log(record);
   }, [record.quantity, record.price]);
 
   return (
@@ -91,7 +85,7 @@ const TableRecord = (props: Props) => {
       <div className=' pr-12 col-start-7 col-span-full self-center flex items-center justify-end'>
         <p className='text-bold'>
           <span className='font-bold'>CHF</span>
-          {record.amount}
+          {record.amount.toFixed(2)}
         </p>
         {props.isRemovable && (
           <div

@@ -38,6 +38,14 @@ const emptyEntry = () => {
 const CreateInvoiceForm = () => {
   const reducer = (state: $TSFixIt, action: $TSFixIt) => {
     switch (action.type) {
+      case 'REMOVE_ENTRY': {
+        return {
+          ...state,
+          itemData: state.itemData.filter(
+            (item: $TSFixIt) => item.id !== action.payload
+          ),
+        };
+      }
       case 'ADD_NEW_ENTRY': {
         return {
           isRemovable: true,
@@ -52,12 +60,16 @@ const CreateInvoiceForm = () => {
         };
       }
 
-      case 'REMOVE_ENTRY': {
+      case 'UPDATE_ENTRY': {
+        const arrayIndex = state.itemData.findIndex(
+          (item) => item.id === action.payload.id
+        );
+        let newArr = state.itemData;
+        newArr[arrayIndex] = action.payload;
+
         return {
           ...state,
-          itemData: state.itemData.filter(
-            (item: $TSFixIt) => item.id !== action.payload
-          ),
+          itemData: newArr,
         };
       }
     }
@@ -78,7 +90,6 @@ const CreateInvoiceForm = () => {
   const [state, dispatch] = useReducer(reducer, initialTableValues);
 
   console.log(state);
-
   // * Checks if the length of the list is above 1
   useEffect(() => {
     if (state.itemData.length === 1) {
