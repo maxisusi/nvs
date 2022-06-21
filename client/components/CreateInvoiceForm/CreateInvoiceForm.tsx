@@ -101,9 +101,6 @@ const CreateInvoiceForm = () => {
     const total = state.itemData
       .map((item: any) => item.amount)
       .reduce((acc: any, value: any) => acc + value);
-
-    console.log(total);
-
     setInvoiceTotal(total);
   }, [state]);
 
