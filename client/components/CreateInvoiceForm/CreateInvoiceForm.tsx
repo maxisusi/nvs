@@ -88,14 +88,25 @@ const CreateInvoiceForm = () => {
 
   const [invoiceDate, setInvoiceDate] = useState<Date | null>(null);
   const [state, dispatch] = useReducer(reducer, initialTableValues);
+  const [invoiceTotal, setInvoiceTotal] = useState<number | null>(null);
 
-  console.log(state);
   // * Checks if the length of the list is above 1
   useEffect(() => {
     if (state.itemData.length === 1) {
       dispatch({ type: 'NOT_REMOVABLE' });
     }
   }, [state.itemData]);
+
+  useEffect(() => {
+    const total = state.itemData
+      .map((item: any) => item.amount)
+      .reduce((acc: any, value: any) => acc + value);
+
+    console.log(total);
+
+    setInvoiceTotal(total);
+  }, [state]);
+
   // * Create a new customer mutation
   const [createCustomer] = useMutation(CREATE_CUSTOMER);
   const formSubmit = async (data: CustomerFormInputs) => {
@@ -240,7 +251,8 @@ const CreateInvoiceForm = () => {
               Total
             </h3>
             <h3 className='text-lg font-semibold'>
-              <span>CHF </span>45.00
+              <span>CHF </span>
+              {invoiceTotal?.toFixed(2)}
             </h3>
           </div>
         </div>

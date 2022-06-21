@@ -54,8 +54,9 @@ const TableRecord = (props: Props) => {
 
       <div className='col-start-5'>
         <input
+          min={0}
           onChange={(event) =>
-            setRecord((prev) => {
+            setRecord((prev: $TSFixIt) => {
               return {
                 ...prev,
                 quantity: event.target.value,
@@ -69,15 +70,16 @@ const TableRecord = (props: Props) => {
 
       <div className=' col-start-6 '>
         <input
+          min={0}
           onChange={(event) =>
-            setRecord((prev) => {
+            setRecord((prev: $TSFixIt) => {
               return {
                 ...prev,
                 price: event.target.value,
               };
             })
           }
-          type='text'
+          type='number'
           className='w-full border-gray-300 focus:border-skin-fill rounded drop-shadow-sm'
         />
       </div>
