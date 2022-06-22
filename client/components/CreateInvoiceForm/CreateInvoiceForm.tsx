@@ -1,11 +1,5 @@
-import { useMutation } from '@apollo/client';
-import { yupResolver } from '@hookform/resolvers/yup';
-import ClearIcon from '@mui/icons-material/Clear';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
-import { useRouter } from 'next/router';
 import { useEffect, useReducer, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import * as yup from 'yup';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
@@ -13,14 +7,11 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-import {
-  CREATE_CUSTOMER,
-  GET_CUSTOMERS_FOR_GRID,
-} from '@nvs-shared/graphql/customers';
-import CustomerSearchList from './CustomerSearchList';
-import TableRecord from './TableRecord';
 import { $TSFixIt } from '@nvs-shared/types/general';
 import { v4 as uuidv4 } from 'uuid';
+import CustomerSearchList from './CustomerSearchList';
+import TableRecord from './TableRecord';
+import addDays from 'date-fns/addDays';
 
 const termsList = {
   NET_7: 'Net 7 days',
@@ -84,16 +75,34 @@ const CreateInvoiceForm = () => {
   const [invoiceNotes, setInvoiceNotes] = useState<any>(null);
   const [customerSelected, setCustomerSelected] = useState<any>();
 
-  const handleFormSubmit = (customerSelected: any[]) => {
+  const handleFormSubmit = (customerSelected: any) => {
     if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
       return alert('Missing input');
 
+    // "companyId": null,
+    // "customerId": null,
+    // "date": null,
+    // "dueDate": null,
+    // "remarks": null,
+    // "status": null,
+    // "taxes": null,
+    // "terms": null,
+    // "total": null
+
+    const fDate = invoiceTerms.split('_')[1];
+    const dueDate = addDays(invoiceDate, fDate);
+
     const invoiceObject = {
       customerId: customerSelected.id,
-      invoiceDate,
-      invoiceTerms,
+      date: invoiceDate,
+      dueDate,
+      terms: invoiceTerms,
+      status: 'DRAFT',
+
       entries: state.itemData,
-      invoiceNotes,
+      taxes: 0.0,
+      total: invoiceTotal,
+      remarks: invoiceNotes,
     };
     console.log(invoiceObject);
   };
@@ -311,7 +320,6 @@ const SelectInput = (props: SelectInput) => {
 
         <select
           onChange={(e) => state(e.target.value)}
-          type='select'
           className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
             onError &&
             'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
