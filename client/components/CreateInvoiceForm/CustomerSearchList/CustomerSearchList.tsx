@@ -13,7 +13,11 @@ import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
 import { GET_CUSTOMERS_LIST } from '@nvs-shared/graphql/customers';
 
-const CustomerSearchList = () => {
+type Props = {
+  defineCustomer: any;
+};
+
+const CustomerSearchList = (props: Props) => {
   const reducer = (state: $TSFixIt, action: $TSFixIt) => {
     switch (action.type) {
       case 'SELECTED_CUSTOMER': {
@@ -57,6 +61,14 @@ const CustomerSearchList = () => {
     if (!data) return;
     setCustomerList(data.customers);
   }, [data]);
+
+  useEffect(() => {
+    if (!state.selectedCustomer) {
+      return (props.defineCustomer = null);
+    }
+
+    props.defineCustomer(state.selectedCustomer);
+  }, [state.selectedCustomer]);
 
   // * Triggers the search query when it detects user input
   useEffect(() => {

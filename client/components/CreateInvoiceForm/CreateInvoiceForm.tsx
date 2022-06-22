@@ -4,7 +4,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import { useRouter } from 'next/router';
 import { useEffect, useReducer, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -75,20 +75,28 @@ const CreateInvoiceForm = () => {
     }
   };
   // * Form Params
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<CustomerFormInputs>({
-    resolver: yupResolver(schema),
-  });
-
-  const router = useRouter();
 
   const [invoiceDate, setInvoiceDate] = useState<Date | null>(null);
   const [state, dispatch] = useReducer(reducer, initialTableValues);
   const [invoiceTotal, setInvoiceTotal] = useState<number | null>(null);
+  const [invoiceTerms, setInvoiceTerms] = useState<any>(null);
+
+  const [invoiceNotes, setInvoiceNotes] = useState<any>(null);
+  const [customerSelected, setCustomerSelected] = useState<any>();
+
+  const handleFormSubmit = (customerSelected: any[]) => {
+    if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
+      return alert('Missing input');
+
+    const invoiceObject = {
+      customerId: customerSelected.id,
+      invoiceDate,
+      invoiceTerms,
+      entries: state.itemData,
+      invoiceNotes,
+    };
+    console.log(invoiceObject);
+  };
 
   // * Checks if the length of the list is above 1
   useEffect(() => {
@@ -101,30 +109,9 @@ const CreateInvoiceForm = () => {
     const total = state.itemData
       .map((item: any) => item.amount)
       .reduce((acc: any, value: any) => acc + value);
+
     setInvoiceTotal(total);
   }, [state]);
-
-  // * Create a new customer mutation
-  const [createCustomer] = useMutation(CREATE_CUSTOMER);
-  const formSubmit = async (data: CustomerFormInputs) => {
-    try {
-      await createCustomer({
-        variables: { createCustomerInput: data },
-
-        refetchQueries: () => [
-          {
-            query: GET_CUSTOMERS_FOR_GRID,
-          },
-        ],
-      }).then(() => {
-        reset();
-        router.push('/customer');
-      });
-    } catch (e) {
-      alert('There was an error, please check the console for further details');
-      console.error(e);
-    }
-  };
 
   return (
     <div>
@@ -138,13 +125,7 @@ const CreateInvoiceForm = () => {
 
         <div className='flex gap-3'>
           <button
-            onClick={() => reset()}
-            className={`px-3 py-2 text-sm rounded flex gap-2 items-center font-semibold border border-skin-fill text-skin-fill hover:bg-skin-fill hover:text-skin-white`}>
-            Reset
-            <ClearIcon />
-          </button>
-          <button
-            onClick={handleSubmit(formSubmit)}
+            onClick={() => handleFormSubmit(customerSelected)}
             className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <SaveAltOutlinedIcon />
             Save Invoice
@@ -153,13 +134,13 @@ const CreateInvoiceForm = () => {
       </div>
 
       <form
-        onSubmit={handleSubmit(formSubmit)}
+        onSubmit={() => handleFormSubmit(customerSelected)}
         className='h-fit grid grid-cols-12 gap-y-10'>
         <button hidden type='submit'></button>
 
         {/* Customer Selector */}
 
-        <CustomerSearchList />
+        <CustomerSearchList defineCustomer={setCustomerSelected} />
 
         {/* Invoice Details */}
 
@@ -192,7 +173,12 @@ const CreateInvoiceForm = () => {
                 )}
               />
             </LocalizationProvider>
-            <SelectInput values={termsList} required label='Terms' />
+            <SelectInput
+              state={setInvoiceTerms}
+              values={termsList}
+              required
+              label='Terms'
+            />
             <TextInput disabled label='Payment Date' />
           </div>
         </div>
@@ -239,7 +225,10 @@ const CreateInvoiceForm = () => {
         {/* Footer */}
         <div className='col-span-4  h-14 relative'>
           <h3 className='font-semibold absolute -top-7'>Notes</h3>
-          <textarea className='w-full h-32 rounded border border-gray-200 resize-none' />
+          <textarea
+            onChange={(e) => setInvoiceNotes(e.target.value)}
+            className='w-full h-32 rounded border border-gray-200 resize-none'
+          />
         </div>
 
         <div className='col-start-10 col-span-full bg-white border p-6 rounded '>
@@ -259,34 +248,6 @@ const CreateInvoiceForm = () => {
 };
 
 export default CreateInvoiceForm;
-
-interface CustomerFormInputs {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  mobile: string;
-  address: string;
-  postalCode: string;
-  countryName: string;
-  city: string;
-  region: string;
-}
-
-const schema = yup
-  .object({
-    firstName: yup.string().required('First Name is required'),
-    lastName: yup.string().required('Last Name is required'),
-    email: yup.string().email('The Email must be valid'),
-    phone: yup.string(),
-    mobile: yup.string(),
-    address: yup.string().required('Address is required'),
-    postalCode: yup.string().required('Zip Code is required'),
-    countryName: yup.string().required('Country is required'),
-    city: yup.string().required('City is required'),
-    region: yup.string().required('Region is required'),
-  })
-  .required();
 
 type InputProps = {
   label: string;
@@ -329,6 +290,7 @@ type SelectInput = {
   formHandler?: any;
   onError?: any;
   values: any;
+  state: any;
 };
 
 type Country = {
@@ -337,7 +299,7 @@ type Country = {
 };
 
 const SelectInput = (props: SelectInput) => {
-  const { required, size, label, formHandler, onError, values } = props;
+  const { required, size, label, formHandler, onError, values, state } = props;
 
   return (
     <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-1'}`}>
@@ -348,7 +310,7 @@ const SelectInput = (props: SelectInput) => {
         </label>
 
         <select
-          {...formHandler}
+          onChange={(e) => state(e.target.value)}
           type='select'
           className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
             onError &&
