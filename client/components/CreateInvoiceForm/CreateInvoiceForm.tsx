@@ -1,11 +1,5 @@
-import { useMutation } from '@apollo/client';
-import { yupResolver } from '@hookform/resolvers/yup';
-import ClearIcon from '@mui/icons-material/Clear';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
-import { useRouter } from 'next/router';
 import { useEffect, useReducer, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
@@ -13,14 +7,14 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-import {
-  CREATE_CUSTOMER,
-  GET_CUSTOMERS_FOR_GRID,
-} from '@nvs-shared/graphql/customers';
-import CustomerSearchList from './CustomerSearchList';
-import TableRecord from './TableRecord';
 import { $TSFixIt } from '@nvs-shared/types/general';
 import { v4 as uuidv4 } from 'uuid';
+import CustomerSearchList from './CustomerSearchList';
+import TableRecord from './TableRecord';
+import addDays from 'date-fns/addDays';
+import { format } from 'date-fns';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_COMPANIES } from '@nvs-shared/graphql/companies';
 
 const termsList = {
   NET_7: 'Net 7 days',
@@ -75,20 +69,36 @@ const CreateInvoiceForm = () => {
     }
   };
   // * Form Params
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<CustomerFormInputs>({
-    resolver: yupResolver(schema),
-  });
-
-  const router = useRouter();
 
   const [invoiceDate, setInvoiceDate] = useState<Date | null>(null);
   const [state, dispatch] = useReducer(reducer, initialTableValues);
   const [invoiceTotal, setInvoiceTotal] = useState<number | null>(null);
+  const [invoiceTerms, setInvoiceTerms] = useState<any>(null);
+
+  const [dueDate, setDudeDate] = useState<any>(null);
+  const [invoiceNotes, setInvoiceNotes] = useState<any>(null);
+  const [customerSelected, setCustomerSelected] = useState<any>();
+  const { data, loading, error } = useQuery(GET_ALL_COMPANIES);
+
+  const handleFormSubmit = (customerSelected: any) => {
+    if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
+      return alert('Missing input');
+
+    const invoiceObject = {
+      companyId: data.companies[0].id,
+      customerId: customerSelected.id,
+      date: invoiceDate,
+      dueDate,
+      terms: invoiceTerms,
+      status: 'DRAFT',
+
+      entries: state.itemData,
+      taxes: 0.0,
+      total: invoiceTotal,
+      remarks: invoiceNotes,
+    };
+    console.log(invoiceObject);
+  };
 
   // * Checks if the length of the list is above 1
   useEffect(() => {
@@ -96,35 +106,21 @@ const CreateInvoiceForm = () => {
       dispatch({ type: 'NOT_REMOVABLE' });
     }
   }, [state.itemData]);
+  useEffect(() => {
+    if (!invoiceTerms || !invoiceDate) return setDudeDate('');
+
+    const fDate = invoiceTerms.split('_')[1];
+    const dueDate = addDays(invoiceDate, fDate);
+    setDudeDate(format(dueDate, 'MM/dd/yyyy'));
+  }, [invoiceTerms, invoiceDate]);
 
   useEffect(() => {
     const total = state.itemData
       .map((item: any) => item.amount)
       .reduce((acc: any, value: any) => acc + value);
+
     setInvoiceTotal(total);
   }, [state]);
-
-  // * Create a new customer mutation
-  const [createCustomer] = useMutation(CREATE_CUSTOMER);
-  const formSubmit = async (data: CustomerFormInputs) => {
-    try {
-      await createCustomer({
-        variables: { createCustomerInput: data },
-
-        refetchQueries: () => [
-          {
-            query: GET_CUSTOMERS_FOR_GRID,
-          },
-        ],
-      }).then(() => {
-        reset();
-        router.push('/customer');
-      });
-    } catch (e) {
-      alert('There was an error, please check the console for further details');
-      console.error(e);
-    }
-  };
 
   return (
     <div>
@@ -138,13 +134,7 @@ const CreateInvoiceForm = () => {
 
         <div className='flex gap-3'>
           <button
-            onClick={() => reset()}
-            className={`px-3 py-2 text-sm rounded flex gap-2 items-center font-semibold border border-skin-fill text-skin-fill hover:bg-skin-fill hover:text-skin-white`}>
-            Reset
-            <ClearIcon />
-          </button>
-          <button
-            onClick={handleSubmit(formSubmit)}
+            onClick={() => handleFormSubmit(customerSelected)}
             className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <SaveAltOutlinedIcon />
             Save Invoice
@@ -153,13 +143,13 @@ const CreateInvoiceForm = () => {
       </div>
 
       <form
-        onSubmit={handleSubmit(formSubmit)}
+        onSubmit={() => handleFormSubmit(customerSelected)}
         className='h-fit grid grid-cols-12 gap-y-10'>
         <button hidden type='submit'></button>
 
         {/* Customer Selector */}
 
-        <CustomerSearchList />
+        <CustomerSearchList defineCustomer={setCustomerSelected} />
 
         {/* Invoice Details */}
 
@@ -192,8 +182,13 @@ const CreateInvoiceForm = () => {
                 )}
               />
             </LocalizationProvider>
-            <SelectInput values={termsList} required label='Terms' />
-            <TextInput disabled label='Payment Date' />
+            <SelectInput
+              state={setInvoiceTerms}
+              values={termsList}
+              required
+              label='Terms'
+            />
+            <TextInput value={dueDate} disabled label='Payment Date' />
           </div>
         </div>
 
@@ -239,7 +234,10 @@ const CreateInvoiceForm = () => {
         {/* Footer */}
         <div className='col-span-4  h-14 relative'>
           <h3 className='font-semibold absolute -top-7'>Notes</h3>
-          <textarea className='w-full h-32 rounded border border-gray-200 resize-none' />
+          <textarea
+            onChange={(e) => setInvoiceNotes(e.target.value)}
+            className='w-full h-32 rounded border border-gray-200 resize-none'
+          />
         </div>
 
         <div className='col-start-10 col-span-full bg-white border p-6 rounded '>
@@ -260,34 +258,6 @@ const CreateInvoiceForm = () => {
 
 export default CreateInvoiceForm;
 
-interface CustomerFormInputs {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  mobile: string;
-  address: string;
-  postalCode: string;
-  countryName: string;
-  city: string;
-  region: string;
-}
-
-const schema = yup
-  .object({
-    firstName: yup.string().required('First Name is required'),
-    lastName: yup.string().required('Last Name is required'),
-    email: yup.string().email('The Email must be valid'),
-    phone: yup.string(),
-    mobile: yup.string(),
-    address: yup.string().required('Address is required'),
-    postalCode: yup.string().required('Zip Code is required'),
-    countryName: yup.string().required('Country is required'),
-    city: yup.string().required('City is required'),
-    region: yup.string().required('Region is required'),
-  })
-  .required();
-
 type InputProps = {
   label: string;
   required?: boolean;
@@ -295,10 +265,12 @@ type InputProps = {
   formHandler?: any;
   onError?: any;
   disabled?: boolean;
+  value?: any;
 };
 
 const TextInput = (props: InputProps) => {
-  const { required, size, label, formHandler, onError, disabled } = props;
+  const { required, size, label, formHandler, onError, disabled, value } =
+    props;
 
   return (
     <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-1'}`}>
@@ -309,7 +281,7 @@ const TextInput = (props: InputProps) => {
         </label>
         <input
           disabled={disabled}
-          {...formHandler}
+          value={value}
           type='text'
           className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
             onError &&
@@ -329,6 +301,7 @@ type SelectInput = {
   formHandler?: any;
   onError?: any;
   values: any;
+  state: any;
 };
 
 type Country = {
@@ -337,7 +310,7 @@ type Country = {
 };
 
 const SelectInput = (props: SelectInput) => {
-  const { required, size, label, formHandler, onError, values } = props;
+  const { required, size, label, formHandler, onError, values, state } = props;
 
   return (
     <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-1'}`}>
@@ -348,8 +321,7 @@ const SelectInput = (props: SelectInput) => {
         </label>
 
         <select
-          {...formHandler}
-          type='select'
+          onChange={(e) => state(e.target.value)}
           className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
             onError &&
             'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
