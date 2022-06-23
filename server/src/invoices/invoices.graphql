@@ -1,4 +1,5 @@
 scalar DateTime
+
 type Invoice {
   id: String
   date: DateTime
