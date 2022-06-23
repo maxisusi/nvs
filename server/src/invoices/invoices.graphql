@@ -1,4 +1,5 @@
 scalar DateTime
+scalar Entry
 
 type Invoice {
   id: String
@@ -27,6 +28,15 @@ input CreateInvoiceInput {
   remarks: String
   customerId: String!
   companyId: String!
+  entryList: [NewEntry!]
+}
+
+input NewEntry {
+  date: DateTime
+  description: String
+  quantity: Float
+  rate: Float
+  total: Float
 }
 
 input UpdateInvoiceInput {
