@@ -12,6 +12,9 @@ import { v4 as uuidv4 } from 'uuid';
 import CustomerSearchList from './CustomerSearchList';
 import TableRecord from './TableRecord';
 import addDays from 'date-fns/addDays';
+import { format } from 'date-fns';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_COMPANIES } from '@nvs-shared/graphql/companies';
 
 const termsList = {
   NET_7: 'Net 7 days',
@@ -72,27 +75,17 @@ const CreateInvoiceForm = () => {
   const [invoiceTotal, setInvoiceTotal] = useState<number | null>(null);
   const [invoiceTerms, setInvoiceTerms] = useState<any>(null);
 
+  const [dueDate, setDudeDate] = useState<any>(null);
   const [invoiceNotes, setInvoiceNotes] = useState<any>(null);
   const [customerSelected, setCustomerSelected] = useState<any>();
+  const { data, loading, error } = useQuery(GET_ALL_COMPANIES);
 
   const handleFormSubmit = (customerSelected: any) => {
     if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
       return alert('Missing input');
 
-    // "companyId": null,
-    // "customerId": null,
-    // "date": null,
-    // "dueDate": null,
-    // "remarks": null,
-    // "status": null,
-    // "taxes": null,
-    // "terms": null,
-    // "total": null
-
-    const fDate = invoiceTerms.split('_')[1];
-    const dueDate = addDays(invoiceDate, fDate);
-
     const invoiceObject = {
+      companyId: data.companies[0].id,
       customerId: customerSelected.id,
       date: invoiceDate,
       dueDate,
@@ -113,6 +106,13 @@ const CreateInvoiceForm = () => {
       dispatch({ type: 'NOT_REMOVABLE' });
     }
   }, [state.itemData]);
+  useEffect(() => {
+    if (!invoiceTerms || !invoiceDate) return setDudeDate('');
+
+    const fDate = invoiceTerms.split('_')[1];
+    const dueDate = addDays(invoiceDate, fDate);
+    setDudeDate(format(dueDate, 'MM/dd/yyyy'));
+  }, [invoiceTerms, invoiceDate]);
 
   useEffect(() => {
     const total = state.itemData
@@ -188,7 +188,7 @@ const CreateInvoiceForm = () => {
               required
               label='Terms'
             />
-            <TextInput disabled label='Payment Date' />
+            <TextInput value={dueDate} disabled label='Payment Date' />
           </div>
         </div>
 
@@ -265,10 +265,12 @@ type InputProps = {
   formHandler?: any;
   onError?: any;
   disabled?: boolean;
+  value?: any;
 };
 
 const TextInput = (props: InputProps) => {
-  const { required, size, label, formHandler, onError, disabled } = props;
+  const { required, size, label, formHandler, onError, disabled, value } =
+    props;
 
   return (
     <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-1'}`}>
@@ -279,7 +281,7 @@ const TextInput = (props: InputProps) => {
         </label>
         <input
           disabled={disabled}
-          {...formHandler}
+          value={value}
           type='text'
           className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
             onError &&
