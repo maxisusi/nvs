@@ -78,8 +78,10 @@ const CreateInvoiceForm = () => {
   const [invoiceDate, setInvoiceDate] = useState<Date | null>(null);
   const [state, dispatch] = useReducer(reducer, initialTableValues);
   const [invoiceTotal, setInvoiceTotal] = useState<number | null>(null);
+  const [invoiceSubTotal, setInvoiceSubTotal] = useState<number | null>(null);
   const [invoiceTerms, setInvoiceTerms] = useState<any>(null);
 
+  const [invoiceTax, setInvoiceTaxt] = useState<any>(null);
   const [dueDate, setDudeDate] = useState<any>(null);
   const [invoiceNotes, setInvoiceNotes] = useState<any>('');
   const [customerSelected, setCustomerSelected] = useState<any>();
@@ -90,36 +92,6 @@ const CreateInvoiceForm = () => {
   const handleFormSubmit = async (customerSelected: any) => {
     if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
       return alert('Missing input');
-
-    // {
-    //   "createInvoiceInput": {
-    //     "entryList": [
-    //       {
-
-    //         "description": "niq ta mere",
-    //         "quantity": 1,
-    //         "rate": 30,
-    //         "total": 30
-    //       },
-    //       {
-
-    //         "description": "niq ta pair",
-    //         "quantity": 1,
-    //         "rate": 30,
-    //         "total": 30
-    //       }
-    //     ],
-    //     "date": "2022-06-13T19:57:22.285Z",
-    //     "dueDate": "2022-11-10T08:09:08.153Z",
-    //     "status": "draft",
-    //     "terms": "NET_21",
-    //     "taxes": 0,
-    //     "total": 60,
-    //     "customerId": "ba29849b-93ad-46c3-bd65-d1e98996804c",
-    //     "companyId": "d1bc67e1-190a-44c4-a4e7-287f574955c2",
-    //     "remarks": "test1"
-    //   }
-    // }
 
     const trimmedData = state.itemData.map((item: any) => {
       console.log(item);
@@ -140,7 +112,7 @@ const CreateInvoiceForm = () => {
       terms: 'NET_21',
       status: 'draft',
       entryList: trimmedData,
-      taxes: 0,
+      taxes: parseFloat(invoiceTax).toFixed(2),
       total: invoiceTotal,
       remarks: invoiceNotes,
     };
@@ -184,8 +156,11 @@ const CreateInvoiceForm = () => {
       .map((item: any) => item.amount)
       .reduce((acc: any, value: any) => acc + value);
 
-    setInvoiceTotal(total);
-  }, [state]);
+    setInvoiceSubTotal(total);
+
+    const totalWithTax = total * (invoiceTax / 100) + total;
+    setInvoiceTotal(totalWithTax);
+  }, [state, invoiceTax]);
 
   return (
     <div>
@@ -306,8 +281,29 @@ const CreateInvoiceForm = () => {
         </div>
 
         <div className='col-start-10 col-span-full bg-white border p-6 rounded '>
-          <div className='flex justify-between items-center '>
+          <div className='flex justify-between items-center mb-6'>
             <h3 className='uppercase font-bold text-skin-gray text-sm'>
+              Subtotal
+            </h3>
+            <h3 className='text-md font-semibold'>
+              <span>CHF </span>
+              {invoiceSubTotal?.toFixed(2)}
+            </h3>
+          </div>
+          <div className='flex justify-between items-center mb-3'>
+            <h3 className='uppercase font-bold text-skin-gray text-sm'>
+              Taxes
+            </h3>
+            <select
+              onChange={(e) => setInvoiceTaxt(e.target.value)}
+              className='text-sm font-semibold border-none py-0 '>
+              <option value={0.0}>-</option>
+              <option value={7.7}>7.7%</option>
+            </select>
+          </div>
+          <hr />
+          <div className='flex justify-between items-center mt-6'>
+            <h3 className='uppercase font-bold text-skin-gray text-lg'>
               Total
             </h3>
             <h3 className='text-lg font-semibold'>
