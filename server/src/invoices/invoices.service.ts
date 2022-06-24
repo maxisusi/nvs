@@ -6,6 +6,7 @@ import { PrismaService } from 'prisma/prisma.service';
 export class InvoicesService {
   constructor(private readonly prisma: PrismaService) {}
   create(createInvoiceInput: any) {
+    console.log('Creating Invoice');
     const {
       date,
       dueDate,

@@ -89,7 +89,6 @@ export class OrderByParams {
 }
 
 export class CreateEntryInput {
-    date: DateTime;
     description: string;
     quantity: number;
     rate: number;
@@ -99,7 +98,6 @@ export class CreateEntryInput {
 
 export class UpdateEntryInput {
     id: string;
-    date?: Nullable<DateTime>;
     description?: Nullable<string>;
     quantity?: Nullable<number>;
     rate?: Nullable<number>;

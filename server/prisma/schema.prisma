@@ -112,11 +112,10 @@ model Invoice {
   taxes         Float
   /// @Validator.IsNotEmpty()
   total         Float
-  /// @Validator.IsOptional()
-  /// @Validator.IsNotEmpty()
-  remarks       String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @default(now()) @updatedAt
+
+  remarks   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId String
@@ -128,9 +127,7 @@ model Invoice {
 }
 
 model Entry {
-  id          String   @id @default(uuid())
-  /// @Validator.IsNotEmpty()
-  date        DateTime
+  id          String @id @default(uuid())
   /// @Validator.IsNotEmpty()
   description String
   /// @Validator.IsNotEmpty()
