@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import CustomerSearchList from './CustomerSearchList';
 import TableRecord from './TableRecord';
 import addDays from 'date-fns/addDays';
-import { format } from 'date-fns';
+import { format, formatISO } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_COMPANIES } from '@nvs-shared/graphql/companies';
 import { useRouter } from 'next/router';
@@ -81,7 +81,7 @@ const CreateInvoiceForm = () => {
   const [invoiceSubTotal, setInvoiceSubTotal] = useState<number | null>(null);
   const [invoiceTerms, setInvoiceTerms] = useState<any>(null);
 
-  const [invoiceTax, setInvoiceTaxt] = useState<any>(null);
+  const [invoiceTax, setInvoiceTax] = useState<any>(0);
   const [dueDate, setDudeDate] = useState<any>(null);
   const [invoiceNotes, setInvoiceNotes] = useState<any>('');
   const [customerSelected, setCustomerSelected] = useState<any>();
@@ -107,12 +107,12 @@ const CreateInvoiceForm = () => {
     const invoiceObject = {
       companyId: data.companies[0].id,
       customerId: customerSelected.id,
-      date: '2022-06-13T19:57:22.285Z',
-      dueDate: '2022-11-10T08:09:08.153Z',
+      date: invoiceDate,
+      dueDate: formatISO(dueDate),
       terms: 'NET_21',
       status: 'draft',
       entryList: trimmedData,
-      taxes: parseFloat(invoiceTax).toFixed(2),
+      taxes: parseFloat(invoiceTax),
       total: invoiceTotal,
       remarks: invoiceNotes,
     };
@@ -148,7 +148,7 @@ const CreateInvoiceForm = () => {
 
     const fDate = invoiceTerms.split('_')[1];
     const dueDate = addDays(invoiceDate, fDate);
-    setDudeDate(format(dueDate, 'MM/dd/yyyy'));
+    setDudeDate(dueDate);
   }, [invoiceTerms, invoiceDate]);
 
   useEffect(() => {
@@ -228,7 +228,14 @@ const CreateInvoiceForm = () => {
               required
               label='Terms'
             />
-            <TextInput value={dueDate} disabled label='Payment Date' />
+
+            {dueDate && (
+              <TextInput
+                value={format(dueDate, 'MM/dd/yyyy')}
+                disabled
+                label='Payment Date'
+              />
+            )}
           </div>
         </div>
 
@@ -295,7 +302,7 @@ const CreateInvoiceForm = () => {
               Taxes
             </h3>
             <select
-              onChange={(e) => setInvoiceTaxt(e.target.value)}
+              onChange={(e) => setInvoiceTax(e.target.value)}
               className='text-sm font-semibold border-none py-0 '>
               <option value={0.0}>-</option>
               <option value={7.7}>7.7%</option>
