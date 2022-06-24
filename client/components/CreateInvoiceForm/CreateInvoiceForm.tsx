@@ -15,6 +15,7 @@ import addDays from 'date-fns/addDays';
 import { format } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_COMPANIES } from '@nvs-shared/graphql/companies';
+import { useRouter } from 'next/router';
 import {
   CREATE_INVOICE,
   GET_INVOICES_FOR_GRID,
@@ -84,52 +85,52 @@ const CreateInvoiceForm = () => {
   const [customerSelected, setCustomerSelected] = useState<any>();
   const { data, loading, error } = useQuery(GET_ALL_COMPANIES);
 
+  const router = useRouter();
   const [createInvoice] = useMutation(CREATE_INVOICE);
   const handleFormSubmit = async (customerSelected: any) => {
     if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
       return alert('Missing input');
 
-    //    "entryList": [
-    //     {
-    //       "date": "2022-06-13T08:44:24.981Z",
-    //       "description": "niq ta mere",
-    //       "quantity": 1,
-    //       "rate": 30,
-    //       "total": 30
-    //     },
-    //     {
-    //       "date": "2022-07-13T08:44:24.981Z",
-    //       "description": "niq ta pair",
-    //       "quantity": 1,
-    //       "rate": 30,
-    //       "total": 30
-    //     }
-    //   ],
-    //   "date": "2022-06-13T19:57:22.285Z",
-    //   "dueDate": "2022-11-10T08:09:08.153Z",
-    //   "status": "draft",
-    //   "terms": "NET_21",
-    //   "taxes": 0,
-    //   "total": 60,
-    //   "customerId": "0f4d709d-0aaf-42bd-a929-ce9a0a761910",
-    //   "companyId": "70c17a19-617c-4590-bb60-586aa22bb1c0",
-    //   "remarks": "test1"
+    // {
+    //   "createInvoiceInput": {
+    //     "entryList": [
+    //       {
+
+    //         "description": "niq ta mere",
+    //         "quantity": 1,
+    //         "rate": 30,
+    //         "total": 30
+    //       },
+    //       {
+
+    //         "description": "niq ta pair",
+    //         "quantity": 1,
+    //         "rate": 30,
+    //         "total": 30
+    //       }
+    //     ],
+    //     "date": "2022-06-13T19:57:22.285Z",
+    //     "dueDate": "2022-11-10T08:09:08.153Z",
+    //     "status": "draft",
+    //     "terms": "NET_21",
+    //     "taxes": 0,
+    //     "total": 60,
+    //     "customerId": "ba29849b-93ad-46c3-bd65-d1e98996804c",
+    //     "companyId": "d1bc67e1-190a-44c4-a4e7-287f574955c2",
+    //     "remarks": "test1"
+    //   }
     // }
 
-    //TODO: Remove date inside entry on the backend - I was dumb
     const trimmedData = state.itemData.map((item: any) => {
       console.log(item);
       const newEntry = {
-        date: item.date,
-        description: item.description,
-        quantity: item.quantity,
-        rate: item.rate,
-        total: item.total,
+        description: item.item,
+        quantity: parseFloat(item.quantity),
+        rate: parseFloat(item.quantity),
+        total: parseFloat(item.price),
       };
       return newEntry;
     });
-
-    console.log(trimmedData);
 
     const invoiceObject = {
       companyId: data.companies[0].id,
@@ -138,30 +139,30 @@ const CreateInvoiceForm = () => {
       dueDate: '2022-11-10T08:09:08.153Z',
       terms: 'NET_21',
       status: 'draft',
-      entryList: state.itemData,
-      taxes: 0.0,
+      entryList: trimmedData,
+      taxes: 0,
       total: invoiceTotal,
       remarks: invoiceNotes,
     };
 
-    // try {
-    //   await createInvoice({
-    //     variables: { createInvoiceInput: invoiceObject },
+    try {
+      await createInvoice({
+        variables: { createInvoiceInput: invoiceObject },
 
-    //     refetchQueries: () => [
-    //       {
-    //         query: GET_INVOICES_FOR_GRID,
-    //       },
-    //     ],
-    //   }).then(() => {
-    //     // router.push('/invoice');
-    //   });
-    // } catch (e) {
-    //   alert('There was an error, please check the console for further details');
-    //   console.error(e);
-    // }
+        refetchQueries: () => [
+          {
+            query: GET_INVOICES_FOR_GRID,
+          },
+        ],
+      }).then(() => {
+        router.push('/invoice');
+      });
+    } catch (e) {
+      alert('There was an error, please check the console for further details');
+      console.error(e);
+    }
 
-    // console.log(invoiceObject);
+    console.log(invoiceObject);
   };
 
   // * Checks if the length of the list is above 1
