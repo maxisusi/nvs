@@ -1,74 +1,85 @@
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import { useEffect, useReducer, useState } from 'react';
-
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
-import { $TSFixIt } from '@nvs-shared/types/general';
-import { v4 as uuidv4 } from 'uuid';
-import CustomerSearchList from './CustomerSearchList';
-import TableRecord from './TableRecord';
-import addDays from 'date-fns/addDays';
-import { format, formatISO } from 'date-fns';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_COMPANIES } from '@nvs-shared/graphql/companies';
-import { useRouter } from 'next/router';
 import {
   CREATE_INVOICE,
   GET_INVOICES_FOR_GRID,
 } from '@nvs-shared/graphql/invoice';
+import { $TSFixIt } from '@nvs-shared/types/general';
+import { format, formatISO } from 'date-fns';
+import addDays from 'date-fns/addDays';
+import { useRouter } from 'next/router';
+import { v4 as uuidv4 } from 'uuid';
+import CustomerSearchList from './CustomerSearchList';
+import TableRecord from './TableRecord';
 
-const termsList = {
-  NET_7: 'Net 7 days',
-  NET_21: 'Net 21 days',
-  NET_30: 'Net 30 days',
-};
-const initialTableValues = {
-  isRemovable: false,
-  itemData: [{ id: uuidv4(), item: '', quantity: 0, price: 0, amount: 0 }],
-};
+enum Terms {
+  NET_7 = 'NET_7',
+  NET_21 = 'NET_21',
+  NET_30 = 'NET_30',
+}
+
 const emptyEntry = () => {
   return { id: uuidv4(), item: '', quantity: 0, price: 0, amount: 0 };
 };
 
+const initEntryTableValues = {
+  isEntryRemovable: false,
+  entryList: [emptyEntry()],
+};
+
 const CreateInvoiceForm = () => {
-  const reducer = (state: $TSFixIt, action: $TSFixIt) => {
+  enum InvoiceEntryActionKind {
+    REMOVE = 'REMOVE_ENTRY',
+    ADD = 'ADD_ENTRY',
+    FREEZE_REMOVE = 'NOT_REMOVABLE',
+    UPDATE = 'UPDATE_ENTRY',
+  }
+
+  interface EntryAction {
+    type: InvoiceEntryActionKind;
+    payload?: any;
+  }
+
+  const reducer = (state: typeof initEntryTableValues, action: EntryAction) => {
     switch (action.type) {
-      case 'REMOVE_ENTRY': {
+      case InvoiceEntryActionKind.REMOVE: {
         return {
           ...state,
-          itemData: state.itemData.filter(
+          entryList: state.entryList.filter(
             (item: $TSFixIt) => item.id !== action.payload
           ),
         };
       }
-      case 'ADD_NEW_ENTRY': {
+      case InvoiceEntryActionKind.ADD: {
         return {
-          isRemovable: true,
-          itemData: [...state.itemData, emptyEntry()],
+          isEntryRemovable: true,
+          entryList: [...state.entryList, emptyEntry()],
         };
       }
 
-      case 'NOT_REMOVABLE': {
+      case InvoiceEntryActionKind.FREEZE_REMOVE: {
         return {
           ...state,
-          isRemovable: false,
+          isEntryRemovable: false,
         };
       }
 
-      case 'UPDATE_ENTRY': {
-        const arrayIndex = state.itemData.findIndex(
+      case InvoiceEntryActionKind.UPDATE: {
+        const arrayIndex = state.entryList.findIndex(
           (item: any) => item.id === action.payload.id
         );
-        let newArr = state.itemData;
+        let newArr = state.entryList;
         newArr[arrayIndex] = action.payload;
 
         return {
           ...state,
-          itemData: newArr,
+          entryList: newArr,
         };
       }
     }
@@ -76,16 +87,19 @@ const CreateInvoiceForm = () => {
   // * Form Params
 
   const [invoiceDate, setInvoiceDate] = useState<Date | null>(null);
-  const [state, dispatch] = useReducer(reducer, initialTableValues);
+  const [{ entryList, isEntryRemovable }, dispatch] = useReducer(
+    reducer,
+    initEntryTableValues
+  );
   const [invoiceTotal, setInvoiceTotal] = useState<number | null>(null);
   const [invoiceSubTotal, setInvoiceSubTotal] = useState<number | null>(null);
-  const [invoiceTerms, setInvoiceTerms] = useState<any>(null);
+  const [invoiceTerms, setInvoiceTerms] = useState<Terms | null>(null);
 
   const [invoiceTax, setInvoiceTax] = useState<any>(0);
   const [dueDate, setDudeDate] = useState<any>(null);
   const [invoiceNotes, setInvoiceNotes] = useState<any>('');
   const [customerSelected, setCustomerSelected] = useState<any>();
-  const { data, loading, error } = useQuery(GET_ALL_COMPANIES);
+  const { data } = useQuery(GET_ALL_COMPANIES);
 
   const router = useRouter();
   const [createInvoice] = useMutation(CREATE_INVOICE);
@@ -93,7 +107,7 @@ const CreateInvoiceForm = () => {
     if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
       return alert('Missing input');
 
-    const trimmedData = state.itemData.map((item: any) => {
+    const trimmedData = entryList.map((item: any) => {
       console.log(item);
       const newEntry = {
         description: item.item,
@@ -109,7 +123,7 @@ const CreateInvoiceForm = () => {
       customerId: customerSelected.id,
       date: invoiceDate,
       dueDate: formatISO(dueDate),
-      terms: 'NET_21',
+      terms: invoiceTerms,
       status: 'draft',
       entryList: trimmedData,
       taxes: parseFloat(invoiceTax),
@@ -133,16 +147,15 @@ const CreateInvoiceForm = () => {
       alert('There was an error, please check the console for further details');
       console.error(e);
     }
-
-    console.log(invoiceObject);
   };
 
   // * Checks if the length of the list is above 1
   useEffect(() => {
-    if (state.itemData.length === 1) {
-      dispatch({ type: 'NOT_REMOVABLE' });
+    if (entryList.length === 1) {
+      dispatch({ type: InvoiceEntryActionKind.FREEZE_REMOVE });
     }
-  }, [state.itemData]);
+  }, [entryList]);
+
   useEffect(() => {
     if (!invoiceTerms || !invoiceDate) return setDudeDate('');
 
@@ -152,7 +165,7 @@ const CreateInvoiceForm = () => {
   }, [invoiceTerms, invoiceDate]);
 
   useEffect(() => {
-    const total = state.itemData
+    const total = entryList
       .map((item: any) => item.amount)
       .reduce((acc: any, value: any) => acc + value);
 
@@ -160,7 +173,7 @@ const CreateInvoiceForm = () => {
 
     const totalWithTax = total * (invoiceTax / 100) + total;
     setInvoiceTotal(totalWithTax);
-  }, [state, invoiceTax]);
+  }, [entryList, invoiceTax]);
 
   return (
     <div>
@@ -222,17 +235,16 @@ const CreateInvoiceForm = () => {
                 )}
               />
             </LocalizationProvider>
-            <SelectInput
-              state={setInvoiceTerms}
-              values={termsList}
+            <SelectInvoiceTerms
+              setTermValue={setInvoiceTerms}
+              termValueList={termsList}
               required
               label='Terms'
             />
 
             {dueDate && (
-              <TextInput
+              <InvoiceDueDateInput
                 value={format(dueDate, 'MM/dd/yyyy')}
-                disabled
                 label='Payment Date'
               />
             )}
@@ -260,17 +272,17 @@ const CreateInvoiceForm = () => {
 
             {/* Items */}
 
-            {state.itemData.map((item: $TSFixIt) => (
+            {entryList.map((item: $TSFixIt) => (
               <TableRecord
                 key={item.id}
-                isRemovable={state.isRemovable}
+                isRemovable={isEntryRemovable}
                 dispatch={dispatch}
                 id={item.id}
               />
             ))}
             {/* Add new Item */}
             <div
-              onClick={() => dispatch({ type: 'ADD_NEW_ENTRY' })}
+              onClick={() => dispatch({ type: InvoiceEntryActionKind.ADD })}
               className='col-span-full hover:bg-slate-200 cursor-pointer h-14 items-center w-full bg-slate-100 flex justify-center gap-2'>
               <AddCircleIcon className='text-skin-fill' />
               <p className='text-skin-fill'>Add New Item</p>
@@ -326,19 +338,16 @@ const CreateInvoiceForm = () => {
 
 export default CreateInvoiceForm;
 
-type InputProps = {
+type InvoiceDueDateInputProps = {
   label: string;
   required?: boolean;
   size?: 'standard' | 'full';
-  formHandler?: any;
-  onError?: any;
   disabled?: boolean;
-  value?: any;
+  value: string;
 };
 
-const TextInput = (props: InputProps) => {
-  const { required, size, label, formHandler, onError, disabled, value } =
-    props;
+const InvoiceDueDateInput = (props: InvoiceDueDateInputProps) => {
+  const { required, size, label, value } = props;
 
   return (
     <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-1'}`}>
@@ -348,37 +357,33 @@ const TextInput = (props: InputProps) => {
           {required && <span className='text-red-500'>*</span>}
         </label>
         <input
-          disabled={disabled}
+          disabled
           value={value}
           type='text'
-          className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
-            onError &&
-            'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
-          } ${disabled && `bg-slate-200`}`}
+          className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill bg-slate-200`}
         />
       </div>
-      <p className='text-sm text-red-500 mt-1'>{onError?.message}</p>
     </div>
   );
+};
+
+const termsList = {
+  NET_7: 'Net 7 days',
+  NET_21: 'Net 21 days',
+  NET_30: 'Net 30 days',
 };
 
 type SelectInput = {
   label: string;
   required?: boolean;
   size?: 'standard' | 'full';
-  formHandler?: any;
   onError?: any;
-  values: any;
-  state: any;
+  termValueList: typeof termsList;
+  setTermValue: (selectedTerm: typeof termsList) => void;
 };
 
-type Country = {
-  name: string;
-  code: string;
-};
-
-const SelectInput = (props: SelectInput) => {
-  const { required, size, label, formHandler, onError, values, state } = props;
+const SelectInvoiceTerms = (props: SelectInput) => {
+  const { required, size, label, onError, termValueList, setTermValue } = props;
 
   return (
     <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-1'}`}>
@@ -389,7 +394,7 @@ const SelectInput = (props: SelectInput) => {
         </label>
 
         <select
-          onChange={(e) => state(e.target.value)}
+          onChange={(e) => setTermValue(e.target.value as Terms)}
           className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
             onError &&
             'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
@@ -397,9 +402,9 @@ const SelectInput = (props: SelectInput) => {
           <option hidden value={''}>
             Select term
           </option>
-          {Object.keys(values).map((term: any) => (
+          {Object.keys(termValueList).map((term: any) => (
             <option key={term} value={term}>
-              {values[term]}
+              {termValueList[term]}
             </option>
           ))}
         </select>
