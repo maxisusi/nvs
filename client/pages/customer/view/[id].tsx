@@ -1,17 +1,42 @@
-import {
-  GET_CUSTOMER_TO_EDIT,
-  GET_CUSTOMER_TO_VIEW,
-} from '@nvs-shared/graphql/customers';
-import { Customer } from '@nvs-shared/types/customer';
-import { NextPage } from 'next';
-import client from 'pages/client.graphql';
-import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
+import { GET_CUSTOMER_TO_VIEW } from '@nvs-shared/graphql/customers';
+import { Customer } from '@nvs-shared/types/customer';
 import { format, parseISO } from 'date-fns';
+import client from 'pages/client.graphql';
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const customerViewPage = (props: Customer) => {
   console.log(props);
-  const { createdAt, updatedAt, firstName, lastName } = props;
+  const {
+    createdAt,
+    updatedAt,
+    firstName,
+    lastName,
+    email,
+    mobile,
+    postalCode,
+  } = props;
   return (
     <>
       <div className='flex items-center justify-between mb-10'>
@@ -19,7 +44,7 @@ const customerViewPage = (props: Customer) => {
           <h1 className='text-3xl mb-3 font-bold'>
             {firstName} {lastName}
           </h1>
-          <p className='text-skin-gray text-sm'>
+          <p className='text-skin-gray'>
             Customer since:{' '}
             <span>{format(parseISO(createdAt), 'MM/dd/yyyy')}</span>
           </p>
@@ -31,8 +56,89 @@ const customerViewPage = (props: Customer) => {
           </button>
         </div>
       </div>
-      <div className='grid grid-cols-12 gap-x-6 h-full'>
-        <div className='bg-white drop-shadow rounded col-span-8 p-6'>test</div>
+      <div className='grid grid-cols-12 gap-x-6 '>
+        <div className='bg-white drop-shadow rounded col-span-8 p-6'>
+          <div className='w-full'>
+            {/* Header */}
+            <div className='flex justify-between items-center mb-4'>
+              <div>
+                <div className='flex items-center gap-2'>
+                  <SignalCellularAltIcon className='text-skin-fill' />
+                  <p className='text-lg '>Total Sales</p>
+                </div>
+              </div>
+
+              <select className='rounded border-gray-300'>
+                <option>This year</option>
+                <option>Last year</option>
+              </select>
+            </div>
+            {/* Graphic */}
+            <div className='flex justify-between items-center gap-7'>
+              <div className='w-full'>
+                <Line
+                  data={{
+                    labels: ['Jun', 'Jul', 'Aug'],
+                    datasets: [
+                      {
+                        label: '',
+                        data: [5, 6, 7],
+                      },
+                      {
+                        label: '',
+                        data: [3, 2, 1],
+                      },
+                    ],
+                  }}
+                />
+              </div>
+              <div className='flex flex-col gap-5'>
+                <div className='text-right'>
+                  <h4 className='text-sm'>Pending</h4>
+                  <h2 className='text-lg font-bold text-black'>225CHF</h2>
+                </div>
+                <div className='text-right'>
+                  <h4 className='text-sm'>Sales</h4>
+                  <h2 className='text-lg font-bold text-green-600'>225CHF</h2>
+                </div>
+              </div>
+            </div>
+            <hr className='mt-10 mb-6' />
+            {/* Personnal informations */}
+
+            <div>
+              <div className='flex items-center gap-2 mb-8'>
+                <AccountCircleIcon className='text-skin-fill' />
+                <p className='text-lg '>Personnal Info</p>
+              </div>
+
+              <div className='grid grid-cols-6 gap-x-2 gap-y-10'>
+                <div className='col-span-2'>
+                  <p className='text-skin-gray'>Display Name</p>
+                  <p className='font-bold break-words'>
+                    {firstName} {lastName}
+                  </p>
+                </div>
+
+                <div className='col-span-2 '>
+                  <p className='text-skin-gray'>Email</p>
+                  <p className='font-bold break-words'>{email}</p>
+                </div>
+
+                <div className='col-span-2'>
+                  <p className='text-skin-gray'>Phone</p>
+                  <p className='font-bold break-words'>{mobile}</p>
+                </div>
+
+                <div className='col-span-2'>
+                  <p className='text-skin-gray'>Address</p>
+                  <p className='font-bold break-words'>{mobile}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className='bg-white drop-shadow rounded col-span-4 p-6'>test</div>
       </div>
     </>
