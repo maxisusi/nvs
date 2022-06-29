@@ -5,7 +5,8 @@ import { PrismaService } from 'prisma/prisma.service';
 @Injectable()
 export class InvoicesService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createInvoiceInput: Prisma.InvoiceUncheckedCreateInput) {
+  create(createInvoiceInput: any) {
+    console.log('Creating Invoice');
     const {
       date,
       dueDate,
@@ -16,7 +17,9 @@ export class InvoicesService {
       remarks,
       customerId,
       companyId,
+      entryList,
     } = createInvoiceInput;
+
     return this.prisma.invoice.create({
       data: {
         date,
@@ -34,6 +37,11 @@ export class InvoicesService {
         customer: {
           connect: {
             id: customerId,
+          },
+        },
+        entry: {
+          createMany: {
+            data: entryList,
           },
         },
       },

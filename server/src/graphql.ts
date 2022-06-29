@@ -89,7 +89,6 @@ export class OrderByParams {
 }
 
 export class CreateEntryInput {
-    date: DateTime;
     description: string;
     quantity: number;
     rate: number;
@@ -99,7 +98,6 @@ export class CreateEntryInput {
 
 export class UpdateEntryInput {
     id: string;
-    date?: Nullable<DateTime>;
     description?: Nullable<string>;
     quantity?: Nullable<number>;
     rate?: Nullable<number>;
@@ -116,6 +114,15 @@ export class CreateInvoiceInput {
     remarks?: Nullable<string>;
     customerId: string;
     companyId: string;
+    entryList?: Nullable<NewEntry[]>;
+}
+
+export class NewEntry {
+    date?: Nullable<DateTime>;
+    description?: Nullable<string>;
+    quantity?: Nullable<number>;
+    rate?: Nullable<number>;
+    total?: Nullable<number>;
 }
 
 export class UpdateInvoiceInput {
@@ -227,16 +234,6 @@ export class Customer {
     updatedAt?: Nullable<DateTime>;
 }
 
-export class Entry {
-    id?: Nullable<string>;
-    date?: Nullable<DateTime>;
-    description?: Nullable<string>;
-    quantity?: Nullable<number>;
-    rate?: Nullable<number>;
-    total?: Nullable<number>;
-    invoice?: Nullable<Invoice>;
-}
-
 export class Invoice {
     id?: Nullable<string>;
     date?: Nullable<DateTime>;
@@ -255,4 +252,5 @@ export class Invoice {
 }
 
 export type DateTime = any;
+export type Entry = any;
 type Nullable<T> = T | null;

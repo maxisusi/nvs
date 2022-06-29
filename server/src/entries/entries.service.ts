@@ -7,11 +7,9 @@ export class EntriesService {
   constructor(private readonly prisma: PrismaService) {}
 
   create(createEntryInput: CreateEntryInput) {
-    const { date, description, invoiceId, quantity, rate, total } =
-      createEntryInput;
+    const { description, invoiceId, quantity, rate, total } = createEntryInput;
     return this.prisma.entry.create({
       data: {
-        date,
         description,
         quantity,
         rate,

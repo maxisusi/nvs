@@ -69,21 +69,18 @@ const generateFields = async () => {
           createMany: {
             data: [
               {
-                date: faker.date.past(),
                 description: faker.lorem.sentence(),
                 quantity: parseFloat(faker.random.numeric()),
                 rate: parseFloat(faker.random.numeric()),
                 total: parseFloat(faker.random.numeric()),
               },
               {
-                date: faker.date.past(),
                 description: faker.lorem.sentence(),
                 quantity: parseFloat(faker.random.numeric()),
                 rate: parseFloat(faker.random.numeric()),
                 total: parseFloat(faker.random.numeric()),
               },
               {
-                date: faker.date.past(),
                 description: faker.lorem.sentence(),
                 quantity: parseFloat(faker.random.numeric()),
                 rate: parseFloat(faker.random.numeric()),
