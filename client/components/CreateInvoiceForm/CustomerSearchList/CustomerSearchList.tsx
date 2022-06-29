@@ -1,47 +1,69 @@
-import React, { useEffect, useReducer, useRef, useState } from 'react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import CloseIcon from '@mui/icons-material/Close';
-import CancelIcon from '@mui/icons-material/Cancel';
 import AddReactionIcon from '@mui/icons-material/AddReaction';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { Avatar } from '@mui/material';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
+import { useEffect, useReducer, useState } from 'react';
 
-import { $TSFixIt } from '@nvs-shared/types/general';
-import { Customer } from '@nvs-shared/types/customer';
-import { motion } from 'framer-motion';
-import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
 import { GET_CUSTOMERS_LIST } from '@nvs-shared/graphql/customers';
+import { Customer } from '@nvs-shared/types/customer';
 
-type Props = {
-  defineCustomer: any;
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
+
+const initMenuState = {
+  isCustomerListOpen: false,
+  customerSelectedData: [] as Customer | [],
+  isCustomerSelected: false,
+  searchQuery: '',
 };
 
-const CustomerSearchList = (props: Props) => {
-  const reducer = (state: $TSFixIt, action: $TSFixIt) => {
+enum EntryActionKind {
+  SELECT = 'SELECTED_CUSTOMER',
+  REMOVE = 'REMOVE_SELECTED_CUSTOEMR',
+  OPEN = 'OPEN_CUSTOMER_LIST',
+  SEARCH = 'SEARCH_CUSTOMER',
+}
+
+interface EntryAction {
+  type: EntryActionKind;
+  payload?: any;
+}
+
+type Props = {
+  selectedCustomerId: (arg: string | null) => void;
+};
+
+const CustomerSearchList = ({ selectedCustomerId }: Props) => {
+  const reducer = (
+    state: typeof initMenuState,
+    action: EntryAction
+  ): typeof initMenuState => {
     switch (action.type) {
-      case 'SELECTED_CUSTOMER': {
-        return {
-          customerListMenu: false,
-          customerSelectedMenu: true,
-          selectedCustomer: action.payload,
-        };
-      }
-
-      case 'REMOVE_SELECTED_CUSTOMER': {
-        return {
-          ...menuInitialState,
-        };
-      }
-
-      case 'OPEN_CUSTOMER_LIST': {
+      case EntryActionKind.SELECT: {
         return {
           ...state,
-          customerListMenu: true,
+          isCustomerListOpen: false,
+          isCustomerSelected: true,
+          customerSelectedData: action.payload,
         };
       }
 
-      case 'SEARCH_CUSTOMER': {
+      case EntryActionKind.REMOVE: {
+        return {
+          ...initMenuState,
+        };
+      }
+
+      case EntryActionKind.OPEN: {
+        return {
+          ...state,
+          isCustomerListOpen: true,
+        };
+      }
+
+      case EntryActionKind.SEARCH: {
         return {
           ...state,
           searchQuery: action.payload,
@@ -53,45 +75,62 @@ const CustomerSearchList = (props: Props) => {
     }
   };
 
-  const [state, dispatch] = useReducer(reducer, menuInitialState);
+  // * Reducer
+  const [
+    {
+      isCustomerListOpen,
+      isCustomerSelected,
+      searchQuery,
+      customerSelectedData,
+    },
+    dispatch,
+  ] = useReducer(reducer, initMenuState);
+
+  // * Graphql query to get customer datas
   const [customerList, setCustomerList] = useState<Customer[] | []>([]);
   const { data } = useQuery(GET_CUSTOMERS_LIST);
 
+  // * Displays the data once they got fetched
   useEffect(() => {
     if (!data) return;
     setCustomerList(data.customers);
   }, [data]);
 
+  // * Triggers once the customer has been selected
   useEffect(() => {
-    if (!state.selectedCustomer) {
-      return (props.defineCustomer = null);
+    if (!customerSelectedData) {
+      selectedCustomerId(null);
+      return;
     }
 
-    props.defineCustomer(state.selectedCustomer);
-  }, [state.selectedCustomer]);
+    let customerId;
+    if ('id' in customerSelectedData) {
+      customerId = customerSelectedData.id;
+    }
+
+    selectedCustomerId(customerId as string);
+  }, [customerSelectedData]);
 
   // * Triggers the search query when it detects user input
   useEffect(() => {
-    if (state.searchQuery === '') return setCustomerList(data?.customers);
-
-    const searchResults = filterCustomers(customerList, state.searchQuery);
+    if (searchQuery === '') return setCustomerList(data?.customers);
+    const searchResults = filterCustomers(customerList, searchQuery);
 
     setCustomerList(searchResults);
-  }, [state.searchQuery]);
+  }, [searchQuery]);
 
+  // * Close the component if it detects the customer clicks away from it
   const handleClickAwayCustomerList = (isCustomerSelected: boolean) => {
     if (isCustomerSelected) return;
-    dispatch({ type: 'REMOVE_SELECTED_CUSTOMER' });
+    dispatch({ type: EntryActionKind.REMOVE });
   };
 
   return (
     <ClickAwayListener
-      onClickAway={() =>
-        handleClickAwayCustomerList(state.customerSelectedMenu)
-      }>
+      onClickAway={() => handleClickAwayCustomerList(isCustomerSelected)}>
       <div className='relative  bg-white rounded border h-44 col-span-5 hover:bg-slate-100 cursor-pointer'>
         <div
-          onClick={() => dispatch({ type: 'OPEN_CUSTOMER_LIST' })}
+          onClick={() => dispatch({ type: EntryActionKind.OPEN })}
           className='flex justify-center items-center h-full gap-3'>
           <AccountCircleIcon className='text-gray-300 text-4xl' />
           <p className='text-skin-sc text-xl font-semibold'>
@@ -99,20 +138,16 @@ const CustomerSearchList = (props: Props) => {
           </p>
         </div>
 
-        {state.customerListMenu && (
-          <SelectCustomerMenu
-            setCustomer={dispatch}
-            setQuery={dispatch}
-            customers={customerList}
-          />
+        {isCustomerListOpen && (
+          <CustomerListMenu dispatch={dispatch} customers={customerList} />
         )}
 
         {/* Add new customer */}
 
-        {state.customerSelectedMenu && (
-          <SelectedCustomerInfo
+        {isCustomerSelected && (
+          <SelectedCustomerInfoMenu
             setCustomer={dispatch}
-            customer={state.selectedCustomer}
+            customer={customerSelectedData as Customer}
           />
         )}
       </div>
@@ -122,16 +157,17 @@ const CustomerSearchList = (props: Props) => {
 
 export default CustomerSearchList;
 
+// * Displays when the customer has been selected
 type SelectedCustomer = {
   customer: Customer;
-  setCustomer: any;
+  setCustomer: (arg: EntryAction) => void;
 };
 
-const SelectedCustomerInfo = (props: SelectedCustomer) => {
+const SelectedCustomerInfoMenu = (props: SelectedCustomer) => {
   const { address, firstName, lastName, postalCode, city } = props.customer;
 
   const handleRemoveSelectedCustomer = (): void => {
-    props.setCustomer({ type: 'REMOVE_SELECTED_CUSTOMER' });
+    props.setCustomer({ type: EntryActionKind.REMOVE });
   };
 
   return (
@@ -157,28 +193,30 @@ const SelectedCustomerInfo = (props: SelectedCustomer) => {
   );
 };
 
+// * Menu of customers
 type CustomerMenu = {
   customers: Customer[];
-  setQuery: $TSFixIt;
-  setCustomer: $TSFixIt;
+  dispatch: (arg: EntryAction) => void;
 };
 
-const SelectCustomerMenu = (props: CustomerMenu) => {
-  const handleSelectCustomer = (id: string) => {
-    const index = props.customers.findIndex((customer) => customer.id === id);
-    const customer = props.customers[index];
+const CustomerListMenu = (props: CustomerMenu) => {
+  const { customers, dispatch } = props;
 
-    props.setCustomer({ type: 'SELECTED_CUSTOMER', payload: customer });
+  const handleSelectCustomer = (id: string) => {
+    const index = customers.findIndex((customer) => customer.id === id);
+    const customer = customers[index];
+    dispatch({ type: EntryActionKind.SELECT, payload: customer });
   };
 
   const router = useRouter();
+
   return (
     <div className='absolute overflow-hidden hover:overflow-y-auto  max-h-96 flex flex-col justify-between min-h-full bg-white drop-shadow w-full z-30 top-0 rounded'>
       <div className='px-6 py-4 border border-r-0 border-l-0 border-t-0'>
         <input
           onChange={(e) =>
-            props.setQuery({
-              type: 'SEARCH_CUSTOMER',
+            dispatch({
+              type: EntryActionKind.SEARCH,
               payload: e.target.value,
             })
           }
@@ -213,6 +251,7 @@ const SelectCustomerMenu = (props: CustomerMenu) => {
   );
 };
 
+// * List label of customer
 const CustomerList = (props: { customer: Customer }) => {
   const { firstName, lastName, postalCode, city } = props.customer;
 
@@ -231,17 +270,11 @@ const CustomerList = (props: { customer: Customer }) => {
   );
 };
 
+// * Search algorithm to find the customer
 const filterCustomers = (row: any, query: string) => {
   const querySearch = query?.toLocaleLowerCase();
   const keys = ['firstName', 'lastName', 'postalCode', 'city'];
   return row.filter((item: any) =>
     keys.some((key) => item[key].toLowerCase().includes(querySearch))
   );
-};
-
-const menuInitialState = {
-  customerListMenu: false,
-  selectedCustomer: [],
-  customerSelectedMenu: false,
-  searchQuery: '',
 };

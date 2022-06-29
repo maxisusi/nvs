@@ -1,5 +1,5 @@
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -18,12 +18,6 @@ import { v4 as uuidv4 } from 'uuid';
 import CustomerSearchList from './CustomerSearchList';
 import TableRecord from './TableRecord';
 
-enum Terms {
-  NET_7 = 'NET_7',
-  NET_21 = 'NET_21',
-  NET_30 = 'NET_30',
-}
-
 const emptyEntry = () => {
   return { id: uuidv4(), item: '', quantity: 0, price: 0, amount: 0 };
 };
@@ -34,6 +28,7 @@ const initEntryTableValues = {
 };
 
 const CreateInvoiceForm = () => {
+  // * Reducer for Table Entries
   enum InvoiceEntryActionKind {
     REMOVE = 'REMOVE_ENTRY',
     ADD = 'ADD_ENTRY',
@@ -72,7 +67,7 @@ const CreateInvoiceForm = () => {
 
       case InvoiceEntryActionKind.UPDATE: {
         const arrayIndex = state.entryList.findIndex(
-          (item: any) => item.id === action.payload.id
+          (item: typeof entryList[number]) => item.id === action.payload.id
         );
         let newArr = state.entryList;
         newArr[arrayIndex] = action.payload;
@@ -84,36 +79,41 @@ const CreateInvoiceForm = () => {
       }
     }
   };
-  // * Form Params
+  const [state, dispatch] = useReducer(reducer, initEntryTableValues);
+  const { entryList, isEntryRemovable } = state;
 
-  const [invoiceDate, setInvoiceDate] = useState<Date | null>(null);
-  const [{ entryList, isEntryRemovable }, dispatch] = useReducer(
-    reducer,
-    initEntryTableValues
-  );
+  // * Invoice State
   const [invoiceTotal, setInvoiceTotal] = useState<number | null>(null);
   const [invoiceSubTotal, setInvoiceSubTotal] = useState<number | null>(null);
-  const [invoiceTerms, setInvoiceTerms] = useState<Terms | null>(null);
+  const [invoiceTerms, setInvoiceTerms] = useState<
+    keyof typeof termsList | null
+  >(null);
+  const [invoiceTax, setInvoiceTax] = useState<number>(0);
+  const [invoiceDate, setInvoiceDate] = useState<Date | null>(null);
+  const [dueDate, setDudeDate] = useState<Date | null>(null);
+  const [invoiceNotes, setInvoiceNotes] = useState<string>('');
+  const [customerSelectedId, setCustomerSelectedId] = useState<string | null>(
+    null
+  );
 
-  const [invoiceTax, setInvoiceTax] = useState<any>(0);
-  const [dueDate, setDudeDate] = useState<any>(null);
-  const [invoiceNotes, setInvoiceNotes] = useState<any>('');
-  const [customerSelected, setCustomerSelected] = useState<any>();
+  // * Graphql Query
   const { data } = useQuery(GET_ALL_COMPANIES);
+  const [createInvoice] = useMutation(CREATE_INVOICE);
 
   const router = useRouter();
-  const [createInvoice] = useMutation(CREATE_INVOICE);
+
+  //TODO : Fix type definition
   const handleFormSubmit = async (customerSelected: any) => {
     if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
       return alert('Missing input');
 
-    const trimmedData = entryList.map((item: any) => {
+    const trimmedData = entryList.map((item: typeof entryList[number]) => {
       console.log(item);
       const newEntry = {
         description: item.item,
-        quantity: parseFloat(item.quantity),
-        rate: parseFloat(item.quantity),
-        total: parseFloat(item.price),
+        quantity: item.quantity,
+        rate: item.quantity,
+        total: item.price,
       };
       return newEntry;
     });
@@ -122,11 +122,11 @@ const CreateInvoiceForm = () => {
       companyId: data.companies[0].id,
       customerId: customerSelected.id,
       date: invoiceDate,
-      dueDate: formatISO(dueDate),
+      dueDate: formatISO(dueDate as Date),
       terms: invoiceTerms,
       status: 'draft',
       entryList: trimmedData,
-      taxes: parseFloat(invoiceTax),
+      taxes: invoiceTax,
       total: invoiceTotal,
       remarks: invoiceNotes,
     };
@@ -149,31 +149,34 @@ const CreateInvoiceForm = () => {
     }
   };
 
-  // * Checks if the length of the list is above 1
+  // * Freeze the remove button if the number of entry is equal to 1;
   useEffect(() => {
     if (entryList.length === 1) {
       dispatch({ type: InvoiceEntryActionKind.FREEZE_REMOVE });
     }
   }, [entryList]);
 
+  // * Set the due date when the invoice date and terms is defined
   useEffect(() => {
-    if (!invoiceTerms || !invoiceDate) return setDudeDate('');
+    if (!invoiceTerms || !invoiceDate) return setDudeDate(null);
 
-    const fDate = invoiceTerms.split('_')[1];
-    const dueDate = addDays(invoiceDate, fDate);
-    setDudeDate(dueDate);
+    const getNumberOfDaysFromTerms = parseInt(invoiceTerms.split('_')[1]);
+    const getDueDate = addDays(invoiceDate, getNumberOfDaysFromTerms);
+
+    setDudeDate(getDueDate);
   }, [invoiceTerms, invoiceDate]);
 
-  useEffect(() => {
+  // * Calculate the invoice total when the entry list or invoice tax changes
+  useMemo(() => {
     const total = entryList
-      .map((item: any) => item.amount)
-      .reduce((acc: any, value: any) => acc + value);
+      .map((item: typeof entryList[number]) => item.amount)
+      .reduce((acc: number, value: number) => acc + value);
 
     setInvoiceSubTotal(total);
 
     const totalWithTax = total * (invoiceTax / 100) + total;
     setInvoiceTotal(totalWithTax);
-  }, [entryList, invoiceTax]);
+  }, [state, invoiceTax]);
 
   return (
     <div>
@@ -187,7 +190,7 @@ const CreateInvoiceForm = () => {
 
         <div className='flex gap-3'>
           <button
-            onClick={() => handleFormSubmit(customerSelected)}
+            onClick={() => handleFormSubmit(customerSelectedId)}
             className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <SaveAltOutlinedIcon />
             Save Invoice
@@ -196,13 +199,13 @@ const CreateInvoiceForm = () => {
       </div>
 
       <form
-        onSubmit={() => handleFormSubmit(customerSelected)}
+        onSubmit={() => handleFormSubmit(customerSelectedId)}
         className='h-fit grid grid-cols-12 gap-y-10'>
         <button hidden type='submit'></button>
 
         {/* Customer Selector */}
 
-        <CustomerSearchList defineCustomer={setCustomerSelected} />
+        <CustomerSearchList selectedCustomerId={setCustomerSelectedId} />
 
         {/* Invoice Details */}
 
@@ -238,7 +241,6 @@ const CreateInvoiceForm = () => {
             <SelectInvoiceTerms
               setTermValue={setInvoiceTerms}
               termValueList={termsList}
-              required
               label='Terms'
             />
 
@@ -314,7 +316,7 @@ const CreateInvoiceForm = () => {
               Taxes
             </h3>
             <select
-              onChange={(e) => setInvoiceTax(e.target.value)}
+              onChange={(e) => setInvoiceTax(parseInt(e.target.value))}
               className='text-sm font-semibold border-none py-0 '>
               <option value={0.0}>-</option>
               <option value={7.7}>7.7%</option>
@@ -340,22 +342,16 @@ export default CreateInvoiceForm;
 
 type InvoiceDueDateInputProps = {
   label: string;
-  required?: boolean;
-  size?: 'standard' | 'full';
-  disabled?: boolean;
   value: string;
 };
 
 const InvoiceDueDateInput = (props: InvoiceDueDateInputProps) => {
-  const { required, size, label, value } = props;
+  const { label, value } = props;
 
   return (
-    <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-1'}`}>
+    <div className={`h-50 col-span-1`}>
       <div className='flex flex-col gap-1 w-full'>
-        <label className='text-sm font-medium capitalize'>
-          {label}
-          {required && <span className='text-red-500'>*</span>}
-        </label>
+        <label className='text-sm font-medium capitalize'>{label}</label>
         <input
           disabled
           value={value}
@@ -375,26 +371,26 @@ const termsList = {
 
 type SelectInput = {
   label: string;
-  required?: boolean;
-  size?: 'standard' | 'full';
   onError?: any;
   termValueList: typeof termsList;
-  setTermValue: (selectedTerm: typeof termsList) => void;
+  setTermValue: (selectedTerm: keyof typeof termsList) => void;
 };
 
 const SelectInvoiceTerms = (props: SelectInput) => {
-  const { required, size, label, onError, termValueList, setTermValue } = props;
+  const { label, onError, termValueList, setTermValue } = props;
 
   return (
-    <div className={`h-50 ${size === 'full' ? 'col-span-6' : 'col-span-1'}`}>
+    <div className={`h-50 'col-span-1`}>
       <div className='flex flex-col gap-1 w-full'>
         <label className='text-sm font-medium capitalize'>
           {label}
-          {required && <span className='text-red-500'>*</span>}
+          <span className='text-red-500'>*</span>
         </label>
 
         <select
-          onChange={(e) => setTermValue(e.target.value as Terms)}
+          onChange={(e) =>
+            setTermValue(e.target.value as keyof typeof termsList)
+          }
           className={`rounded p-1.5 drop-shadow-sm border-gray-300 focus:border-skin-fill ${
             onError &&
             'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-none'
