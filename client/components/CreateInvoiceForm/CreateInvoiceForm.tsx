@@ -102,7 +102,7 @@ const CreateInvoiceForm = () => {
 
   const handleFormSubmit = async (customerSelected: string) => {
     // * Verify the inputs
-    if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
+    if (!customerSelected || !invoiceDate || !invoiceTerms)
       return alert('Missing input');
 
     const formatAllEntries = entryList.map((item: typeof entryList[number]) => {
