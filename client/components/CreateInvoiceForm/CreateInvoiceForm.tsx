@@ -100,7 +100,6 @@ const CreateInvoiceForm = () => {
 
   const router = useRouter();
 
-  //TODO : Fix type definition
   const handleFormSubmit = async (customerSelected: string) => {
     // * Verify the inputs
     if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
@@ -130,24 +129,22 @@ const CreateInvoiceForm = () => {
       remarks: invoiceNotes,
     };
 
-    console.log(invoiceObject);
+    try {
+      await createInvoice({
+        variables: { createInvoiceInput: invoiceObject },
 
-    // try {
-    //   await createInvoice({
-    //     variables: { createInvoiceInput: invoiceObject },
-
-    //     refetchQueries: () => [
-    //       {
-    //         query: GET_INVOICES_FOR_GRID,
-    //       },
-    //     ],
-    //   }).then(() => {
-    //     router.push('/invoice');
-    //   });
-    // } catch (e) {
-    //   alert('There was an error, please check the console for further details');
-    //   console.error(e);
-    // }
+        refetchQueries: () => [
+          {
+            query: GET_INVOICES_FOR_GRID,
+          },
+        ],
+      }).then(() => {
+        router.push('/invoice');
+      });
+    } catch (e) {
+      alert('There was an error, please check the console for further details');
+      console.error(e);
+    }
   };
 
   // * Freeze the remove button if the number of entry is equal to 1;
