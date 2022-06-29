@@ -1,25 +1,24 @@
-import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
-import { useEffect, useMemo, useReducer, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_COMPANIES } from '@nvs-shared/graphql/companies';
 import {
   CREATE_INVOICE,
   GET_INVOICES_FOR_GRID,
 } from '@nvs-shared/graphql/invoice';
-import { $TSFixIt } from '@nvs-shared/types/general';
 import { format, formatISO } from 'date-fns';
 import addDays from 'date-fns/addDays';
 import { useRouter } from 'next/router';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import CustomerSearchList from './CustomerSearchList';
 import TableRecord from './TableRecord';
 
 const emptyEntry = () => {
-  return { id: uuidv4(), item: '', quantity: 0, price: 0, amount: 0 };
+  return { id: uuidv4(), description: '', quantity: 0, rate: 0, total: 0 };
 };
 
 const initEntryTableValues = {
@@ -27,27 +26,26 @@ const initEntryTableValues = {
   entryList: [emptyEntry()],
 };
 
+export enum InvoiceEntryActionKind {
+  REMOVE = 'REMOVE_ENTRY',
+  ADD = 'ADD_ENTRY',
+  FREEZE_REMOVE = 'NOT_REMOVABLE',
+  UPDATE = 'UPDATE_ENTRY',
+}
+export interface EntryAction {
+  type: InvoiceEntryActionKind;
+  payload?: any;
+}
+
 const CreateInvoiceForm = () => {
   // * Reducer for Table Entries
-  enum InvoiceEntryActionKind {
-    REMOVE = 'REMOVE_ENTRY',
-    ADD = 'ADD_ENTRY',
-    FREEZE_REMOVE = 'NOT_REMOVABLE',
-    UPDATE = 'UPDATE_ENTRY',
-  }
-
-  interface EntryAction {
-    type: InvoiceEntryActionKind;
-    payload?: any;
-  }
-
   const reducer = (state: typeof initEntryTableValues, action: EntryAction) => {
     switch (action.type) {
       case InvoiceEntryActionKind.REMOVE: {
         return {
           ...state,
           entryList: state.entryList.filter(
-            (item: $TSFixIt) => item.id !== action.payload
+            (item) => item.id !== action.payload
           ),
         };
       }
@@ -82,7 +80,7 @@ const CreateInvoiceForm = () => {
   const [state, dispatch] = useReducer(reducer, initEntryTableValues);
   const { entryList, isEntryRemovable } = state;
 
-  // * Invoice State
+  // * Invoice States
   const [invoiceTotal, setInvoiceTotal] = useState<number | null>(null);
   const [invoiceSubTotal, setInvoiceSubTotal] = useState<number | null>(null);
   const [invoiceTerms, setInvoiceTerms] = useState<
@@ -103,50 +101,53 @@ const CreateInvoiceForm = () => {
   const router = useRouter();
 
   //TODO : Fix type definition
-  const handleFormSubmit = async (customerSelected: any) => {
+  const handleFormSubmit = async (customerSelected: string) => {
+    // * Verify the inputs
     if (customerSelected.length === 0 || !invoiceDate || !invoiceTerms)
       return alert('Missing input');
 
-    const trimmedData = entryList.map((item: typeof entryList[number]) => {
-      console.log(item);
+    const formatAllEntries = entryList.map((item: typeof entryList[number]) => {
       const newEntry = {
-        description: item.item,
+        description: item.description,
         quantity: item.quantity,
-        rate: item.quantity,
-        total: item.price,
+        rate: item.rate,
+        total: item.total,
       };
       return newEntry;
     });
 
+    //TODO : Update type definition of invoice
     const invoiceObject = {
       companyId: data.companies[0].id,
-      customerId: customerSelected.id,
+      customerId: customerSelected,
       date: invoiceDate,
       dueDate: formatISO(dueDate as Date),
       terms: invoiceTerms,
       status: 'draft',
-      entryList: trimmedData,
+      entryList: formatAllEntries,
       taxes: invoiceTax,
       total: invoiceTotal,
       remarks: invoiceNotes,
     };
 
-    try {
-      await createInvoice({
-        variables: { createInvoiceInput: invoiceObject },
+    console.log(invoiceObject);
 
-        refetchQueries: () => [
-          {
-            query: GET_INVOICES_FOR_GRID,
-          },
-        ],
-      }).then(() => {
-        router.push('/invoice');
-      });
-    } catch (e) {
-      alert('There was an error, please check the console for further details');
-      console.error(e);
-    }
+    // try {
+    //   await createInvoice({
+    //     variables: { createInvoiceInput: invoiceObject },
+
+    //     refetchQueries: () => [
+    //       {
+    //         query: GET_INVOICES_FOR_GRID,
+    //       },
+    //     ],
+    //   }).then(() => {
+    //     router.push('/invoice');
+    //   });
+    // } catch (e) {
+    //   alert('There was an error, please check the console for further details');
+    //   console.error(e);
+    // }
   };
 
   // * Freeze the remove button if the number of entry is equal to 1;
@@ -169,7 +170,7 @@ const CreateInvoiceForm = () => {
   // * Calculate the invoice total when the entry list or invoice tax changes
   useMemo(() => {
     const total = entryList
-      .map((item: typeof entryList[number]) => item.amount)
+      .map((item: typeof entryList[number]) => item.total)
       .reduce((acc: number, value: number) => acc + value);
 
     setInvoiceSubTotal(total);
@@ -190,7 +191,7 @@ const CreateInvoiceForm = () => {
 
         <div className='flex gap-3'>
           <button
-            onClick={() => handleFormSubmit(customerSelectedId)}
+            onClick={() => handleFormSubmit(customerSelectedId as string)}
             className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <SaveAltOutlinedIcon />
             Save Invoice
@@ -199,7 +200,7 @@ const CreateInvoiceForm = () => {
       </div>
 
       <form
-        onSubmit={() => handleFormSubmit(customerSelectedId)}
+        onSubmit={() => handleFormSubmit(customerSelectedId as string)}
         className='h-fit grid grid-cols-12 gap-y-10'>
         <button hidden type='submit'></button>
 
@@ -274,7 +275,7 @@ const CreateInvoiceForm = () => {
 
             {/* Items */}
 
-            {entryList.map((item: $TSFixIt) => (
+            {entryList.map((item: typeof entryList[number]) => (
               <TableRecord
                 key={item.id}
                 isRemovable={isEntryRemovable}
@@ -316,7 +317,7 @@ const CreateInvoiceForm = () => {
               Taxes
             </h3>
             <select
-              onChange={(e) => setInvoiceTax(parseInt(e.target.value))}
+              onChange={(e) => setInvoiceTax(parseFloat(e.target.value))}
               className='text-sm font-semibold border-none py-0 '>
               <option value={0.0}>-</option>
               <option value={7.7}>7.7%</option>
@@ -398,9 +399,9 @@ const SelectInvoiceTerms = (props: SelectInput) => {
           <option hidden value={''}>
             Select term
           </option>
-          {Object.keys(termValueList).map((term: any) => (
+          {Object.keys(termValueList).map((term: string) => (
             <option key={term} value={term}>
-              {termValueList[term]}
+              {termValueList[term as keyof typeof termsList]}
             </option>
           ))}
         </select>

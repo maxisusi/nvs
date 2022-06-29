@@ -1,39 +1,41 @@
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { $TSFixIt } from '@nvs-shared/types/general';
 import { useEffect, useState } from 'react';
+import { EntryAction, InvoiceEntryActionKind } from '../CreateInvoiceForm';
 
 type Props = {
-  dispatch: $TSFixIt;
+  dispatch: (arg: EntryAction) => void;
   id: string;
   isRemovable: boolean;
 };
 
 const TableRecord = (props: Props) => {
+  const { id, dispatch, isRemovable } = props;
+
   const initialState = {
-    id: props.id,
-    item: '',
+    id: id,
+    description: '',
     quantity: 0,
-    price: 0,
-    amount: 0.0,
+    rate: 0,
+    total: 0.0,
   };
 
   const [record, setRecord] = useState(initialState);
 
   // * Updates the current state of all entries
   useEffect(() => {
-    props.dispatch({ type: 'UPDATE_ENTRY', payload: record });
+    dispatch({ type: InvoiceEntryActionKind.UPDATE, payload: record });
   }, [record]);
 
-  // * Calculates the totla
+  // * Calculates the total when quantity and rate changes
   useEffect(() => {
-    const total = record.quantity * record.price;
+    const total = record.quantity * record.rate;
     setRecord((prev) => {
       return {
         ...prev,
-        amount: total,
+        total,
       };
     });
-  }, [record.quantity, record.price]);
+  }, [record.quantity, record.rate]);
 
   return (
     <div className='pt-5 pb-8 grid grid-cols-8 gap-x-6 gap-y-2 col-span-full border border-r-0 border-l-0 border-t-0 '>
@@ -43,7 +45,7 @@ const TableRecord = (props: Props) => {
             setRecord((prev) => {
               return {
                 ...prev,
-                item: event.target.value,
+                description: event.target.value,
               };
             })
           }
@@ -56,10 +58,10 @@ const TableRecord = (props: Props) => {
         <input
           min={0}
           onChange={(event) =>
-            setRecord((prev: $TSFixIt) => {
+            setRecord((prev) => {
               return {
                 ...prev,
-                quantity: event.target.value,
+                quantity: parseFloat(event.target.value),
               };
             })
           }
@@ -72,10 +74,10 @@ const TableRecord = (props: Props) => {
         <input
           min={0}
           onChange={(event) =>
-            setRecord((prev: $TSFixIt) => {
+            setRecord((prev) => {
               return {
                 ...prev,
-                price: event.target.value,
+                rate: parseFloat(event.target.value),
               };
             })
           }
@@ -87,13 +89,13 @@ const TableRecord = (props: Props) => {
       <div className=' pr-12 col-start-7 col-span-full self-center flex items-center justify-end'>
         <p className='text-bold'>
           <span className='font-bold'>CHF</span>
-          {record.amount.toFixed(2)}
+          {record.total.toFixed(2)}
         </p>
-        {props.isRemovable && (
+        {isRemovable && (
           <div
             className='absolute right-3 text-skin-gray cursor-pointer hover:text-red-500'
             onClick={() =>
-              props.dispatch({ type: 'REMOVE_ENTRY', payload: props.id })
+              dispatch({ type: InvoiceEntryActionKind.REMOVE, payload: id })
             }>
             <DeleteOutlineOutlinedIcon />
           </div>
