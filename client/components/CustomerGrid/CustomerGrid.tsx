@@ -74,6 +74,10 @@ const CustomerList = (props: Props) => {
     router.push(`customer/edit/${customerId}`);
   };
 
+  const handleViewCustomer = (customerId: string) => {
+    router.push(`customer/view/${customerId}`);
+  };
+
   /**
    * Delete customer in DB and updates the UI
    * @param cellId
@@ -247,7 +251,7 @@ const CustomerList = (props: Props) => {
             </ListItemIcon>
             <ListItemText className='text-skin-base'>Edit</ListItemText>
           </MenuItem>
-          <MenuItem onClick={handleCloseMenu}>
+          <MenuItem onClick={() => handleViewCustomer(cellId as string)}>
             <ListItemIcon>
               <VisibilityOutlinedIcon
                 className='text-skin-gray'
