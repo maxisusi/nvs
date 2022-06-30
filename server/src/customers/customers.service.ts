@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CustomerCreateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-create.input';
-import { OrderByParams, UpdateCustomerInput } from 'src/graphql';
+import { UpdateCustomerInput } from 'src/graphql';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class CustomersService {
   findOne(id: string) {
     return this.prisma.customer.findUnique({
       where: { id },
-      include: { contactPoint: true },
+      include: { contactPoint: true, invoice: true },
     });
   }
 

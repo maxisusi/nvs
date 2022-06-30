@@ -1,13 +1,14 @@
 import AddIcon from '@mui/icons-material/Add';
 import { GET_CUSTOMER_TO_VIEW } from '@nvs-shared/graphql/customers';
 import { Customer } from '@nvs-shared/types/customer';
-import { format, parseISO } from 'date-fns';
+import { format, formatISO, parseISO } from 'date-fns';
 import client from 'pages/client.graphql';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import Months from '../../../utils/months.json';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -30,8 +31,6 @@ ChartJS.register(
   Legend
 );
 
-const invoiceListNumber: any = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const contactPointListNumber: any = [];
 const customerViewPage = (props: Customer) => {
   console.log(props);
   const {
@@ -46,9 +45,18 @@ const customerViewPage = (props: Customer) => {
     city,
     region,
     address,
+    invoice,
     contactPoint,
     phone,
   } = props;
+
+  const getMonthsAbbreviation = () => {
+    const res = Months.map((month) => {
+      return month.abbreviation;
+    });
+
+    return res;
+  };
 
   return (
     <>
@@ -95,15 +103,11 @@ const customerViewPage = (props: Customer) => {
                 <Line
                   options={{ maintainAspectRatio: false }}
                   data={{
-                    labels: ['Jun', 'Jul', 'Aug'],
+                    labels: getMonthsAbbreviation(),
                     datasets: [
                       {
                         label: '',
-                        data: [5, 6, 7],
-                      },
-                      {
-                        label: '',
-                        data: [3, 2, 1],
+                        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
                       },
                     ],
                   }}
@@ -124,9 +128,19 @@ const customerViewPage = (props: Customer) => {
             {/* Personnal informations */}
 
             <div>
-              <div className='flex items-center gap-2 mb-8'>
-                <AccountCircleIcon className='text-skin-fill' />
-                <p className='text-lg '>Personnal Info</p>
+              <div className='flex justify-between'>
+                <div className='flex items-center gap-2 mb-8'>
+                  <AccountCircleIcon className='text-skin-fill' />
+                  <p className='text-lg '>Personnal Info</p>
+                </div>
+
+                <div className='text-xs text-skin-gray'>
+                  Last update:
+                  <span className='italic font-semibold'>
+                    {' '}
+                    {format(parseISO(updatedAt), 'MM/dd/yyyy')}
+                  </span>
+                </div>
               </div>
 
               <div className='grid grid-cols-6 gap-y-5 gap-x-5 text-sm'>
@@ -185,24 +199,24 @@ const customerViewPage = (props: Customer) => {
           </div>
           {/* Latest invoice list */}
           <div className='h-72 overflow-hidden hover:overflow-y-auto'>
-            {invoiceListNumber.map((item: any) => (
+            {invoice!.map((invoice: any) => (
               <div
-                key={item}
+                key={invoice.invoiceNumber}
                 className='flex group justify-between gap-2 text-sm p-3 border border-r-0 border-l-0 border-t-0  hover:bg-slate-100 cursor-pointer'>
                 <div className='flex gap-5'>
                   <p className='italic text-skin-gray group-hover:hidden'>
-                    22.06.24
+                    {format(parseISO(invoice.date), 'yy.MM.dd')}
                   </p>
                   <p className='italic text-skin-gray hidden group-hover:block'>
-                    #54837
+                    {`#${invoice.invoiceNumber.split('-')[0]}`}
                   </p>
-                  {displayInvoiceStatus('pending')}
+                  {displayInvoiceStatus(invoice.status)}
                 </div>
-                <p className='font-semibold'>22.05CHF</p>
+                <p className='font-semibold'>{invoice.total.toFixed(2)}CHF</p>
               </div>
             ))}
 
-            {invoiceListNumber.length === 0 && (
+            {invoice!.length === 0 && (
               <div className='flex w-full h-full bg-slate-100 justify-center pt-8 text-skin-gray gap-2'>
                 <InfoOutlinedIcon />
                 No invoices
@@ -234,7 +248,7 @@ const customerViewPage = (props: Customer) => {
                 </div>
               </div>
             ))}
-            {contactPoint.length === 0 && (
+            {contactPoint!.length === 0 && (
               <div className='flex w-full h-full bg-slate-100 justify-center pt-8 text-skin-gray gap-2'>
                 <InfoOutlinedIcon />
                 No Contact Points

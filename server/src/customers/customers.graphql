@@ -15,6 +15,7 @@ type Customer {
   region: String
   contactPoint: [ContactPoint]
 
+  invoice: [Invoice]
   createdAt: DateTime
   updatedAt: DateTime
 }

@@ -31,6 +31,12 @@ export const GET_CUSTOMER_TO_VIEW = gql`
         telephone
         email
       }
+      invoice {
+        invoiceNumber
+        status
+        total
+        date
+      }
       createdAt
       updatedAt
     }

@@ -230,6 +230,7 @@ export class Customer {
     city?: Nullable<string>;
     region?: Nullable<string>;
     contactPoint?: Nullable<Nullable<ContactPoint>[]>;
+    invoice?: Nullable<Nullable<Invoice>[]>;
     createdAt?: Nullable<DateTime>;
     updatedAt?: Nullable<DateTime>;
 }
