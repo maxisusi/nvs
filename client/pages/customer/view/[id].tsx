@@ -7,6 +7,7 @@ import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,6 +19,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import Avatar from '@mui/material/Avatar';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -28,8 +30,8 @@ ChartJS.register(
   Legend
 );
 
-const invoiceListNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-
+const invoiceListNumber: any = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const contactPointListNumber: any = [1, 2, 3, 4, 5];
 const customerViewPage = (props: Customer) => {
   console.log(props);
   const {
@@ -65,8 +67,11 @@ const customerViewPage = (props: Customer) => {
           </button>
         </div>
       </div>
-      <div className='grid grid-cols-12 gap-6 grid-rows-5'>
-        <div className='bg-white drop-shadow rounded col-span-8 row-span-5 p-6'>
+
+      {/* GRID  */}
+      <div className='grid grid-cols-12 gap-6 grid-rows-6 '>
+        {/* Main Board */}
+        <div className='bg-white drop-shadow rounded col-span-8 row-span-full p-6'>
           <div className='w-full'>
             {/* Header */}
             <div className='flex justify-between items-center mb-4'>
@@ -168,7 +173,7 @@ const customerViewPage = (props: Customer) => {
           </div>
         </div>
 
-        {/* invoice Data */}
+        {/* Latest Invoice Data */}
         <div className='bg-white drop-shadow rounded col-span-4 row-span-3'>
           <div>
             <div className='flex items-center gap-2 p-6 border border-t-0 border-r-0 border-l-0'>
@@ -177,8 +182,8 @@ const customerViewPage = (props: Customer) => {
             </div>
           </div>
           {/* Latest invoice list */}
-          <div className='h-96 overflow-hidden hover:overflow-auto'>
-            {invoiceListNumber.map((item) => (
+          <div className='h-72 overflow-hidden hover:overflow-y-auto'>
+            {invoiceListNumber.map((item: any) => (
               <div
                 key={item}
                 className='flex group justify-between gap-2 text-sm p-3 border border-r-0 border-l-0 border-t-0  hover:bg-slate-100 cursor-pointer'>
@@ -194,19 +199,37 @@ const customerViewPage = (props: Customer) => {
                 <p className='font-semibold'>22.05CHF</p>
               </div>
             ))}
+
+            {invoiceListNumber.length === 0 && (
+              <div className='flex w-full h-full bg-slate-100 justify-center pt-8 text-skin-gray gap-2'>
+                <InfoOutlinedIcon />
+                No invoices
+              </div>
+            )}
           </div>
         </div>
 
-        <div className='bg-white drop-shadow rounded col-span-4 row-span-2 '>
+        {/* Contact Points */}
+        <div className='bg-white drop-shadow rounded col-span-4  row-span-3 '>
           <div>
-            <div className='flex items-center gap-2 p-6'>
+            <div className='flex items-center gap-2 p-6 border border-t-0 border-r-0 border-l-0'>
               <ContactPhoneIcon className='text-skin-fill' />
               <p className='text-lg'>Contact Points</p>
             </div>
           </div>
           {/* Contacts Point List */}
-          <div>
-            <div></div>
+          <div className='h-72 overflow-hidden hover:overflow-auto'>
+            {contactPointListNumber.map((item: any) => (
+              <div
+                key={item}
+                className='flex group items-center gap-5 text-sm p-3 border border-r-0 border-l-0 border-t-0  hover:bg-slate-100 cursor-pointer'>
+                <Avatar>{firstName?.substring(0, 1)}</Avatar>
+                <div className='flex flex-col'>
+                  <p className='font-semibold text-lg'>{firstName}</p>
+                  {email && <p className='text-skin-gray italic'>{email}</p>}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
