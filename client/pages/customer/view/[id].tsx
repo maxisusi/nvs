@@ -5,6 +5,8 @@ import { format, parseISO } from 'date-fns';
 import client from 'pages/client.graphql';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import DescriptionIcon from '@mui/icons-material/Description';
+import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,6 +27,8 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
+const invoiceListNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 const customerViewPage = (props: Customer) => {
   console.log(props);
@@ -61,8 +65,8 @@ const customerViewPage = (props: Customer) => {
           </button>
         </div>
       </div>
-      <div className='grid grid-cols-12 gap-x-6 '>
-        <div className='bg-white drop-shadow rounded col-span-8 p-6'>
+      <div className='grid grid-cols-12 gap-6 grid-rows-5'>
+        <div className='bg-white drop-shadow rounded col-span-8 row-span-5 p-6'>
           <div className='w-full'>
             {/* Header */}
             <div className='flex justify-between items-center mb-4'>
@@ -80,7 +84,7 @@ const customerViewPage = (props: Customer) => {
             </div>
             {/* Graphic */}
             <div className='flex justify-between items-center gap-7 h-72'>
-              <div className='w-full h-full'>
+              <div className='w-full  h-full'>
                 <Line
                   options={{ maintainAspectRatio: false }}
                   data={{
@@ -126,20 +130,26 @@ const customerViewPage = (props: Customer) => {
                   </p>
                 </div>
 
-                <div className='col-span-2 '>
-                  <p className='text-skin-gray'>Email</p>
-                  <p className='font-semibold break-words'>{email}</p>
-                </div>
+                {email && (
+                  <div className='col-span-2 '>
+                    <p className='text-skin-gray'>Email</p>
+                    <p className='font-semibold break-words'>{email}</p>
+                  </div>
+                )}
 
-                <div className='col-span-2'>
-                  <p className='text-skin-gray'>Phone</p>
-                  <p className='font-semibold break-words'>{phone}</p>
-                </div>
+                {phone && (
+                  <div className='col-span-2'>
+                    <p className='text-skin-gray'>Phone</p>
+                    <p className='font-semibold break-words'>{phone}</p>
+                  </div>
+                )}
 
-                <div className='col-span-2'>
-                  <p className='text-skin-gray'>Mobile</p>
-                  <p className='font-semibold break-words'>{mobile}</p>
-                </div>
+                {mobile && (
+                  <div className='col-span-2'>
+                    <p className='text-skin-gray'>Mobile</p>
+                    <p className='font-semibold break-words'>{mobile}</p>
+                  </div>
+                )}
 
                 <div className='col-span-2'>
                   <p className='text-skin-gray'>Country</p>
@@ -157,14 +167,78 @@ const customerViewPage = (props: Customer) => {
             </div>
           </div>
         </div>
+
         {/* invoice Data */}
-        <div className='bg-white drop-shadow rounded col-span-4 p-6'>test</div>
+        <div className='bg-white drop-shadow rounded col-span-4 row-span-3'>
+          <div>
+            <div className='flex items-center gap-2 p-6 border border-t-0 border-r-0 border-l-0'>
+              <DescriptionIcon className='text-skin-fill' />
+              <p className='text-lg'>Latest Invoices</p>
+            </div>
+          </div>
+          {/* Latest invoice list */}
+          <div className='h-96 overflow-hidden hover:overflow-auto'>
+            {invoiceListNumber.map((item) => (
+              <div
+                key={item}
+                className='flex group justify-between gap-2 text-sm p-3 border border-r-0 border-l-0 border-t-0  hover:bg-slate-100 cursor-pointer'>
+                <div className='flex gap-5'>
+                  <p className='italic text-skin-gray group-hover:hidden'>
+                    22.06.24
+                  </p>
+                  <p className='italic text-skin-gray hidden group-hover:block'>
+                    #54837
+                  </p>
+                  {displayInvoiceStatus('pending')}
+                </div>
+                <p className='font-semibold'>22.05CHF</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className='bg-white drop-shadow rounded col-span-4 row-span-2 '>
+          <div>
+            <div className='flex items-center gap-2 p-6'>
+              <ContactPhoneIcon className='text-skin-fill' />
+              <p className='text-lg'>Contact Points</p>
+            </div>
+          </div>
+          {/* Contacts Point List */}
+          <div>
+            <div></div>
+          </div>
+        </div>
       </div>
     </>
   );
 };
 
 export default customerViewPage;
+
+const displayInvoiceStatus = (status: string) => {
+  const statusStyles: any = {
+    draft: {
+      bg: 'bg-slate-300',
+      text: 'text-slate-900',
+    },
+    paid: {
+      bg: 'bg-emerald-300',
+      text: 'text-emerald-900',
+    },
+    pending: {
+      bg: 'bg-amber-300',
+      text: 'text-amber-900',
+    },
+  };
+
+  return (
+    <div
+      className={`${statusStyles[status]?.bg} ${statusStyles[status]?.text} p-0.5 px-2 rounded text-xs uppercase`}>
+      {status}
+    </div>
+  );
+};
 
 export async function getServerSideProps({ params }: any) {
   const customerId = params.id;
