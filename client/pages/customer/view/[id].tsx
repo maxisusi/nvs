@@ -31,7 +31,7 @@ ChartJS.register(
 );
 
 const invoiceListNumber: any = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const contactPointListNumber: any = [1, 2, 3, 4, 5];
+const contactPointListNumber: any = [];
 const customerViewPage = (props: Customer) => {
   console.log(props);
   const {
@@ -230,6 +230,12 @@ const customerViewPage = (props: Customer) => {
                 </div>
               </div>
             ))}
+            {contactPointListNumber.length === 0 && (
+              <div className='flex w-full h-full bg-slate-100 justify-center pt-8 text-skin-gray gap-2'>
+                <InfoOutlinedIcon />
+                No Contact Points
+              </div>
+            )}
           </div>
         </div>
       </div>
