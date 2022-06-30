@@ -19,7 +19,10 @@ export class CustomersService {
   }
 
   findOne(id: string) {
-    return this.prisma.customer.findUnique({ where: { id } });
+    return this.prisma.customer.findUnique({
+      where: { id },
+      include: { contactPoint: true },
+    });
   }
 
   update(updateCustomerInput: UpdateCustomerInput) {

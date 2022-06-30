@@ -46,8 +46,10 @@ const customerViewPage = (props: Customer) => {
     city,
     region,
     address,
+    contactPoint,
     phone,
   } = props;
+
   return (
     <>
       <div className='flex items-center justify-between mb-10'>
@@ -219,18 +221,20 @@ const customerViewPage = (props: Customer) => {
           </div>
           {/* Contacts Point List */}
           <div className='h-72 overflow-hidden hover:overflow-auto'>
-            {contactPointListNumber.map((item: any) => (
+            {contactPoint!.map((contact: any) => (
               <div
-                key={item}
+                key={contact.name}
                 className='flex group items-center gap-5 text-sm p-3 border border-r-0 border-l-0 border-t-0  hover:bg-slate-100 cursor-pointer'>
-                <Avatar>{firstName?.substring(0, 1)}</Avatar>
+                <Avatar>{contact.name?.substring(0, 1)}</Avatar>
                 <div className='flex flex-col'>
-                  <p className='font-semibold text-lg'>{firstName}</p>
-                  {email && <p className='text-skin-gray italic'>{email}</p>}
+                  <p className='font-semibold text-lg'>{contact.name}</p>
+                  {contact.email && (
+                    <p className='text-skin-gray italic'>{contact.email}</p>
+                  )}
                 </div>
               </div>
             ))}
-            {contactPointListNumber.length === 0 && (
+            {contactPoint.length === 0 && (
               <div className='flex w-full h-full bg-slate-100 justify-center pt-8 text-skin-gray gap-2'>
                 <InfoOutlinedIcon />
                 No Contact Points
