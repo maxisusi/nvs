@@ -31,11 +31,16 @@ const customerViewPage = (props: Customer) => {
   const {
     createdAt,
     updatedAt,
+    countryName,
     firstName,
     lastName,
     email,
     mobile,
     postalCode,
+    city,
+    region,
+    address,
+    phone,
   } = props;
   return (
     <>
@@ -74,9 +79,10 @@ const customerViewPage = (props: Customer) => {
               </select>
             </div>
             {/* Graphic */}
-            <div className='flex justify-between items-center gap-7'>
-              <div className='w-full'>
+            <div className='flex justify-between items-center gap-7 h-72'>
+              <div className='w-full h-full'>
                 <Line
+                  options={{ maintainAspectRatio: false }}
                   data={{
                     labels: ['Jun', 'Jul', 'Aug'],
                     datasets: [
@@ -103,7 +109,7 @@ const customerViewPage = (props: Customer) => {
                 </div>
               </div>
             </div>
-            <hr className='mt-10 mb-6' />
+            <hr className='mt-10 mb-10' />
             {/* Personnal informations */}
 
             <div>
@@ -112,33 +118,46 @@ const customerViewPage = (props: Customer) => {
                 <p className='text-lg '>Personnal Info</p>
               </div>
 
-              <div className='grid grid-cols-6 gap-x-2 gap-y-10'>
+              <div className='grid grid-cols-6 gap-y-5 gap-x-5 text-sm'>
                 <div className='col-span-2'>
                   <p className='text-skin-gray'>Display Name</p>
-                  <p className='font-bold break-words'>
+                  <p className='font-semibold break-words'>
                     {firstName} {lastName}
                   </p>
                 </div>
 
                 <div className='col-span-2 '>
                   <p className='text-skin-gray'>Email</p>
-                  <p className='font-bold break-words'>{email}</p>
+                  <p className='font-semibold break-words'>{email}</p>
                 </div>
 
                 <div className='col-span-2'>
                   <p className='text-skin-gray'>Phone</p>
-                  <p className='font-bold break-words'>{mobile}</p>
+                  <p className='font-semibold break-words'>{phone}</p>
+                </div>
+
+                <div className='col-span-2'>
+                  <p className='text-skin-gray'>Mobile</p>
+                  <p className='font-semibold break-words'>{mobile}</p>
+                </div>
+
+                <div className='col-span-2'>
+                  <p className='text-skin-gray'>Country</p>
+                  <p className='font-semibold break-words'>{countryName}</p>
                 </div>
 
                 <div className='col-span-2'>
                   <p className='text-skin-gray'>Address</p>
-                  <p className='font-bold break-words'>{mobile}</p>
+                  <p className='font-semibold break-words'>{city}</p>
+                  <p className='font-semibold break-words'>{region}</p>
+                  <p className='font-semibold break-words'>{postalCode}</p>
+                  <p className='font-semibold break-words'>{address}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
+        {/* invoice Data */}
         <div className='bg-white drop-shadow rounded col-span-4 p-6'>test</div>
       </div>
     </>
