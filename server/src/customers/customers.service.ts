@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Customer } from '@prisma/client';
+import { format } from 'date-fns';
 import { CustomerCreateInput } from 'src/@generated/prisma-nestjs-graphql/customer/customer-create.input';
 import { UpdateCustomerInput } from 'src/graphql';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -32,7 +34,7 @@ export class CustomersService {
       },
     });
 
-    const getAllInvoices = await this.prisma.invoice.groupBy({
+    const getDraftAndPendingInvoices = await this.prisma.invoice.groupBy({
       orderBy: {
         _min: {
           date: 'asc',
@@ -49,17 +51,69 @@ export class CustomersService {
       },
     });
 
-    // * Iterate trough the list of totals and concat them
-    let monthList: any = {};
-    for (let i = 0; i < getAllInvoices.length; i++) {
-      const dateConvertedToMonth = getAllInvoices[i];
+    const getPaidInvoices = await this.prisma.invoice.groupBy({
+      orderBy: {
+        _min: {
+          date: 'asc',
+        },
+      },
+      by: ['total', 'date'],
+      where: {
+        customerId: {
+          in: id,
+        },
+        status: {
+          in: ['paid'],
+        },
+      },
+    });
 
-      console.log(parseISO(dateConvertedToMonth.date));
-    }
+    const getSumByMonthInvoice = (invoiceObject: any) => {
+      // * Aggregates by months to get the sum
+      const monthList: any = {};
+      const invoiceTotalDateStream = [];
+      for (let i = 0; i < invoiceObject.length; i++) {
+        const dateConvertedToMonth = format(invoiceObject[i].date, 'M');
 
-    console.log(getAllInvoices);
+        if (!monthList[dateConvertedToMonth]) {
+          monthList[dateConvertedToMonth] = invoiceObject[i].total;
+        } else {
+          monthList[dateConvertedToMonth] += invoiceObject[i].total;
+        }
+      }
+      // * Create stream of invoice on a 1 year period
+      for (let i = 1; i < 13; i++) {
+        if (!monthList[i]) {
+          monthList[i] = 0;
+        }
+      }
 
-    return customerData;
+      // * Push all the total into an array stream
+
+      Object.keys(monthList).map((key) => {
+        invoiceTotalDateStream.push(monthList[key]);
+      });
+
+      return invoiceTotalDateStream;
+    };
+
+    console.log(getSumByMonthInvoice(getDraftAndPendingInvoices));
+    console.log(getSumByMonthInvoice(getPaidInvoices));
+
+    // * All pending and draft Invoices
+    const invoiceTotal = await getSumByMonthInvoice(getDraftAndPendingInvoices);
+
+    // * All paid invoices
+    const netProfit = await getSumByMonthInvoice(getPaidInvoices);
+
+    const newCustomer: any = customerData;
+
+    newCustomer.meta = {
+      invoiceTotal,
+      netProfit,
+    };
+
+    return newCustomer;
   }
 
   update(updateCustomerInput: UpdateCustomerInput) {

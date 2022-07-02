@@ -50,6 +50,7 @@ const customerViewPage = (props: Customer) => {
     invoice,
     contactPoint,
     phone,
+    meta,
   } = props;
 
   const getMonthsAbbreviation = () => {
@@ -59,12 +60,23 @@ const customerViewPage = (props: Customer) => {
     return res;
   };
 
-  const [allInvoiceTotalStream, setAllInvoiceTotalStream] = useState<
-    [number] | []
-  >([]);
-  const [paidInvoiceTotalStream, setPaidInvoiceTotalStream] = useState<
-    [number] | []
-  >([]);
+  const [draftAndPendingInvoiceTotal, setDraftAndPendingInvoiceTotal] =
+    useState(0);
+
+  const [netTotalInvoice, setNetTotalInvoice] = useState(0);
+
+  useEffect(() => {
+    const totalDraftAndPending = meta.invoiceTotal.reduce(
+      (acc: number, value: number) => acc + value
+    );
+
+    const totalNetValue = meta.netProfit.reduce(
+      (acc: number, value: number) => acc + value
+    );
+
+    setDraftAndPendingInvoiceTotal(totalDraftAndPending);
+    setNetTotalInvoice(totalNetValue);
+  }, [meta]);
 
   return (
     <>
@@ -106,23 +118,28 @@ const customerViewPage = (props: Customer) => {
               </select>
             </div>
             {/* Graphic */}
-            <div className='flex justify-between items-center gap-7 h-72'>
-              <div className='w-full  h-full'>
+            <div className='flex justify-between items-center gap-3 h-72'>
+              <div className='w-3/4  h-full'>
                 <Line
                   options={{
                     maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: false,
+                      },
+                    },
                   }}
                   data={{
                     labels: getMonthsAbbreviation(),
                     datasets: [
                       {
-                        label: 'All Invoices',
-                        data: allInvoiceTotalStream,
+                        label: 'Pending Invoices',
+                        data: meta.invoiceTotal,
                         borderColor: 'black',
                       },
                       {
                         label: 'Net Revenue',
-                        data: paidInvoiceTotalStream,
+                        data: meta.netProfit,
                         borderColor: 'green',
                       },
                     ],
@@ -132,11 +149,15 @@ const customerViewPage = (props: Customer) => {
               <div className='flex flex-col gap-5'>
                 <div className='text-right'>
                   <h4 className='text-sm'>Pending</h4>
-                  <h2 className='text-lg font-bold text-black'>225CHF</h2>
+                  <h2 className='text-lg font-bold text-black'>
+                    {draftAndPendingInvoiceTotal}CHF
+                  </h2>
                 </div>
                 <div className='text-right'>
                   <h4 className='text-sm'>Sales</h4>
-                  <h2 className='text-lg font-bold text-green-600'>225CHF</h2>
+                  <h2 className='text-lg font-bold text-green-600'>
+                    {netTotalInvoice}CHF
+                  </h2>
                 </div>
               </div>
             </div>

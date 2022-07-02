@@ -23,8 +23,8 @@ type Customer {
 }
 
 type Meta {
-  invoiceTotal: [Int!]
-  netProfit: [Int!]
+  invoiceTotal: [Float!]
+  netProfit: [Float!]
 }
 
 input CreateCustomerInput {

@@ -37,6 +37,10 @@ export const GET_CUSTOMER_TO_VIEW = gql`
         total
         date
       }
+      meta {
+        invoiceTotal
+        netProfit
+      }
       createdAt
       updatedAt
     }
