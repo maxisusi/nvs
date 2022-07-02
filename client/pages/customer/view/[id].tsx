@@ -21,6 +21,8 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import Avatar from '@mui/material/Avatar';
+import { Invoice } from '@nvs-shared/types/invoice';
+import { useEffect, useMemo, useState } from 'react';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -54,9 +56,15 @@ const customerViewPage = (props: Customer) => {
     const res = Months.map((month) => {
       return month.abbreviation;
     });
-
     return res;
   };
+
+  const [allInvoiceTotalStream, setAllInvoiceTotalStream] = useState<
+    [number] | []
+  >([]);
+  const [paidInvoiceTotalStream, setPaidInvoiceTotalStream] = useState<
+    [number] | []
+  >([]);
 
   return (
     <>
@@ -101,13 +109,21 @@ const customerViewPage = (props: Customer) => {
             <div className='flex justify-between items-center gap-7 h-72'>
               <div className='w-full  h-full'>
                 <Line
-                  options={{ maintainAspectRatio: false }}
+                  options={{
+                    maintainAspectRatio: false,
+                  }}
                   data={{
                     labels: getMonthsAbbreviation(),
                     datasets: [
                       {
-                        label: '',
-                        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                        label: 'All Invoices',
+                        data: allInvoiceTotalStream,
+                        borderColor: 'black',
+                      },
+                      {
+                        label: 'Net Revenue',
+                        data: paidInvoiceTotalStream,
+                        borderColor: 'green',
                       },
                     ],
                   }}

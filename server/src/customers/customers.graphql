@@ -15,9 +15,16 @@ type Customer {
   region: String
   contactPoint: [ContactPoint]
 
+  meta: Meta
+
   invoice: [Invoice]
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+type Meta {
+  invoiceTotal: [Int!]
+  netProfit: [Int!]
 }
 
 input CreateCustomerInput {

@@ -18,11 +18,48 @@ export class CustomersService {
     });
   }
 
-  findOne(id: string) {
-    return this.prisma.customer.findUnique({
+  async findOne(id: string) {
+    const customerData = await this.prisma.customer.findUnique({
       where: { id },
-      include: { contactPoint: true, invoice: true },
+      include: {
+        contactPoint: true,
+        invoice: {
+          take: 15,
+          orderBy: {
+            date: 'desc',
+          },
+        },
+      },
     });
+
+    const getAllInvoices = await this.prisma.invoice.groupBy({
+      orderBy: {
+        _min: {
+          date: 'asc',
+        },
+      },
+      by: ['total', 'date'],
+      where: {
+        customerId: {
+          in: id,
+        },
+        status: {
+          in: ['draft', 'pending'],
+        },
+      },
+    });
+
+    // * Iterate trough the list of totals and concat them
+    let monthList: any = {};
+    for (let i = 0; i < getAllInvoices.length; i++) {
+      const dateConvertedToMonth = getAllInvoices[i];
+
+      console.log(parseISO(dateConvertedToMonth.date));
+    }
+
+    console.log(getAllInvoices);
+
+    return customerData;
   }
 
   update(updateCustomerInput: UpdateCustomerInput) {

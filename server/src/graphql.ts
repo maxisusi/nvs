@@ -230,9 +230,15 @@ export class Customer {
     city?: Nullable<string>;
     region?: Nullable<string>;
     contactPoint?: Nullable<Nullable<ContactPoint>[]>;
+    meta?: Nullable<Meta>;
     invoice?: Nullable<Nullable<Invoice>[]>;
     createdAt?: Nullable<DateTime>;
     updatedAt?: Nullable<DateTime>;
+}
+
+export class Meta {
+    invoiceTotal?: Nullable<number[]>;
+    netProfit?: Nullable<number[]>;
 }
 
 export class Invoice {
