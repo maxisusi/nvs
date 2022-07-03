@@ -97,9 +97,6 @@ export class CustomersService {
       return invoiceTotalDateStream;
     };
 
-    console.log(getSumByMonthInvoice(getDraftAndPendingInvoices));
-    console.log(getSumByMonthInvoice(getPaidInvoices));
-
     // * All pending and draft Invoices
     const invoiceTotal = await getSumByMonthInvoice(getDraftAndPendingInvoices);
 
