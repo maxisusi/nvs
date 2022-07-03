@@ -61,7 +61,7 @@ const MenuBar = () => {
   }, [router.pathname]);
 
   return (
-    <div className='fixed z-40 top-16 left-0 right-0 w-64 pt-6 h-screen  bg-white border-r border-gray-200'>
+    <div className='fixed z-40 top-12 left-0 right-0 w-64 pt-6 h-screen  bg-white border-r border-gray-200'>
       {barMenu.map((item) => (
         <div key={item.id} onClick={() => handleChangePage(item.link)}>
           <MenuList icon={item.icon} name={item.name} active={item.active} />

@@ -12,6 +12,41 @@ export const GET_CUSTOMERS_FOR_GRID = gql`
   }
 `;
 
+export const GET_CUSTOMER_TO_VIEW = gql`
+  query Query($customerId: String!) {
+    customer(id: $customerId) {
+      id
+      firstName
+      lastName
+      email
+      mobile
+      phone
+      address
+      postalCode
+      countryName
+      city
+      region
+      contactPoint {
+        name
+        telephone
+        email
+      }
+      invoice {
+        invoiceNumber
+        status
+        total
+        date
+      }
+      meta {
+        invoiceTotal
+        netProfit
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export const GET_CUSTOMER_TO_EDIT = gql`
   query Customer($customerId: String!) {
     customer(id: $customerId) {
