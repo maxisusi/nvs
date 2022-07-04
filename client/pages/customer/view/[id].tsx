@@ -24,6 +24,7 @@ import Avatar from '@mui/material/Avatar';
 import { Invoice } from '@nvs-shared/types/invoice';
 import { useEffect, useMemo, useState } from 'react';
 import { $TSFixIt } from '@nvs-shared/types/general';
+import { useRouter } from 'next/router';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -65,6 +66,7 @@ const customerViewPage = (props: $TSFixIt) => {
     useState(0);
 
   const [netTotalInvoice, setNetTotalInvoice] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const totalDraftAndPending = meta.invoiceTotal.reduce(
@@ -239,6 +241,7 @@ const customerViewPage = (props: $TSFixIt) => {
           <div className='h-72 overflow-hidden hover:overflow-y-auto'>
             {invoice!.map((invoice: any) => (
               <div
+                onClick={() => router.push(`/invoice/view/${invoice.id}`)}
                 key={invoice.invoiceNumber}
                 className='flex group justify-between gap-2 text-sm p-3 border border-r-0 border-l-0 border-t-0  hover:bg-slate-100 cursor-pointer'>
                 <div className='flex gap-5'>
