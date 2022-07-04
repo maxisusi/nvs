@@ -16,6 +16,42 @@ export const GET_INVOICES_FOR_GRID = gql`
   }
 `;
 
+export const GET_INVOICE_VIEW = gql`
+  query Invoice($invoiceId: String!) {
+    invoice(id: $invoiceId) {
+      id
+      date
+      dueDate
+      invoiceNumber
+      status
+      terms
+      taxes
+      total
+      remarks
+      customer {
+        firstName
+        lastName
+        postalCode
+        countryName
+        city
+        region
+        address
+      }
+      company {
+        name
+        address
+        postalCode
+        region
+        city
+        countryName
+      }
+      createdAt
+      updatedAt
+      entry
+    }
+  }
+`;
+
 export const DEL_INVOICE = gql`
   mutation Mutation($removeInvoiceId: String!) {
     removeInvoice(id: $removeInvoiceId) {
