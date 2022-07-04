@@ -9,9 +9,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ApolloProvider client={client}>
       <Layout>
         <div className='w-full pl-72 pt-20 pr-14 '>
-          <div className=''>
-            <Component {...pageProps} />
-          </div>
+          <Component {...pageProps} />
         </div>
       </Layout>
     </ApolloProvider>

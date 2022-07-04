@@ -21,7 +21,7 @@ const Header = (props: Props) => {
           <Avatar
             sx={{ height: '30px', width: '30px' }}
             alt='Max Balej'
-            src='https://source.unsplash.com/800x800/?people'
+            src='https://source.unsplash.com/random/800x600'
           />
         </div>
       </div>

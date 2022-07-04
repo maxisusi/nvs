@@ -23,6 +23,7 @@ import { Line } from 'react-chartjs-2';
 import Avatar from '@mui/material/Avatar';
 import { Invoice } from '@nvs-shared/types/invoice';
 import { useEffect, useMemo, useState } from 'react';
+import { $TSFixIt } from '@nvs-shared/types/general';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -33,7 +34,7 @@ ChartJS.register(
   Legend
 );
 
-const customerViewPage = (props: Customer) => {
+const customerViewPage = (props: $TSFixIt) => {
   console.log(props);
   const {
     createdAt,
