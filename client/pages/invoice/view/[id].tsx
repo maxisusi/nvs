@@ -29,6 +29,7 @@ import { Invoice } from '@nvs-shared/types/invoice';
 const invoiceViewPage = (props: $TSFixIt) => {
   const {
     createdAt,
+    updatedAt,
     dueDate,
     invoiceNumber,
     customer,
@@ -37,7 +38,9 @@ const invoiceViewPage = (props: $TSFixIt) => {
     date,
     total,
     entry,
+    taxes,
     id,
+    remarks,
   } = props;
 
   const router = useRouter();
@@ -114,7 +117,7 @@ const invoiceViewPage = (props: $TSFixIt) => {
   };
   return (
     <>
-      <div className='flex items-center justify-between mb-10'>
+      <div className=' flex items-center justify-between mb-10'>
         <div>
           <h1 className='text-3xl mb-3 font-bold'>
             {customer.firstName} {customer.lastName}'s Invoice
@@ -146,7 +149,10 @@ const invoiceViewPage = (props: $TSFixIt) => {
 
       {/* Invoice View */}
 
-      <div className='bg-white drop-shadow-sm w-full p-6 rounded'>
+      <div className='relative bg-white drop-shadow-sm w-full p-6 rounded'>
+        <div className='absolute text-sm -bottom-7 right-1 text-skin-gray'>
+          Last update: {format(parseISO(updatedAt), 'MM/dd/yyyy')}
+        </div>
         {/* header */}
         <div className='w-full grid grid-cols-2 gap-y-3 content-between'>
           {/* Logo */}
@@ -185,7 +191,10 @@ const invoiceViewPage = (props: $TSFixIt) => {
               {customer.postalCode} - {customer.city}
             </p>
           </div>
-          <div className='col-span-1 justify-self-end self-end text-right'>
+          <div className='relative col-span-1 justify-self-end self-end text-right'>
+            <p className='absolute -bottom-6 right-3 text-sm text-skin-gray'>
+              Tax rate: <span className='font-semibold'>+{taxes}%</span>
+            </p>
             <div className='grid grid-cols-2 gap-x-10 bg-slate-50 rounded p-3 border'>
               <p className='text-skin-gray col-span-1'>Invoice date: </p>
               <p className='text-skin-gray font-semibold col-span-1 self-end'>
@@ -235,6 +244,11 @@ const invoiceViewPage = (props: $TSFixIt) => {
             ))}
           </tbody>
         </table>
+
+        <div className='mt-10'>
+          <h4 className='font-semibold mb-2'>Remarks:</h4>
+          <p className='text-sm italic'>"{remarks}"</p>
+        </div>
       </div>
 
       <Menu

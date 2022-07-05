@@ -24,7 +24,6 @@ export const GET_INVOICE_VIEW = gql`
       dueDate
       invoiceNumber
       status
-      terms
       taxes
       total
       remarks
@@ -33,9 +32,8 @@ export const GET_INVOICE_VIEW = gql`
         firstName
         lastName
         postalCode
-        countryName
         city
-        region
+
         address
       }
       company {
@@ -43,9 +41,7 @@ export const GET_INVOICE_VIEW = gql`
         address
         image
         postalCode
-        region
         city
-        countryName
       }
       createdAt
       updatedAt
