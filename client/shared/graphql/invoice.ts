@@ -29,6 +29,7 @@ export const GET_INVOICE_VIEW = gql`
       total
       remarks
       customer {
+        id
         firstName
         lastName
         postalCode
@@ -40,6 +41,7 @@ export const GET_INVOICE_VIEW = gql`
       company {
         name
         address
+        image
         postalCode
         region
         city

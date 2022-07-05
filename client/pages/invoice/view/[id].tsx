@@ -4,6 +4,7 @@ import { format, parseISO } from 'date-fns';
 import client from 'pages/client.graphql';
 import React from 'react';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import { useRouter } from 'next/router';
 
 const invoiceViewPage = (props: $TSFixIt) => {
   const {
@@ -16,6 +17,8 @@ const invoiceViewPage = (props: $TSFixIt) => {
     total,
     entry,
   } = props;
+
+  const router = useRouter();
   console.log(props);
   return (
     <>
@@ -44,7 +47,7 @@ const invoiceViewPage = (props: $TSFixIt) => {
           {/* Logo */}
 
           <div className='col-span-1 '>
-            <img src='https://loremflickr.com/100/100/business' />
+            <img src={company.image} className='h-28' />
           </div>
 
           <div className='col-span-1 justify-self-end'>
@@ -64,7 +67,9 @@ const invoiceViewPage = (props: $TSFixIt) => {
           </div>
 
           {/* Customer details */}
-          <div className='col-span-1'>
+          <div
+            onClick={() => router.push(`/customer/view/${customer.id}`)}
+            className='col-span-1 cursor-pointer  hover:px-6 hover:bg-gradient-to-r  hover:from-slate-100 to-white'>
             <p className='text-skin-gray'>Bill to:</p>
             <p className='font-semibold'>
               {customer.firstName} {customer.lastName}
@@ -75,7 +80,7 @@ const invoiceViewPage = (props: $TSFixIt) => {
             </p>
           </div>
           <div className='col-span-1 justify-self-end self-end text-right'>
-            <div className='grid grid-cols-2 gap-x-10 bg-slate-100 rounded p-3 border'>
+            <div className='grid grid-cols-2 gap-x-10 bg-slate-50 rounded p-3 border'>
               <p className='text-skin-gray col-span-1'>Invoice date: </p>
               <p className='text-skin-gray font-semibold col-span-1 self-end'>
                 {format(parseISO(date), 'MM.dd.yy')}
@@ -95,40 +100,33 @@ const invoiceViewPage = (props: $TSFixIt) => {
         <hr className='my-10' />
         {/* Table */}
         <table className='table-auto w-full '>
-          <thead className='text-left bg-slate-100 rounded-md p-5 font-normal uppercase text-sm '>
+          <thead className='text-left bg-slate-50 border-b font-normal uppercase text-sm '>
             <tr>
-              <th className='font-semibold'>Description</th>
-              <th className='font-semibold'>Quantity</th>
-              <th className='font-semibold'>Rate</th>
-              <th className='font-semibold'>Amount</th>
+              <th scope='col' className='font-semibold px-6 py-4 '>
+                Description
+              </th>
+              <th scope='col' className='font-semibold px-6 py-4'>
+                Quantity
+              </th>
+              <th scope='col' className='font-semibold px-6 py-4'>
+                Rate
+              </th>
+              <th scope='col' className='font-semibold px-6 py-4'>
+                Amount
+              </th>
             </tr>
           </thead>
           <tbody>
             {entry.map((entry: any) => (
-              <tr key={entry.id} className='mb-5'>
-                <td>{entry.description}</td>
-                <td>{entry.quantity}</td>
-                <td>CHF {entry.rate}</td>
-                <td className='text-right font-semibold'>
+              <tr key={entry.id} className='mb-5 border-b hover:bg-slate-100'>
+                <td className='px-6 py-4'>{entry.description}</td>
+                <td className='px-6 py-4'>{entry.quantity}</td>
+                <td className='px-6 py-4'>CHF {entry.rate.toFixed(2)}</td>
+                <td className=' font-semibold px-6 py-4'>
                   CHF {entry.total.toFixed(2)}
                 </td>
               </tr>
             ))}
-            {/* <tr>
-              <td>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
-              <td>Malcolm Lockyer</td>
-              <td>1961</td>
-            </tr>
-            <tr>
-              <td>Witchy Woman</td>
-              <td>The Eagles</td>
-              <td>1972</td>
-            </tr>
-            <tr>
-              <td>Shining Star</td>
-              <td>Earth, Wind, and Fire</td>
-              <td>1975</td>
-            </tr> */}
           </tbody>
         </table>
       </div>
