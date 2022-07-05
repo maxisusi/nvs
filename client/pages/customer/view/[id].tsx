@@ -184,7 +184,7 @@ const customerViewPage = (props: $TSFixIt) => {
                   Last update:
                   <span className='italic font-semibold'>
                     {' '}
-                    {format(parseISO(updatedAt), 'MM/dd/yyyy')}
+                    {format(parseISO(updatedAt), 'MM/dd/yyyy - hh:mm:s')}
                   </span>
                 </div>
               </div>

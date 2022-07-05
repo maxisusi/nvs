@@ -33,7 +33,6 @@ export const GET_INVOICE_VIEW = gql`
         lastName
         postalCode
         city
-
         address
       }
       company {

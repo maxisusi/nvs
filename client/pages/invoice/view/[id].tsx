@@ -151,14 +151,19 @@ const invoiceViewPage = (props: $TSFixIt) => {
 
       <div className='relative bg-white drop-shadow-sm w-full p-6 rounded'>
         <div className='absolute text-sm -bottom-7 right-1 text-skin-gray'>
-          Last update: {format(parseISO(updatedAt), 'MM/dd/yyyy')}
+          Last update: {format(parseISO(updatedAt), 'MM/dd/yyyy - hh:mm:ss')}
         </div>
         {/* header */}
         <div className='w-full grid grid-cols-2 gap-y-3 content-between'>
           {/* Logo */}
 
           <div className='col-span-1 '>
-            <img src={company.image} className='h-28' />
+            <img
+              src={
+                'https://s3.cointelegraph.com/storage/uploads/view/a6da22554d20dd7c5884347b01727a12.png'
+              }
+              className='h-20'
+            />
           </div>
 
           <div className='col-span-1 justify-self-end'>
@@ -192,9 +197,14 @@ const invoiceViewPage = (props: $TSFixIt) => {
             </p>
           </div>
           <div className='relative col-span-1 justify-self-end self-end text-right'>
-            <p className='absolute -bottom-6 right-3 text-sm text-skin-gray'>
-              Tax rate: <span className='font-semibold'>+{taxes}%</span>
-            </p>
+            {taxes ? (
+              <p className='absolute -bottom-6 right-3 text-sm text-skin-gray'>
+                Tax rate: <span className='font-semibold'>+{taxes}%</span>
+              </p>
+            ) : (
+              ''
+            )}
+
             <div className='grid grid-cols-2 gap-x-10 bg-slate-50 rounded p-3 border'>
               <p className='text-skin-gray col-span-1'>Invoice date: </p>
               <p className='text-skin-gray font-semibold col-span-1 self-end'>
@@ -245,10 +255,12 @@ const invoiceViewPage = (props: $TSFixIt) => {
           </tbody>
         </table>
 
-        <div className='mt-10'>
-          <h4 className='font-semibold mb-2'>Remarks:</h4>
-          <p className='text-sm italic'>"{remarks}"</p>
-        </div>
+        {remarks && (
+          <div className='mt-10'>
+            <h4 className='font-semibold mb-2'>Remarks:</h4>
+            <p className='text-sm italic'>"{remarks}"</p>
+          </div>
+        )}
       </div>
 
       <Menu
