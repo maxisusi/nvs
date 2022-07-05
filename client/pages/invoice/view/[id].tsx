@@ -1,10 +1,15 @@
-import { GET_INVOICE_VIEW } from '@nvs-shared/graphql/invoice';
+import {
+  GET_INVOICE_VIEW,
+  UPDATE_INVOICE_STATUS,
+} from '@nvs-shared/graphql/invoice';
 import { $TSFixIt } from '@nvs-shared/types/general';
 import { format, parseISO } from 'date-fns';
 import client from 'pages/client.graphql';
-import React from 'react';
+import React, { useState } from 'react';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { useRouter } from 'next/router';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { useMutation } from '@apollo/client';
 
 const invoiceViewPage = (props: $TSFixIt) => {
   const {
@@ -13,13 +18,36 @@ const invoiceViewPage = (props: $TSFixIt) => {
     invoiceNumber,
     customer,
     company,
+    status,
     date,
     total,
     entry,
+    id,
   } = props;
 
   const router = useRouter();
   console.log(props);
+
+  const [invoiceStatus, setInvoiceStatus] = useState(status);
+  const [updateInvoiceStatus] = useMutation(UPDATE_INVOICE_STATUS);
+
+  const handleInvoiceStatus = async (status: string) => {
+    setInvoiceStatus(status);
+
+    try {
+      await updateInvoiceStatus({
+        variables: {
+          updateInvoiceInput: {
+            id,
+            status,
+          },
+        },
+      });
+    } catch (e) {
+      alert('There was an error, please check the console for further details');
+      console.error(e);
+    }
+  };
   return (
     <>
       <div className='flex items-center justify-between mb-10'>
@@ -32,9 +60,20 @@ const invoiceViewPage = (props: $TSFixIt) => {
           </p>
         </div>
         <div className='flex gap-3'>
+          <select
+            onChange={(e) => handleInvoiceStatus(e.target.value)}
+            value={invoiceStatus}
+            className='border-skin-fill bg-transparent rounded'>
+            <option value='draft'>Draft</option>
+            <option value='pending'>Pending</option>
+            <option value='paid'>Paid</option>
+          </select>
           <button className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <PictureAsPdfIcon />
             Download
+          </button>
+          <button className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
+            <MoreHorizIcon />
           </button>
         </div>
       </div>
@@ -55,6 +94,7 @@ const invoiceViewPage = (props: $TSFixIt) => {
             <p className='text-sm text-skin-gray'>
               #{invoiceNumber.split('-')[0]}
             </p>
+            {displayInvoiceStatus(invoiceStatus)}
           </div>
 
           {/* Company details */}
@@ -155,3 +195,27 @@ export async function getServerSideProps({ params }: any) {
     props: data.invoice,
   };
 }
+
+const displayInvoiceStatus = (status: string) => {
+  const statusStyles: any = {
+    draft: {
+      bg: 'bg-slate-300',
+      text: 'text-slate-900',
+    },
+    paid: {
+      bg: 'bg-emerald-300',
+      text: 'text-emerald-900',
+    },
+    pending: {
+      bg: 'bg-amber-300',
+      text: 'text-amber-900',
+    },
+  };
+
+  return (
+    <div
+      className={`${statusStyles[status]?.bg} ${statusStyles[status]?.text} p-0.5 px-2 rounded text-xs uppercase w-fit mt-5`}>
+      {status}
+    </div>
+  );
+};

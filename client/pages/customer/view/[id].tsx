@@ -36,7 +36,6 @@ ChartJS.register(
 );
 
 const customerViewPage = (props: $TSFixIt) => {
-  console.log(props);
   const {
     createdAt,
     updatedAt,
@@ -153,13 +152,13 @@ const customerViewPage = (props: $TSFixIt) => {
                 <div className='text-right'>
                   <h4 className='text-sm'>Pending</h4>
                   <h2 className='text-lg font-bold text-black'>
-                    {draftAndPendingInvoiceTotal}CHF
+                    {draftAndPendingInvoiceTotal.toFixed(2)}CHF
                   </h2>
                 </div>
                 <div className='text-right'>
                   <h4 className='text-sm'>Sales</h4>
                   <h2 className='text-lg font-bold text-green-600'>
-                    {netTotalInvoice}CHF
+                    {netTotalInvoice.toFixed(2)}CHF
                   </h2>
                 </div>
               </div>
