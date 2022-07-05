@@ -150,15 +150,22 @@ const customerViewPage = (props: $TSFixIt) => {
               </div>
               <div className='flex flex-col gap-5'>
                 <div className='text-right'>
-                  <h4 className='text-sm'>Pending</h4>
+                  <h4 className='text-sm'>Pending/Draft</h4>
                   <h2 className='text-lg font-bold text-black'>
                     {draftAndPendingInvoiceTotal.toFixed(2)}CHF
                   </h2>
                 </div>
                 <div className='text-right'>
-                  <h4 className='text-sm'>Sales</h4>
+                  <h4 className='text-sm'>Net Revenue</h4>
                   <h2 className='text-lg font-bold text-green-600'>
                     {netTotalInvoice.toFixed(2)}CHF
+                  </h2>
+                </div>
+                <div className='text-right'>
+                  <h4 className='text-sm'>Total Invoices</h4>
+                  <h2 className='text-lg font-bold text-skin-fill'>
+                    {(netTotalInvoice + draftAndPendingInvoiceTotal).toFixed(2)}
+                    CHF
                   </h2>
                 </div>
               </div>
