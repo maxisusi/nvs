@@ -25,6 +25,13 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import { Invoice } from '@nvs-shared/types/invoice';
+// import InvoicePDF from '@nvs-components/InvoicePDF';
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import dynamic from 'next/dynamic';
+
+const InvoicePDF = dynamic(() => import('@nvs-components/InvoicePDF'), {
+  ssr: false,
+});
 
 const invoiceViewPage = (props: $TSFixIt) => {
   const {
@@ -115,7 +122,8 @@ const invoiceViewPage = (props: $TSFixIt) => {
       handleCloseModal();
     }
   };
-  return (
+
+  const Invoice = () => (
     <>
       <div className=' flex items-center justify-between mb-10'>
         <div>
@@ -135,10 +143,12 @@ const invoiceViewPage = (props: $TSFixIt) => {
             <option value='pending'>Pending</option>
             <option value='paid'>Paid</option>
           </select>
+
           <button className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <PictureAsPdfIcon />
             Download
           </button>
+
           <button
             onClick={handleOpenMenu}
             className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
@@ -146,8 +156,6 @@ const invoiceViewPage = (props: $TSFixIt) => {
           </button>
         </div>
       </div>
-
-      {/* Invoice View */}
 
       <div className='relative bg-white drop-shadow-sm w-full p-6 rounded'>
         <div className='absolute text-sm -bottom-7 right-1 text-skin-gray'>
@@ -339,6 +347,8 @@ const invoiceViewPage = (props: $TSFixIt) => {
       </Modal>
     </>
   );
+
+  return <InvoicePDF invoiceDetails={props} />;
 };
 
 export default invoiceViewPage;

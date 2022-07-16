@@ -17,6 +17,7 @@
     "@mui/material": "^5.8.1",
     "@mui/x-data-grid": "^5.11.1",
     "@mui/x-date-pickers": "^5.0.0-alpha.6",
+    "@react-pdf/renderer": "^2.3.0",
     "@tailwindcss/forms": "^0.5.2",
     "chart.js": "^3.8.0",
     "date-fns": "^2.28.0",
