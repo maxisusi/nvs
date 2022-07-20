@@ -24,6 +24,7 @@ import Avatar from '@mui/material/Avatar';
 import { Invoice } from '@nvs-shared/types/invoice';
 import { useEffect, useMemo, useState } from 'react';
 import { $TSFixIt } from '@nvs-shared/types/general';
+import { useRouter } from 'next/router';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -35,7 +36,6 @@ ChartJS.register(
 );
 
 const customerViewPage = (props: $TSFixIt) => {
-  console.log(props);
   const {
     createdAt,
     updatedAt,
@@ -65,6 +65,7 @@ const customerViewPage = (props: $TSFixIt) => {
     useState(0);
 
   const [netTotalInvoice, setNetTotalInvoice] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const totalDraftAndPending = meta.invoiceTotal.reduce(
@@ -149,15 +150,22 @@ const customerViewPage = (props: $TSFixIt) => {
               </div>
               <div className='flex flex-col gap-5'>
                 <div className='text-right'>
-                  <h4 className='text-sm'>Pending</h4>
+                  <h4 className='text-sm'>Pending/Draft</h4>
                   <h2 className='text-lg font-bold text-black'>
-                    {draftAndPendingInvoiceTotal}CHF
+                    {draftAndPendingInvoiceTotal.toFixed(2)}CHF
                   </h2>
                 </div>
                 <div className='text-right'>
-                  <h4 className='text-sm'>Sales</h4>
+                  <h4 className='text-sm'>Net Revenue</h4>
                   <h2 className='text-lg font-bold text-green-600'>
-                    {netTotalInvoice}CHF
+                    {netTotalInvoice.toFixed(2)}CHF
+                  </h2>
+                </div>
+                <div className='text-right'>
+                  <h4 className='text-sm'>Total Invoices</h4>
+                  <h2 className='text-lg font-bold text-skin-fill'>
+                    {(netTotalInvoice + draftAndPendingInvoiceTotal).toFixed(2)}
+                    CHF
                   </h2>
                 </div>
               </div>
@@ -176,7 +184,7 @@ const customerViewPage = (props: $TSFixIt) => {
                   Last update:
                   <span className='italic font-semibold'>
                     {' '}
-                    {format(parseISO(updatedAt), 'MM/dd/yyyy')}
+                    {format(parseISO(updatedAt), 'MM/dd/yyyy - hh:mm:s')}
                   </span>
                 </div>
               </div>
@@ -239,6 +247,7 @@ const customerViewPage = (props: $TSFixIt) => {
           <div className='h-72 overflow-hidden hover:overflow-y-auto'>
             {invoice!.map((invoice: any) => (
               <div
+                onClick={() => router.push(`/invoice/view/${invoice.id}`)}
                 key={invoice.invoiceNumber}
                 className='flex group justify-between gap-2 text-sm p-3 border border-r-0 border-l-0 border-t-0  hover:bg-slate-100 cursor-pointer'>
                 <div className='flex gap-5'>

@@ -33,6 +33,7 @@ export const GET_CUSTOMER_TO_VIEW = gql`
       }
       invoice {
         invoiceNumber
+        id
         status
         total
         date

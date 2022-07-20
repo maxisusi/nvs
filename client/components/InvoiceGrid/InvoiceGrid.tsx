@@ -77,6 +77,10 @@ const InvoiceGrid = (props: Props) => {
     handleOpenModal();
   };
 
+  const handleOpenViewInvoice = (invoiceId: string) => {
+    router.push(`invoice/view/${invoiceId}`);
+  };
+
   // TODO: Make the invoice editable
   const handleEditInvoice = (customerId: string) => {
     // router.push(`customer/edit/${customerId}`);
@@ -287,7 +291,7 @@ const InvoiceGrid = (props: Props) => {
             </ListItemIcon>
             <ListItemText className='text-skin-base'>Edit</ListItemText>
           </MenuItem>
-          <MenuItem onClick={handleCloseMenu}>
+          <MenuItem onClick={() => handleOpenViewInvoice(cellId as string)}>
             <ListItemIcon>
               <VisibilityOutlinedIcon
                 className='text-skin-gray'

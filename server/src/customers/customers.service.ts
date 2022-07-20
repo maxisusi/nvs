@@ -91,7 +91,7 @@ export class CustomersService {
       // * Push all the total into an array stream
 
       Object.keys(monthList).map((key) => {
-        invoiceTotalDateStream.push(monthList[key]);
+        invoiceTotalDateStream.push(monthList[key].toFixed(2));
       });
 
       return invoiceTotalDateStream;
