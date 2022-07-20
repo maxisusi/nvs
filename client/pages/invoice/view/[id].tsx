@@ -8,7 +8,7 @@ import { $TSFixIt } from '@nvs-shared/types/general';
 import { format, parseISO } from 'date-fns';
 import client from 'pages/client.graphql';
 import React, { useState } from 'react';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+
 import { useRouter } from 'next/router';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useMutation } from '@apollo/client';
@@ -144,10 +144,7 @@ const invoiceViewPage = (props: $TSFixIt) => {
             <option value='paid'>Paid</option>
           </select>
 
-          <button className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
-            <PictureAsPdfIcon />
-            Download
-          </button>
+          <InvoicePDF invoiceDetails={props} />
 
           <button
             onClick={handleOpenMenu}
@@ -348,7 +345,7 @@ const invoiceViewPage = (props: $TSFixIt) => {
     </>
   );
 
-  return <InvoicePDF invoiceDetails={props} />;
+  return <Invoice />;
 };
 
 export default invoiceViewPage;

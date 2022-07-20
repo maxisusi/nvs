@@ -12,6 +12,7 @@ import {
 } from '@react-pdf/renderer';
 import { $TSFixIt } from '@nvs-shared/types/general';
 import { parseISO, format } from 'date-fns';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 // Create styles
 const parentStyles = StyleSheet.create({
@@ -351,20 +352,24 @@ type Props = {
 };
 
 const InvoicePDF = (props: Props) => {
-  return (
-    <PDFViewer style={parentStyles.viewer}>
-      {/* Start of the document*/}
-      <InvoiceParentDoc invoiceDetails={props.invoiceDetails} />
-    </PDFViewer>
-  );
+  // return (
+  //   <PDFViewer style={parentStyles.viewer}>
+  //     {/* Start of the document*/}
+  //     <InvoiceParentDoc invoiceDetails={props.invoiceDetails} />
+  //   </PDFViewer>
+  // );
 
   // * To download version
-  // return (
-  //   <PDFDownloadLink document={<InvoiceDoc />}>
-  //     {/* Start of the document*/}
-  //     <button>Click fils de pute</button>
-  //   </PDFDownloadLink>
-  // );
+  return (
+    <PDFDownloadLink
+      document={<InvoiceParentDoc invoiceDetails={props.invoiceDetails} />}>
+      {/* Start of the document*/}
+      <button className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
+        <PictureAsPdfIcon />
+        Download
+      </button>
+    </PDFDownloadLink>
+  );
 };
 
 export default InvoicePDF;
