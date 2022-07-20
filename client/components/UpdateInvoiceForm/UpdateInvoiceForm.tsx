@@ -42,7 +42,13 @@ export interface EntryAction {
   payload?: any;
 }
 
-const UpdateInvoiceForm = () => {
+type Props = {
+  invoice: any;
+};
+
+const UpdateInvoiceForm = (props: Props) => {
+  console.log(props.invoice);
+
   // * Reducer for Table Entries
   const reducer = (state: typeof initEntryTableValues, action: EntryAction) => {
     switch (action.type) {
@@ -91,8 +97,9 @@ const UpdateInvoiceForm = () => {
   const [invoiceNotes, setInvoiceNotes] = useState<string>('');
   const [customerSelectedId, setCustomerSelectedId] = useState<string | null>(
     null
-  ); // * Graphql Query
+  );
 
+  // * Graphql Query
   const { data } = useQuery(GET_ALL_COMPANIES);
   const [createInvoice] = useMutation(CREATE_INVOICE);
   const router = useRouter();
@@ -157,6 +164,11 @@ const UpdateInvoiceForm = () => {
     const getDueDate = addDays(invoiceDate, getNumberOfDaysFromTerms);
     setDudeDate(getDueDate);
   }, [invoiceTerms, invoiceDate]); // * Calculate the invoice total when the entry list or invoice tax changes
+
+  // * Set the customer when page load
+  useEffect(() => {
+    setCustomerSelectedId(props.invoice.customer.id);
+  }, []);
 
   useMemo(() => {
     const total = entryList
