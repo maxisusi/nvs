@@ -49,6 +49,23 @@ export const GET_INVOICE_VIEW = gql`
   }
 `;
 
+export const GET_INVOICE_TO_EDIT = gql`
+  mutation Mutation($updateInvoiceInput: UpdateInvoiceInput!) {
+    updateInvoice(updateInvoiceInput: $updateInvoiceInput) {
+      dueDate
+      date
+      terms
+      taxes
+      total
+      remarks
+      customer {
+        id
+      }
+      entry
+    }
+  }
+`;
+
 export const DEL_INVOICE = gql`
   mutation Mutation($removeInvoiceId: String!) {
     removeInvoice(id: $removeInvoiceId) {
