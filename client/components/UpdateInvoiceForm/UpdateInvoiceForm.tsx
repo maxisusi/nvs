@@ -9,7 +9,7 @@ import {
   CREATE_INVOICE,
   GET_INVOICES_FOR_GRID,
 } from '@nvs-shared/graphql/invoice';
-import { format, formatISO } from 'date-fns';
+import { format, formatISO, parseISO } from 'date-fns';
 import addDays from 'date-fns/addDays';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useReducer, useState } from 'react';
@@ -47,7 +47,7 @@ type Props = {
 };
 
 const UpdateInvoiceForm = (props: Props) => {
-  console.log(props.invoice.customer);
+  console.log(props.invoice);
 
   // * Reducer for Table Entries
   const reducer = (state: typeof initEntryTableValues, action: EntryAction) => {
@@ -86,14 +86,18 @@ const UpdateInvoiceForm = (props: Props) => {
   const [state, dispatch] = useReducer(reducer, initEntryTableValues);
   const { entryList, isEntryRemovable } = state; // * Invoice States
 
-  const [invoiceTotal, setInvoiceTotal] = useState<number | null>(null);
+  const [invoiceTotal, setInvoiceTotal] = useState<number | null>(
+    props.invoice.total
+  );
   const [invoiceSubTotal, setInvoiceSubTotal] = useState<number | null>(null);
   const [invoiceTerms, setInvoiceTerms] = useState<
     keyof typeof termsList | null
   >(null);
   const [invoiceTax, setInvoiceTax] = useState<number>(0);
-  const [invoiceDate, setInvoiceDate] = useState<Date | null>(null);
-  const [dueDate, setDudeDate] = useState<Date | null>(null);
+  const [invoiceDate, setInvoiceDate] = useState<Date | null>(
+    props.invoice.date
+  );
+  const [dueDate, setDudeDate] = useState<Date | null>(props.invoice.dueDate);
   const [invoiceNotes, setInvoiceNotes] = useState<string>('');
   const [customerSelected, setCustomerSelected] = useState<any>(
     props.invoice.customer
@@ -173,6 +177,7 @@ const UpdateInvoiceForm = (props: Props) => {
     const totalWithTax = total * (invoiceTax / 100) + total;
     setInvoiceTotal(totalWithTax);
   }, [state, invoiceTax]);
+
   return (
     <div>
       <div className='flex items-center justify-between mb-12'>
@@ -241,7 +246,7 @@ const UpdateInvoiceForm = (props: Props) => {
 
             {dueDate && (
               <InvoiceDueDateInput
-                value={format(dueDate, 'MM/dd/yyyy')}
+                value={format(parseISO(dueDate), 'MM/dd/yyyy')}
                 label='Payment Date'
               />
             )}
