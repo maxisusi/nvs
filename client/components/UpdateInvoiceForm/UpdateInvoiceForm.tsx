@@ -47,7 +47,7 @@ type Props = {
 };
 
 const UpdateInvoiceForm = (props: Props) => {
-  console.log(props.invoice);
+  console.log(props.invoice.customer);
 
   // * Reducer for Table Entries
   const reducer = (state: typeof initEntryTableValues, action: EntryAction) => {
@@ -95,8 +95,8 @@ const UpdateInvoiceForm = (props: Props) => {
   const [invoiceDate, setInvoiceDate] = useState<Date | null>(null);
   const [dueDate, setDudeDate] = useState<Date | null>(null);
   const [invoiceNotes, setInvoiceNotes] = useState<string>('');
-  const [customerSelectedId, setCustomerSelectedId] = useState<string | null>(
-    null
+  const [customerSelected, setCustomerSelected] = useState<any>(
+    props.invoice.customer
   );
 
   // * Graphql Query
@@ -165,11 +165,6 @@ const UpdateInvoiceForm = (props: Props) => {
     setDudeDate(getDueDate);
   }, [invoiceTerms, invoiceDate]); // * Calculate the invoice total when the entry list or invoice tax changes
 
-  // * Set the customer when page load
-  useEffect(() => {
-    setCustomerSelectedId(props.invoice.customer.id);
-  }, []);
-
   useMemo(() => {
     const total = entryList
       .map((item: typeof entryList[number]) => item.total)
@@ -190,7 +185,7 @@ const UpdateInvoiceForm = (props: Props) => {
 
         <div className='flex gap-3'>
           <button
-            onClick={() => handleFormSubmit(customerSelectedId as string)}
+            onClick={() => handleFormSubmit(customerSelected as string)}
             className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <SaveAltOutlinedIcon />
             Save Invoice
@@ -199,13 +194,13 @@ const UpdateInvoiceForm = (props: Props) => {
       </div>
 
       <form
-        onSubmit={() => handleFormSubmit(customerSelectedId as string)}
+        onSubmit={() => handleFormSubmit(customerSelected as string)}
         className='h-fit grid grid-cols-12 gap-y-10'>
         <button hidden type='submit'></button>
 
         {/* Customer Selector */}
 
-        <CustomerSearchList selectedCustomerId={setCustomerSelectedId} />
+        <CustomerSearchList selectedCustomer={customerSelected} />
 
         {/* Invoice Details */}
 
