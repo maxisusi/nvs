@@ -133,6 +133,7 @@ export class UpdateInvoiceInput {
     terms?: Nullable<string>;
     taxes?: Nullable<number>;
     total?: Nullable<number>;
+    entry?: Nullable<Entry[]>;
     remarks?: Nullable<string>;
     customerId?: Nullable<string>;
     companyId?: Nullable<string>;

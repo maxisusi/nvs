@@ -9,9 +9,11 @@ import { format, parseISO } from 'date-fns';
 import client from 'pages/client.graphql';
 import React, { useState } from 'react';
 
-import { useRouter } from 'next/router';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useMutation } from '@apollo/client';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import {
   Box,
   ListItemIcon,
@@ -20,13 +22,9 @@ import {
   MenuItem,
   Modal,
 } from '@mui/material';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import { Invoice } from '@nvs-shared/types/invoice';
+import { useRouter } from 'next/router';
 // import InvoicePDF from '@nvs-components/InvoicePDF';
-import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import dynamic from 'next/dynamic';
 
 const InvoicePDF = dynamic(() => import('@nvs-components/InvoicePDF'), {

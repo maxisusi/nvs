@@ -5,7 +5,6 @@ import {
   Text,
   View,
   StyleSheet,
-  PDFViewer,
   PDFDownloadLink,
   Image,
   Font,

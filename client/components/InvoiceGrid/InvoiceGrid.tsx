@@ -81,15 +81,15 @@ const InvoiceGrid = (props: Props) => {
     router.push(`invoice/view/${invoiceId}`);
   };
 
-  // TODO: Make the invoice editable
   const handleEditInvoice = (customerId: string) => {
-    // router.push(`customer/edit/${customerId}`);
+    router.push(`invoice/edit/${customerId}`);
   };
 
   /**
    * Delete invoice in DB and updates the UI
    * @param cellId
    */
+
   const handleDeleteInvoice = async (cellId: string) => {
     try {
       await removeInvoice({

@@ -27,6 +27,7 @@ export const GET_INVOICE_VIEW = gql`
       taxes
       total
       remarks
+      terms
       customer {
         id
         firstName
@@ -45,6 +46,14 @@ export const GET_INVOICE_VIEW = gql`
       createdAt
       updatedAt
       entry
+    }
+  }
+`;
+
+export const UPDATE_INVOICE = gql`
+  mutation Mutation($updateInvoiceInput: UpdateInvoiceInput!) {
+    updateInvoice(updateInvoiceInput: $updateInvoiceInput) {
+      id
     }
   }
 `;
