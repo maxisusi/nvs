@@ -27,6 +27,7 @@ export const GET_INVOICE_VIEW = gql`
       taxes
       total
       remarks
+      terms
       customer {
         id
         firstName

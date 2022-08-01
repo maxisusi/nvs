@@ -47,7 +47,7 @@ type Props = {
 };
 
 const UpdateInvoiceForm = (props: Props) => {
-  console.log(props.invoice);
+  // console.log(props.invoice);
 
   // * Reducer for Table Entries
   const reducer = (state: typeof initEntryTableValues, action: EntryAction) => {
@@ -92,12 +92,13 @@ const UpdateInvoiceForm = (props: Props) => {
   const [invoiceSubTotal, setInvoiceSubTotal] = useState<number | null>(null);
   const [invoiceTerms, setInvoiceTerms] = useState<
     keyof typeof termsList | null
-  >(null);
+  >(props.invoice.terms);
+
   const [invoiceTax, setInvoiceTax] = useState<number>(0);
   const [invoiceDate, setInvoiceDate] = useState<Date | null>(
     props.invoice.date
   );
-  const [dueDate, setDudeDate] = useState<Date | null>(props.invoice.dueDate);
+  const [dueDate, setDudeDate] = useState<Date | null>(null);
   const [invoiceNotes, setInvoiceNotes] = useState<string>('');
   const [customerSelected, setCustomerSelected] = useState<any>(
     props.invoice.customer
@@ -160,12 +161,17 @@ const UpdateInvoiceForm = (props: Props) => {
         type: InvoiceEntryActionKind.FREEZE_REMOVE,
       });
     }
-  }, [entryList]); // * Set the due date when the invoice date and terms is defined
+  }, [entryList]);
+
+  // * Set the due date when the invoice date and terms is defined
 
   useEffect(() => {
     if (!invoiceTerms || !invoiceDate) return setDudeDate(null);
     const getNumberOfDaysFromTerms = parseInt(invoiceTerms.split('_')[1]);
-    const getDueDate = addDays(invoiceDate, getNumberOfDaysFromTerms);
+
+    const getDueDate = addDays(parseISO(invoiceDate), getNumberOfDaysFromTerms);
+
+    console.log(getDueDate);
     setDudeDate(getDueDate);
   }, [invoiceTerms, invoiceDate]); // * Calculate the invoice total when the entry list or invoice tax changes
 
@@ -239,6 +245,7 @@ const UpdateInvoiceForm = (props: Props) => {
               />
             </LocalizationProvider>
             <SelectInvoiceTerms
+              selectedTerms={invoiceTerms}
               setTermValue={setInvoiceTerms}
               termValueList={termsList}
               label='Terms'
@@ -246,7 +253,7 @@ const UpdateInvoiceForm = (props: Props) => {
 
             {dueDate && (
               <InvoiceDueDateInput
-                value={format(parseISO(dueDate), 'MM/dd/yyyy')}
+                value={format(dueDate, 'MM/dd/yyyy')}
                 label='Payment Date'
               />
             )}
@@ -373,12 +380,13 @@ const termsList = {
 type SelectInput = {
   label: string;
   onError?: any;
+  selectedTerms: any;
   termValueList: typeof termsList;
   setTermValue: (selectedTerm: keyof typeof termsList) => void;
 };
 
 const SelectInvoiceTerms = (props: SelectInput) => {
-  const { label, onError, termValueList, setTermValue } = props;
+  const { label, onError, termValueList, setTermValue, selectedTerms } = props;
   return (
     <div className={`h-50 'col-span-1`}>
       <div className='flex flex-col gap-1 w-full'>
@@ -388,6 +396,7 @@ const SelectInvoiceTerms = (props: SelectInput) => {
         </label>
 
         <select
+          value={selectedTerms}
           onChange={(e) =>
             setTermValue(e.target.value as keyof typeof termsList)
           }
