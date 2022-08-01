@@ -102,7 +102,7 @@ const UpdateInvoiceForm = (props: Props) => {
     keyof typeof termsList | null
   >(props.invoice.terms);
 
-  const [invoiceTax, setInvoiceTax] = useState<number>(0);
+  const [invoiceTax, setInvoiceTax] = useState<number>(props.invoice.taxes);
   const [invoiceDate, setInvoiceDate] = useState<Date | null>(
     props.invoice.date
   );
@@ -342,6 +342,7 @@ const UpdateInvoiceForm = (props: Props) => {
               Taxes
             </h3>
             <select
+              value={invoiceTax}
               onChange={(e) => setInvoiceTax(parseFloat(e.target.value))}
               className='text-sm font-semibold border-none py-0 '>
               <option value={0.0}>-</option>
