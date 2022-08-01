@@ -51,8 +51,6 @@ const UpdateInvoiceForm = (props: Props) => {
       props.invoice.entry.length === 0 ? [emptyEntry()] : props.invoice.entry,
   };
 
-  console.log(props.invoice);
-
   // * Reducer for Table Entries
   const reducer = (state: typeof initEntryTableValues, action: EntryAction) => {
     switch (action.type) {
@@ -146,23 +144,25 @@ const UpdateInvoiceForm = (props: Props) => {
       remarks: invoiceNotes,
     };
 
-    try {
-      await createInvoice({
-        variables: {
-          createInvoiceInput: invoiceObject,
-        },
-        refetchQueries: () => [
-          {
-            query: GET_INVOICES_FOR_GRID,
-          },
-        ],
-      }).then(() => {
-        router.push('/invoice');
-      });
-    } catch (e) {
-      alert('There was an error, please check the console for further details');
-      console.error(e);
-    }
+    console.log(invoiceObject);
+
+    // try {
+    //   await createInvoice({
+    //     variables: {
+    //       createInvoiceInput: invoiceObject,
+    //     },
+    //     refetchQueries: () => [
+    //       {
+    //         query: GET_INVOICES_FOR_GRID,
+    //       },
+    //     ],
+    //   }).then(() => {
+    //     router.push('/invoice');
+    //   });
+    // } catch (e) {
+    //   alert('There was an error, please check the console for further details');
+    //   console.error(e);
+    // }
   }; // * Freeze the remove button if the number of entry is equal to 1;
 
   useEffect(() => {
@@ -212,7 +212,7 @@ const UpdateInvoiceForm = (props: Props) => {
             onClick={() => handleFormSubmit(customerSelected as string)}
             className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <SaveAltOutlinedIcon />
-            Save Invoice
+            Update Invoice
           </button>
         </div>
       </div>
@@ -235,7 +235,7 @@ const UpdateInvoiceForm = (props: Props) => {
                 label='Basic example'
                 value={invoiceDate}
                 onChange={(newValue) => {
-                  setInvoiceDate(newValue);
+                  setInvoiceDate(formatISO(newValue));
                 }}
                 renderInput={({ inputRef, inputProps, InputProps }) => (
                   <div className='flex flex-col gap-1 w-full'>
