@@ -50,19 +50,10 @@ export const GET_INVOICE_VIEW = gql`
   }
 `;
 
-export const GET_INVOICE_TO_EDIT = gql`
+export const UPDATE_INVOICE = gql`
   mutation Mutation($updateInvoiceInput: UpdateInvoiceInput!) {
     updateInvoice(updateInvoiceInput: $updateInvoiceInput) {
-      dueDate
-      date
-      terms
-      taxes
-      total
-      remarks
-      customer {
-        id
-      }
-      entry
+      id
     }
   }
 `;

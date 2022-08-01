@@ -65,10 +65,22 @@ export class InvoicesService {
     });
   }
 
-  update(updateInvoiceInput: Prisma.InvoiceUncheckedUpdateInput) {
+  update(updateInvoiceInput: any) {
     return this.prisma.invoice.update({
+      include: { entry: true },
       where: { id: updateInvoiceInput.id as string },
-      data: updateInvoiceInput,
+      data: {
+        date: updateInvoiceInput.date,
+        dueDate: updateInvoiceInput.dueDate,
+        status: updateInvoiceInput.status,
+        taxes: updateInvoiceInput.taxes,
+        total: updateInvoiceInput.total,
+        remarks: updateInvoiceInput.remarks,
+        entry: {
+          deleteMany: {},
+          createMany: { data: updateInvoiceInput.entry },
+        },
+      },
     });
   }
 

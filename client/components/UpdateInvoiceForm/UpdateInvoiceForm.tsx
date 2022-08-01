@@ -8,6 +8,7 @@ import { GET_ALL_COMPANIES } from '@nvs-shared/graphql/companies';
 import {
   CREATE_INVOICE,
   GET_INVOICES_FOR_GRID,
+  UPDATE_INVOICE,
 } from '@nvs-shared/graphql/invoice';
 import { format, formatISO, parseISO } from 'date-fns';
 import addDays from 'date-fns/addDays';
@@ -114,7 +115,7 @@ const UpdateInvoiceForm = (props: Props) => {
 
   // * Graphql Query
   const { data } = useQuery(GET_ALL_COMPANIES);
-  const [createInvoice] = useMutation(CREATE_INVOICE);
+  const [updateInvoice] = useMutation(UPDATE_INVOICE);
   const router = useRouter();
 
   const handleFormSubmit = async (customerSelected: string) => {
@@ -132,37 +133,35 @@ const UpdateInvoiceForm = (props: Props) => {
     }); //TODO : Update type definition of invoice
 
     const invoiceObject = {
-      companyId: data.companies[0].id,
-      customerId: customerSelected,
       date: invoiceDate,
       dueDate: formatISO(dueDate as Date),
-      terms: invoiceTerms,
       status: 'draft',
-      entryList: formatAllEntries,
+      entry: formatAllEntries,
       taxes: invoiceTax,
       total: invoiceTotal,
       remarks: invoiceNotes,
+      id: props.invoice.id,
     };
 
     console.log(invoiceObject);
 
-    // try {
-    //   await createInvoice({
-    //     variables: {
-    //       createInvoiceInput: invoiceObject,
-    //     },
-    //     refetchQueries: () => [
-    //       {
-    //         query: GET_INVOICES_FOR_GRID,
-    //       },
-    //     ],
-    //   }).then(() => {
-    //     router.push('/invoice');
-    //   });
-    // } catch (e) {
-    //   alert('There was an error, please check the console for further details');
-    //   console.error(e);
-    // }
+    try {
+      await updateInvoice({
+        variables: {
+          updateInvoiceInput: invoiceObject,
+        },
+        refetchQueries: () => [
+          {
+            query: GET_INVOICES_FOR_GRID,
+          },
+        ],
+      }).then(() => {
+        router.push('/invoice');
+      });
+    } catch (e) {
+      alert('There was an error, please check the console for further details');
+      console.error(e);
+    }
   }; // * Freeze the remove button if the number of entry is equal to 1;
 
   useEffect(() => {

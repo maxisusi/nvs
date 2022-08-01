@@ -47,6 +47,7 @@ input UpdateInvoiceInput {
   terms: String
   taxes: Float
   total: Float
+  entry: [Entry!]
   remarks: String
   customerId: String
   companyId: String
