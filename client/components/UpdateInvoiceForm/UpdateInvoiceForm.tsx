@@ -25,6 +25,7 @@ export enum InvoiceEntryActionKind {
   REMOVE = 'REMOVE_ENTRY',
   ADD = 'ADD_ENTRY',
   FREEZE_REMOVE = 'NOT_REMOVABLE',
+  UNFREEZE_REMOVE = 'REMOVABLE',
   UPDATE = 'UPDATE_ENTRY',
 }
 
@@ -73,6 +74,10 @@ const UpdateInvoiceForm = (props: Props) => {
 
       case InvoiceEntryActionKind.FREEZE_REMOVE: {
         return { ...state, isEntryRemovable: false };
+      }
+
+      case InvoiceEntryActionKind.UNFREEZE_REMOVE: {
+        return { ...state, isEntryRemovable: true };
       }
 
       case InvoiceEntryActionKind.UPDATE: {
@@ -164,6 +169,10 @@ const UpdateInvoiceForm = (props: Props) => {
     if (entryList.length === 1) {
       dispatch({
         type: InvoiceEntryActionKind.FREEZE_REMOVE,
+      });
+    } else {
+      dispatch({
+        type: InvoiceEntryActionKind.UNFREEZE_REMOVE,
       });
     }
   }, [entryList]);
