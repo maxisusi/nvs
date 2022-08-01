@@ -6,20 +6,13 @@ type Props = {
   dispatch: (arg: EntryAction) => void;
   id: string;
   isRemovable: boolean;
+  data: any;
 };
 
 const TableRecord = (props: Props) => {
-  const { id, dispatch, isRemovable } = props;
+  const { id, dispatch, isRemovable, data } = props;
 
-  const initialState = {
-    id: id,
-    description: '',
-    quantity: 0,
-    rate: 0,
-    total: 0.0,
-  };
-
-  const [record, setRecord] = useState(initialState);
+  const [record, setRecord] = useState(data);
 
   // * Updates the current state of all entries
   useEffect(() => {
@@ -41,6 +34,7 @@ const TableRecord = (props: Props) => {
     <div className='pt-5 pb-8 grid grid-cols-8 gap-x-6 gap-y-2 col-span-full border border-r-0 border-l-0 border-t-0 '>
       <div className='col-span-4 pl-12'>
         <input
+          value={data.description}
           onChange={(event) =>
             setRecord((prev) => {
               return {
@@ -56,6 +50,7 @@ const TableRecord = (props: Props) => {
 
       <div className='col-start-5'>
         <input
+          value={data?.quantity}
           min={0}
           onChange={(event) =>
             setRecord((prev) => {
@@ -72,6 +67,7 @@ const TableRecord = (props: Props) => {
 
       <div className=' col-start-6 '>
         <input
+          value={data?.rate}
           min={0}
           onChange={(event) =>
             setRecord((prev) => {

@@ -17,37 +17,40 @@ import { v4 as uuidv4 } from 'uuid';
 import CustomerSearchList from './CustomerSearchList';
 import TableRecord from './TableRecord';
 
-const emptyEntry = () => {
-  return {
-    id: uuidv4(),
-    description: '',
-    quantity: 0,
-    rate: 0,
-    total: 0,
-  };
+type Props = {
+  invoice: any;
 };
 
-const initEntryTableValues = {
-  isEntryRemovable: false,
-  entryList: [emptyEntry()],
-};
 export enum InvoiceEntryActionKind {
   REMOVE = 'REMOVE_ENTRY',
   ADD = 'ADD_ENTRY',
   FREEZE_REMOVE = 'NOT_REMOVABLE',
   UPDATE = 'UPDATE_ENTRY',
 }
+
 export interface EntryAction {
   type: InvoiceEntryActionKind;
   payload?: any;
 }
 
-type Props = {
-  invoice: any;
-};
-
 const UpdateInvoiceForm = (props: Props) => {
-  // console.log(props.invoice);
+  const emptyEntry = () => {
+    return {
+      id: uuidv4(),
+      description: '',
+      quantity: 0,
+      rate: 0,
+      total: 0,
+    };
+  };
+
+  const initEntryTableValues = {
+    isEntryRemovable: false,
+    entryList:
+      props.invoice.entry.length === 0 ? [emptyEntry()] : props.invoice.entry,
+  };
+
+  console.log(props.invoice);
 
   // * Reducer for Table Entries
   const reducer = (state: typeof initEntryTableValues, action: EntryAction) => {
@@ -99,7 +102,9 @@ const UpdateInvoiceForm = (props: Props) => {
     props.invoice.date
   );
   const [dueDate, setDudeDate] = useState<Date | null>(null);
-  const [invoiceNotes, setInvoiceNotes] = useState<string>('');
+  const [invoiceNotes, setInvoiceNotes] = useState<string>(
+    props.invoice.remarks
+  );
   const [customerSelected, setCustomerSelected] = useState<any>(
     props.invoice.customer
   );
@@ -171,7 +176,6 @@ const UpdateInvoiceForm = (props: Props) => {
 
     const getDueDate = addDays(parseISO(invoiceDate), getNumberOfDaysFromTerms);
 
-    console.log(getDueDate);
     setDudeDate(getDueDate);
   }, [invoiceTerms, invoiceDate]); // * Calculate the invoice total when the entry list or invoice tax changes
 
@@ -287,6 +291,7 @@ const UpdateInvoiceForm = (props: Props) => {
                 isRemovable={isEntryRemovable}
                 dispatch={dispatch}
                 id={item.id}
+                data={item}
               />
             ))}
             {/* Add new Item */}
@@ -307,6 +312,7 @@ const UpdateInvoiceForm = (props: Props) => {
         <div className='col-span-4 h-14 relative'>
           <h3 className='font-semibold absolute -top-7'>Notes</h3>
           <textarea
+            value={invoiceNotes}
             onChange={(e) => setInvoiceNotes(e.target.value)}
             className='w-full h-32 rounded border border-gray-200 resize-none'
           />

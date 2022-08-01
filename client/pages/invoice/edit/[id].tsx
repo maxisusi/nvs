@@ -6,17 +6,18 @@ import React from 'react';
 type Props = {};
 
 const editInvoice = (props: Props) => {
+  console.log(props);
   return <UpdateInvoiceForm invoice={props} />;
 };
 
 export default editInvoice;
 
 export async function getServerSideProps({ params }: any) {
-  const invoiceId = params.id;
+  const id = params.id;
 
   const { data, error } = await client.query({
     query: GET_INVOICE_VIEW,
-    variables: { invoiceId: invoiceId },
+    variables: { invoiceId: id },
     fetchPolicy: 'network-only',
   });
 
