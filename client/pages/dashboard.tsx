@@ -37,7 +37,9 @@ const getMonthsAbbreviation = () => {
 };
 
 const Dashboard: NextPage = () => {
-  const { data, loading, error } = useQuery(GET_DASHBOARD_STATS);
+  const { data, loading, error } = useQuery(GET_DASHBOARD_STATS, {
+    fetchPolicy: 'cache-and-network',
+  });
   const [headerData, setHeaderData] = useState({
     sumInvoices: 0,
     customerCount: 0,
@@ -54,7 +56,6 @@ const Dashboard: NextPage = () => {
     }
   }, [loading]);
 
-  console.log(data);
   return (
     <div>
       <div className='grid grid-cols-12 gap-3'>

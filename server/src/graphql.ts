@@ -178,6 +178,10 @@ export abstract class IQuery {
     abstract sumAllInvoices(): number | Promise<number>;
 
     abstract invoiceCount(): number | Promise<number>;
+
+    abstract getPendingInvoicesStream(): Nullable<number[]> | Promise<Nullable<number[]>>;
+
+    abstract getNetInvoicesStream(): Nullable<number[]> | Promise<Nullable<number[]>>;
 }
 
 export abstract class IMutation {

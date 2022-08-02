@@ -59,6 +59,8 @@ type Query {
   invoice(id: String!): Invoice
   sumAllInvoices: Float!
   invoiceCount: Int!
+  getPendingInvoicesStream: [Float!]
+  getNetInvoicesStream: [Float!]
 }
 
 type Mutation {
