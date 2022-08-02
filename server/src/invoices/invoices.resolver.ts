@@ -19,6 +19,11 @@ export class InvoicesResolver {
     return this.invoicesService.findAll();
   }
 
+  @Query('sumAllInvoices')
+  getSum() {
+    return this.invoicesService.getSum();
+  }
+
   @Query('invoice')
   findOne(@Args('id') id: string) {
     return this.invoicesService.findOne(id);

@@ -57,6 +57,7 @@ input UpdateInvoiceInput {
 type Query {
   invoices: [Invoice]!
   invoice(id: String!): Invoice
+  sumAllInvoices: Float!
 }
 
 type Mutation {

@@ -58,6 +58,16 @@ export class InvoicesService {
     });
   }
 
+  async getSum() {
+    const sum = await this.prisma.invoice.aggregate({
+      _sum: {
+        total: true,
+      },
+    });
+
+    return sum._sum.total;
+  }
+
   findOne(id: string) {
     return this.prisma.invoice.findUnique({
       where: { id },
