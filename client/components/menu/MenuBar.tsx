@@ -2,18 +2,26 @@ import React, { useEffect, useState } from 'react';
 import MenuList from './MenuList/MenuList';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import { useRouter } from 'next/router';
 
 const menu = [
   {
     id: 0,
+    name: 'dashboard',
+    icon: <DashboardOutlinedIcon />,
+    link: `/dashboard`,
+    active: false,
+  },
+  {
+    id: 1,
     name: 'customers',
     icon: <AccountCircleOutlinedIcon />,
     link: `/customer`,
     active: false,
   },
   {
-    id: 1,
+    id: 2,
     name: 'invoices',
     icon: <AssessmentOutlinedIcon />,
     link: `/invoice`,
