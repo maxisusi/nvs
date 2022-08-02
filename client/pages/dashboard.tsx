@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -16,6 +16,8 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import Months from '../utils/months.json';
+import { useQuery } from '@apollo/client';
+import { GET_DASHBOARD_STATS } from '@nvs-shared/graphql/dashboard';
 
 ChartJS.register(
   CategoryScale,
@@ -35,13 +37,33 @@ const getMonthsAbbreviation = () => {
 };
 
 const Dashboard: NextPage = () => {
+  const { data, loading, error } = useQuery(GET_DASHBOARD_STATS);
+  const [headerData, setHeaderData] = useState({
+    sumInvoices: 0,
+    customerCount: 0,
+    invoiceCount: 0,
+  });
+
+  useEffect(() => {
+    if (!loading) {
+      setHeaderData({
+        sumInvoices: data.sumAllInvoices,
+        customerCount: data.customerCount,
+        invoiceCount: data.invoiceCount,
+      });
+    }
+  }, [loading]);
+
+  console.log(data);
   return (
     <div>
       <div className='grid grid-cols-12 gap-3'>
         <div className='bg-white drop-shadow-sm col-span-4 p-3 rounded'>
           <div className='flex justify-between items-center'>
             <div>
-              <h3 className='font-bold text-3xl mb-2'>CHF 2'493.20</h3>
+              <h3 className='font-bold text-3xl mb-2'>
+                CHF {headerData.sumInvoices}
+              </h3>
               <h5 className='text-skin-gray text-xl'>Amount due</h5>
             </div>
 
@@ -53,7 +75,9 @@ const Dashboard: NextPage = () => {
         <div className='bg-white drop-shadow-sm col-span-4 p-3'>
           <div className='flex justify-between items-center'>
             <div>
-              <h3 className='font-bold text-3xl mb-2'>300</h3>
+              <h3 className='font-bold text-3xl mb-2'>
+                {headerData.customerCount}
+              </h3>
               <h5 className='text-skin-gray text-xl'>Customers</h5>
             </div>
 
@@ -66,7 +90,9 @@ const Dashboard: NextPage = () => {
         <div className='bg-white drop-shadow-sm col-span-4 p-3'>
           <div className='flex justify-between items-center'>
             <div>
-              <h3 className='font-bold text-3xl mb-2'>503</h3>
+              <h3 className='font-bold text-3xl mb-2'>
+                {headerData.invoiceCount}
+              </h3>
               <h5 className='text-skin-gray text-xl'>Invoices</h5>
             </div>
 
