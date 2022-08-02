@@ -64,7 +64,6 @@ export class InvoicesService {
         total: true,
       },
     });
-
     return sum._sum.total;
   }
 

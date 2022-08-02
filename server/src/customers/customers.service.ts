@@ -20,6 +20,10 @@ export class CustomersService {
     });
   }
 
+  customerCount() {
+    return this.prisma.customer.count({});
+  }
+
   async findOne(id: string) {
     const customerData = await this.prisma.customer.findUnique({
       where: { id },

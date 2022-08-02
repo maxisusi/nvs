@@ -165,6 +165,8 @@ export abstract class IQuery {
 
     abstract customer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
 
+    abstract customerCount(): number | Promise<number>;
+
     abstract entries(): Nullable<Entry>[] | Promise<Nullable<Entry>[]>;
 
     abstract entry(id: string): Nullable<Entry> | Promise<Nullable<Entry>>;

@@ -69,6 +69,7 @@ input OrderByParams {
 type Query {
   customers(orderBy: OrderByParams): [Customer]!
   customer(id: String!): Customer
+  customerCount: Int!
 }
 
 type Mutation {
