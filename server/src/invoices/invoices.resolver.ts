@@ -29,6 +29,11 @@ export class InvoicesResolver {
     return this.invoicesService.findOne(id);
   }
 
+  @Query('invoiceCount')
+  getCount() {
+    return this.invoicesService.getInvoiceCount();
+  }
+
   @Mutation('updateInvoice')
   update(
     @Args('updateInvoiceInput')

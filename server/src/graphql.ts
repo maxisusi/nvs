@@ -176,6 +176,8 @@ export abstract class IQuery {
     abstract invoice(id: string): Nullable<Invoice> | Promise<Nullable<Invoice>>;
 
     abstract sumAllInvoices(): number | Promise<number>;
+
+    abstract invoiceCount(): number | Promise<number>;
 }
 
 export abstract class IMutation {

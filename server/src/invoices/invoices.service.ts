@@ -67,6 +67,10 @@ export class InvoicesService {
     return sum._sum.total;
   }
 
+  getInvoiceCount() {
+    return this.prisma.invoice.count({});
+  }
+
   findOne(id: string) {
     return this.prisma.invoice.findUnique({
       where: { id },

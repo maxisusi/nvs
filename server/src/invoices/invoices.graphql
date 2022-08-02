@@ -58,6 +58,7 @@ type Query {
   invoices: [Invoice]!
   invoice(id: String!): Invoice
   sumAllInvoices: Float!
+  invoiceCount: Int!
 }
 
 type Mutation {
