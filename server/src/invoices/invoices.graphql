@@ -57,10 +57,15 @@ input UpdateInvoiceInput {
 type Query {
   invoices: [Invoice]!
   invoice(id: String!): Invoice
+  sumAllInvoices: Float!
+  invoiceCount: Int!
+  getPendingInvoicesStream: [Float!]
+  getNetInvoicesStream: [Float!]
 }
 
 type Mutation {
   createInvoice(createInvoiceInput: CreateInvoiceInput!): Invoice!
   updateInvoice(updateInvoiceInput: UpdateInvoiceInput!): Invoice!
+  updateStatus(updateInvoiceInput: UpdateInvoiceInput!): Invoice!
   removeInvoice(id: String!): Invoice
 }

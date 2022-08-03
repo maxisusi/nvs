@@ -26,6 +26,11 @@ export class CustomersResolver {
     return this.customersService.findOne(id);
   }
 
+  @Query('customerCount')
+  customerCount() {
+    return this.customersService.customerCount();
+  }
+
   @Mutation('updateCustomer')
   update(
     @Args('updateCustomerInput')

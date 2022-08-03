@@ -165,6 +165,8 @@ export abstract class IQuery {
 
     abstract customer(id: string): Nullable<Customer> | Promise<Nullable<Customer>>;
 
+    abstract customerCount(): number | Promise<number>;
+
     abstract entries(): Nullable<Entry>[] | Promise<Nullable<Entry>[]>;
 
     abstract entry(id: string): Nullable<Entry> | Promise<Nullable<Entry>>;
@@ -172,6 +174,14 @@ export abstract class IQuery {
     abstract invoices(): Nullable<Invoice>[] | Promise<Nullable<Invoice>[]>;
 
     abstract invoice(id: string): Nullable<Invoice> | Promise<Nullable<Invoice>>;
+
+    abstract sumAllInvoices(): number | Promise<number>;
+
+    abstract invoiceCount(): number | Promise<number>;
+
+    abstract getPendingInvoicesStream(): Nullable<number[]> | Promise<Nullable<number[]>>;
+
+    abstract getNetInvoicesStream(): Nullable<number[]> | Promise<Nullable<number[]>>;
 }
 
 export abstract class IMutation {
@@ -202,6 +212,8 @@ export abstract class IMutation {
     abstract createInvoice(createInvoiceInput: CreateInvoiceInput): Invoice | Promise<Invoice>;
 
     abstract updateInvoice(updateInvoiceInput: UpdateInvoiceInput): Invoice | Promise<Invoice>;
+
+    abstract updateStatus(updateInvoiceInput: UpdateInvoiceInput): Invoice | Promise<Invoice>;
 
     abstract removeInvoice(id: string): Nullable<Invoice> | Promise<Nullable<Invoice>>;
 }

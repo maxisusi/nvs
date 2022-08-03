@@ -19,17 +19,45 @@ export class InvoicesResolver {
     return this.invoicesService.findAll();
   }
 
+  @Query('sumAllInvoices')
+  getSum() {
+    return this.invoicesService.getSum();
+  }
+
+  @Query('getPendingInvoicesStream')
+  getPendingInvoice() {
+    return this.invoicesService.getPendingInvoiceStream();
+  }
+
+  @Query('getNetInvoicesStream')
+  getNetInvoicesStream() {
+    return this.invoicesService.getNetInvoicesStream();
+  }
+
   @Query('invoice')
   findOne(@Args('id') id: string) {
     return this.invoicesService.findOne(id);
   }
 
+  @Query('invoiceCount')
+  getCount() {
+    return this.invoicesService.getInvoiceCount();
+  }
+
   @Mutation('updateInvoice')
-  update(
+  updateInvoice(
     @Args('updateInvoiceInput')
     updateInvoiceInput: Prisma.InvoiceUncheckedUpdateInput,
   ) {
-    return this.invoicesService.update(updateInvoiceInput);
+    return this.invoicesService.updateInvoice(updateInvoiceInput);
+  }
+
+  @Mutation('updateStatus')
+  updateStatus(
+    @Args('updateInvoiceInput')
+    updateInvoiceInput: Prisma.InvoiceUncheckedUpdateInput,
+  ) {
+    return this.invoicesService.updateStatus(updateInvoiceInput);
   }
 
   @Mutation('removeInvoice')
