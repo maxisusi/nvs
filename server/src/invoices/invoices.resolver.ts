@@ -24,6 +24,16 @@ export class InvoicesResolver {
     return this.invoicesService.getSum();
   }
 
+  @Query('getPendingInvoicesStream')
+  getPendingInvoice() {
+    return this.invoicesService.getPendingInvoiceStream();
+  }
+
+  @Query('getNetInvoicesStream')
+  getNetInvoicesStream() {
+    return this.invoicesService.getNetInvoicesStream();
+  }
+
   @Query('invoice')
   findOne(@Args('id') id: string) {
     return this.invoicesService.findOne(id);
