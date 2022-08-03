@@ -175,8 +175,8 @@ const Dashboard: NextPage = () => {
               <div className='text-right'>
                 <h4 className='text-xs'>Total Invoices</h4>
                 <h2 className='text-2xl font-bold text-skin-fill'>
-                  {(
-                    totalInvoices.totalPending - totalInvoices.totalNet
+                  {Math.abs(
+                    totalInvoices.totalNet - totalInvoices.totalPending
                   ).toFixed(2)}
                   CHF
                 </h2>
