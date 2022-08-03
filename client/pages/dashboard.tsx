@@ -40,10 +40,20 @@ const Dashboard: NextPage = () => {
   const { data, loading, error } = useQuery(GET_DASHBOARD_STATS, {
     fetchPolicy: 'cache-and-network',
   });
+
+  console.log(data);
   const [headerData, setHeaderData] = useState({
     sumInvoices: 0,
     customerCount: 0,
     invoiceCount: 0,
+    pendingInvoiceStream: [0],
+    netInvoiceStream: [0],
+  });
+
+  const [totalInvoices, setTotalInvoices] = useState({
+    totalNet: 0,
+    totalPending: 0,
+    netRevenu: 0,
   });
 
   useEffect(() => {
@@ -52,9 +62,23 @@ const Dashboard: NextPage = () => {
         sumInvoices: data.sumAllInvoices,
         customerCount: data.customerCount,
         invoiceCount: data.invoiceCount,
+        pendingInvoiceStream: data.getPendingInvoicesStream,
+        netInvoiceStream: data.getNetInvoicesStream,
       });
     }
   }, [loading]);
+
+  useEffect(() => {
+    setTotalInvoices({
+      totalPending: headerData?.pendingInvoiceStream.reduce(
+        (acc, value) => acc + value
+      ),
+      totalNet: headerData?.netInvoiceStream.reduce(
+        (acc, value) => acc + value
+      ),
+      netRevenu: 0,
+    });
+  }, [headerData]);
 
   return (
     <div>
@@ -124,12 +148,12 @@ const Dashboard: NextPage = () => {
                   datasets: [
                     {
                       label: 'Pending Invoices',
-                      data: [],
+                      data: headerData.pendingInvoiceStream,
                       borderColor: 'black',
                     },
                     {
                       label: 'Net Revenue',
-                      data: [],
+                      data: headerData.netInvoiceStream,
                       borderColor: 'green',
                     },
                   ],
@@ -139,15 +163,24 @@ const Dashboard: NextPage = () => {
             <div className='flex flex-col gap-5'>
               <div className='text-right'>
                 <h4 className='text-xs'>Pending/Draft</h4>
-                <h2 className='text-2xl font-bold text-black'>50CHF</h2>
+                <h2 className='text-2xl font-bold text-black'>
+                  {totalInvoices.totalPending}CHF
+                </h2>
               </div>
               <div className='text-right'>
                 <h4 className='text-xs'>Net Revenue</h4>
-                <h2 className='text-2xl font-bold text-green-600'>50CHF</h2>
+                <h2 className='text-2xl font-bold text-green-600'>
+                  {totalInvoices.totalNet}CHF
+                </h2>
               </div>
               <div className='text-right'>
                 <h4 className='text-xs'>Total Invoices</h4>
-                <h2 className='text-2xl font-bold text-skin-fill'>50 CHF</h2>
+                <h2 className='text-2xl font-bold text-skin-fill'>
+                  {(
+                    totalInvoices.totalPending - totalInvoices.totalNet
+                  ).toFixed(2)}
+                  CHF
+                </h2>
               </div>
             </div>
           </div>

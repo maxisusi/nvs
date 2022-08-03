@@ -5,5 +5,7 @@ export const GET_DASHBOARD_STATS = gql`
     sumAllInvoices
     customerCount
     invoiceCount
+    getNetInvoicesStream
+    getPendingInvoicesStream
   }
 `;
