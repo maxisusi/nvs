@@ -76,7 +76,7 @@ export const CREATE_INVOICE = gql`
 
 export const UPDATE_INVOICE_STATUS = gql`
   mutation Mutation($updateInvoiceInput: UpdateInvoiceInput!) {
-    updateInvoice(updateInvoiceInput: $updateInvoiceInput) {
+    updateStatus(updateInvoiceInput: $updateInvoiceInput) {
       status
     }
   }

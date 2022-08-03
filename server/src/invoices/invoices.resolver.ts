@@ -45,11 +45,19 @@ export class InvoicesResolver {
   }
 
   @Mutation('updateInvoice')
-  update(
+  updateInvoice(
     @Args('updateInvoiceInput')
     updateInvoiceInput: Prisma.InvoiceUncheckedUpdateInput,
   ) {
-    return this.invoicesService.update(updateInvoiceInput);
+    return this.invoicesService.updateInvoice(updateInvoiceInput);
+  }
+
+  @Mutation('updateStatus')
+  updateStatus(
+    @Args('updateInvoiceInput')
+    updateInvoiceInput: Prisma.InvoiceUncheckedUpdateInput,
+  ) {
+    return this.invoicesService.updateStatus(updateInvoiceInput);
   }
 
   @Mutation('removeInvoice')

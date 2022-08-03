@@ -66,5 +66,6 @@ type Query {
 type Mutation {
   createInvoice(createInvoiceInput: CreateInvoiceInput!): Invoice!
   updateInvoice(updateInvoiceInput: UpdateInvoiceInput!): Invoice!
+  updateStatus(updateInvoiceInput: UpdateInvoiceInput!): Invoice!
   removeInvoice(id: String!): Invoice
 }

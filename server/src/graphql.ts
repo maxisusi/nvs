@@ -213,6 +213,8 @@ export abstract class IMutation {
 
     abstract updateInvoice(updateInvoiceInput: UpdateInvoiceInput): Invoice | Promise<Invoice>;
 
+    abstract updateStatus(updateInvoiceInput: UpdateInvoiceInput): Invoice | Promise<Invoice>;
+
     abstract removeInvoice(id: string): Nullable<Invoice> | Promise<Nullable<Invoice>>;
 }
 

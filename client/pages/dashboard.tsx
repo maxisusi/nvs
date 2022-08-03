@@ -41,7 +41,6 @@ const Dashboard: NextPage = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  console.log(data);
   const [headerData, setHeaderData] = useState({
     sumInvoices: 0,
     customerCount: 0,
