@@ -70,11 +70,13 @@ const MenuBar = () => {
 
   return (
     <div className='w-64 bg-white border-r border-gray-200'>
-      {barMenu.map((item) => (
-        <div key={item.id} onClick={() => handleChangePage(item.link)}>
-          <MenuList icon={item.icon} name={item.name} active={item.active} />
-        </div>
-      ))}
+      <div className='mt-6'>
+        {barMenu.map((item) => (
+          <div key={item.id} onClick={() => handleChangePage(item.link)}>
+            <MenuList icon={item.icon} name={item.name} active={item.active} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
