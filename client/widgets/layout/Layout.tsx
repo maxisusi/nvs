@@ -10,7 +10,7 @@ const Layout = (props: Props) => {
   return (
     <>
       <Header />
-      <div className='flex w-screen h-screen '>
+      <div className='flex flex-row h-screen'>
         <MenuBar />
         {props.children}
       </div>

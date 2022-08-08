@@ -163,13 +163,13 @@ const Dashboard: NextPage = () => {
               <div className='text-right'>
                 <h4 className='text-xs'>Pending/Draft</h4>
                 <h2 className='text-2xl font-bold text-black'>
-                  {totalInvoices.totalPending}CHF
+                  {totalInvoices.totalPending.toFixed(2)}CHF
                 </h2>
               </div>
               <div className='text-right'>
                 <h4 className='text-xs'>Net Revenue</h4>
                 <h2 className='text-2xl font-bold text-green-600'>
-                  {totalInvoices.totalNet}CHF
+                  {totalInvoices.totalNet.toFixed(2)}CHF
                 </h2>
               </div>
               <div className='text-right'>
