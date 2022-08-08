@@ -189,10 +189,14 @@ const InvoiceGrid = (props: Props) => {
       cellClassName: 'name-style',
       headerAlign: 'left',
       headerClassName: 'MuiDataGrid-columnHeaders',
-      valueGetter: (params: GridValueGetterParams) => {
+      renderCell: (params: GridValueGetterParams) => {
         const fullID = params.row.invoiceNumber;
         const id = fullID.split('-')[0];
-        return '#' + id;
+        return (
+          <h1
+            className='hover:text-skin-fill'
+            onClick={() => handleOpenViewInvoice(params.row.id)}>{`#${id}`}</h1>
+        );
       },
     },
     {
