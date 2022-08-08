@@ -180,7 +180,7 @@ const CustomerList = (props: Props) => {
         return (
           <h1
             className='hover:text-skin-fill'
-            onClick={() => handleEditCustomer(params.row.id)}>{`${
+            onClick={() => handleViewCustomer(params.row.id)}>{`${
             params.row.firstName || ''
           } ${params.row.lastName || ''}`}</h1>
         );

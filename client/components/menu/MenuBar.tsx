@@ -69,12 +69,14 @@ const MenuBar = () => {
   }, [router.pathname]);
 
   return (
-    <div className='fixed z-40 top-11 left-0 right-0 w-64 pt-6 h-screen  bg-white border-r border-gray-200'>
-      {barMenu.map((item) => (
-        <div key={item.id} onClick={() => handleChangePage(item.link)}>
-          <MenuList icon={item.icon} name={item.name} active={item.active} />
-        </div>
-      ))}
+    <div className='w-64 bg-white border-r border-gray-200'>
+      <div className='mt-6'>
+        {barMenu.map((item) => (
+          <div key={item.id} onClick={() => handleChangePage(item.link)}>
+            <MenuList icon={item.icon} name={item.name} active={item.active} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
