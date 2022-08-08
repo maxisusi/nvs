@@ -49,12 +49,10 @@ const invoiceViewPage = (props: $TSFixIt) => {
   } = props;
 
   const router = useRouter();
-  console.log(props);
 
   // * Menu State manager
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  console.log(anchorEl);
   const open = Boolean(anchorEl);
   const handleCloseMenu = () => setAnchorEl(null);
   const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {

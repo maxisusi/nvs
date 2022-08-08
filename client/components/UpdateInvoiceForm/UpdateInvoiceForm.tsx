@@ -143,8 +143,6 @@ const UpdateInvoiceForm = (props: Props) => {
       id: props.invoice.id,
     };
 
-    console.log(invoiceObject);
-
     try {
       await updateInvoice({
         variables: {
@@ -156,7 +154,7 @@ const UpdateInvoiceForm = (props: Props) => {
           },
         ],
       }).then(() => {
-        router.push('/invoice');
+        router.push(`/invoice/view/${props.invoice.id}`);
       });
     } catch (e) {
       alert('There was an error, please check the console for further details');

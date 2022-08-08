@@ -6,7 +6,6 @@ import React from 'react';
 type Props = {};
 
 const editInvoice = (props: Props) => {
-  console.log(props);
   return <UpdateInvoiceForm invoice={props} />;
 };
 
