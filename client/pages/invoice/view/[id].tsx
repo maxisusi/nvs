@@ -53,6 +53,8 @@ const invoiceViewPage = (props: $TSFixIt) => {
 
   // * Menu State manager
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  console.log(anchorEl);
   const open = Boolean(anchorEl);
   const handleCloseMenu = () => setAnchorEl(null);
   const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -91,6 +93,10 @@ const invoiceViewPage = (props: $TSFixIt) => {
     }
   };
 
+  const handleEditInvoice = (invoiceId: string) => {
+    router.push(`/invoice/edit/${invoiceId}`);
+  };
+
   const handleDeleteInvoice = async (invoiceId: string) => {
     try {
       await removeInvoice({
@@ -121,7 +127,7 @@ const invoiceViewPage = (props: $TSFixIt) => {
     }
   };
 
-  const Invoice = () => (
+  return (
     <>
       <div className=' flex items-center justify-between mb-10'>
         <div>
@@ -283,7 +289,7 @@ const invoiceViewPage = (props: $TSFixIt) => {
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}>
-        <MenuItem>
+        <MenuItem onClick={() => handleEditInvoice(id)}>
           <ListItemIcon>
             <EditOutlinedIcon className='text-skin-gray' fontSize='small' />
           </ListItemIcon>
@@ -342,8 +348,6 @@ const invoiceViewPage = (props: $TSFixIt) => {
       </Modal>
     </>
   );
-
-  return <Invoice />;
 };
 
 export default invoiceViewPage;
