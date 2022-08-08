@@ -93,6 +93,10 @@ const invoiceViewPage = (props: $TSFixIt) => {
     }
   };
 
+  const handleEditInvoice = (invoiceId: string) => {
+    router.push(`/invoice/edit/${invoiceId}`);
+  };
+
   const handleDeleteInvoice = async (invoiceId: string) => {
     try {
       await removeInvoice({
@@ -285,7 +289,7 @@ const invoiceViewPage = (props: $TSFixIt) => {
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}>
-        <MenuItem>
+        <MenuItem onClick={() => handleEditInvoice(id)}>
           <ListItemIcon>
             <EditOutlinedIcon className='text-skin-gray' fontSize='small' />
           </ListItemIcon>
