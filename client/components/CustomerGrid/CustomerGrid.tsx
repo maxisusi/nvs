@@ -24,7 +24,13 @@ import { Customer } from '@nvs-shared/types/customer';
 import { format, parseISO } from 'date-fns';
 import debounce from 'lodash.debounce';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import GridDisplayOverlays from './utils/GridDisplayOverlays';
 
 type Props = {
@@ -48,7 +54,7 @@ const CustomerList = (props: Props) => {
   const [loadingOverlay, setLoadingOverlay] = useState(true);
   const [row, setRow] = useState<CustomerRow[] | []>([]);
 
-  const [cellId, setCellId] = useState<string>();
+  const [cellId, setCellId] = useState<string>('');
 
   // * Modal State manager
   const [openModal, setOpenModal] = React.useState(false);
@@ -71,6 +77,7 @@ const CustomerList = (props: Props) => {
   };
 
   const handleEditCustomer = (customerId: string) => {
+    if (!customerId) return;
     router.push(`customer/edit/${customerId}`);
   };
 
@@ -169,6 +176,15 @@ const CustomerList = (props: Props) => {
       ...columnParams(),
       valueGetter: (params: GridValueGetterParams) =>
         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+      renderCell: (params: GridRenderCellParams) => {
+        return (
+          <h1
+            className='hover:text-skin-fill'
+            onClick={() => handleEditCustomer(params.row.id)}>{`${
+            params.row.firstName || ''
+          } ${params.row.lastName || ''}`}</h1>
+        );
+      },
     },
     {
       field: 'phone',
