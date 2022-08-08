@@ -23,7 +23,7 @@ const CustomerFilter = (props: Props) => {
       /> */}
 
       <div className='my-10 bg-gray-200 py-8 px-6 rounded flex gap-5'>
-        <div className='flex flex-col gap-1 w-full'>
+        <div className='flex flex-col gap-1 w-1/2'>
           <label className='text-sm'>Display Name</label>
           <input
             onChange={(e) => handleFormChange(e)}
@@ -32,7 +32,7 @@ const CustomerFilter = (props: Props) => {
           />
         </div>
 
-        <div className='flex flex-col gap-1 w-full'>
+        {/* <div className='flex flex-col gap-1 w-full'>
           <label className='text-sm text-skin-gray'>Contact Name</label>
           <input
             disabled
@@ -48,7 +48,7 @@ const CustomerFilter = (props: Props) => {
             type='text'
             className='rounded p-1.5 px-3 shadow border-none'
           />
-        </div>
+        </div> */}
       </div>
     </form>
   );
