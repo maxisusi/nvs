@@ -69,7 +69,7 @@ const MenuBar = () => {
   }, [router.pathname]);
 
   return (
-    <div className='w-64 bg-white border-r border-gray-200'>
+    <div className='w-64 h-screen bg-white border-r border-gray-200'>
       <div className='mt-6'>
         {barMenu.map((item) => (
           <div key={item.id} onClick={() => handleChangePage(item.link)}>

@@ -36,9 +36,10 @@ const CreateCustomerForm = () => {
             query: GET_CUSTOMERS_FOR_GRID,
           },
         ],
-      }).then(() => {
+      }).then((res) => {
         reset();
-        router.push('/customer');
+        const customerId = res.data.createCustomer.id;
+        router.push(`/customer/view/${customerId}`);
       });
     } catch (e) {
       alert('There was an error, please check the console for further details');

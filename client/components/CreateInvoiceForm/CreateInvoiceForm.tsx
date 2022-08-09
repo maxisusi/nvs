@@ -138,8 +138,9 @@ const CreateInvoiceForm = () => {
             query: GET_INVOICES_FOR_GRID,
           },
         ],
-      }).then(() => {
-        router.push('/invoice');
+      }).then((res) => {
+        const invoiceID = res.data.createInvoice.id;
+        router.push(`/invoice/view/${invoiceID}`);
       });
     } catch (e) {
       alert('There was an error, please check the console for further details');

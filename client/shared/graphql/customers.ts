@@ -98,8 +98,7 @@ export const UPDATE_CUSTOMER = gql`
 export const CREATE_CUSTOMER = gql`
   mutation CreateCustomer($createCustomerInput: CreateCustomerInput!) {
     createCustomer(createCustomerInput: $createCustomerInput) {
-      firstName
-      lastName
+      id
     }
   }
 `;
