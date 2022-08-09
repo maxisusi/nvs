@@ -94,7 +94,9 @@ const customerViewPage = (props: $TSFixIt) => {
           </p>
         </div>
         <div className='flex gap-3'>
-          <button className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
+          <button
+            onClick={() => router.push(`/invoice/create/${id}`)}
+            className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <AddIcon />
             New Transaction
           </button>
