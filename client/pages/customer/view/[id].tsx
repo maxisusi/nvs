@@ -51,6 +51,7 @@ const customerViewPage = (props: $TSFixIt) => {
     invoice,
     contactPoint,
     phone,
+    id,
     meta,
   } = props;
 

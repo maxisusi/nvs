@@ -29,7 +29,7 @@ const Invoice: NextPage = () => {
           </button>
 
           <button
-            onClick={() => router.push('/invoice/create')}
+            onClick={() => router.push('/invoice/create/new')}
             className='bg-skin-fill font-semibold text-skin-white px-3 py-2 rounded text-sm hover:bg-skin-btnHover drop-shadow-md flex gap-2 items-center'>
             <AddIcon />
             New Invoice
